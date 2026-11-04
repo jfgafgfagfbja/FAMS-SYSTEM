@@ -1,0 +1,39 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>{{TITLE}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+*{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:#f4f6f8;color:#1f2937}
+nav.top{display:flex;gap:6px;flex-wrap:wrap;padding:10px 24px;background:#0f2a3d}
+nav.top a{color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px}
+nav.top a:hover{background:rgba(255,255,255,.1)} nav.top a.on{background:#0e9594;color:#fff}
+h1{margin:0;font-size:21px} .sbt{color:#64748b;font-size:13px;margin-top:4px}
+
+.lay{display:flex;flex-wrap:wrap} aside{flex:0 0 270px;background:#fff;border-right:1px solid #e2e8f0;padding:14px;min-height:calc(100vh - 52px)}
+aside .g{font-size:11px;font-weight:800;letter-spacing:.04em;margin:14px 6px 6px} aside button{display:block;width:100%;text-align:left;border:none;background:none;padding:7px 10px;border-radius:8px;font-size:13px;cursor:pointer;color:#334155}
+aside button:hover{background:#f1f5f9} aside button.on{background:#e0f2f1;font-weight:700;color:#0f766e}
+main{flex:1;min-width:0;padding:22px 28px;overflow-x:auto} .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap} .tag{padding:3px 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:700}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:13px;margin:10px 0 18px} th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left;vertical-align:top} td:nth-child(-n+3){white-space:nowrap} td:nth-child(4){overflow-wrap:anywhere;min-width:160px} th{background:#f1f5f9}
+.k{display:inline-block;padding:1px 7px;border-radius:5px;font-size:11.5px;font-weight:800;margin-right:4px} .PK{background:#fde68a} .FK{background:#bfdbfe} .UQ{background:#e9d5ff} .NN{background:#e2e8f0}
+code{background:#f1f5f9;padding:1px 6px;border-radius:5px;font-size:12px} pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:10px;overflow:auto;font-size:12px}
+.u{display:inline-block;margin:2px 6px 2px 0;padding:3px 10px;border-radius:999px;font-size:12px;background:#e0f2fe} h3{margin:18px 0 4px}
+</style></head><body><nav class="top"><a href="workflow_tong_quan.html" class="">Sơ đồ quy trình</a><a href="erd_csdl.html" class="">CSDL (ERD)</a><a href="csdl_chi_tiet.html" class="on">Chi tiết từng bảng CSDL</a><a href="chuc_nang_cay.html">Sơ đồ chức năng cây</a></nav>
+<div class="lay"><aside id="side"></aside><main id="main"></main></div>
+<script>
+const TB={{TB_JSON}};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+let cur=0;
+function side(){let h='',g='';TB.forEach((t,i)=>{if(t.group!==g){g=t.group;h+=`<div class="g" style="color:${t.color}">${g.toUpperCase()}</div>`}h+=`<button class="${i===cur?'on':''}" onclick="go(${i})">${t.vn}</button>`});document.getElementById('side').innerHTML=h}
+function keys(k){return k.split(' ').filter(Boolean).map(x=>{const n=x.startsWith('FK')?'FK':x;const ref=x.includes(':')?' → '+x.split(':')[1]:'';return `<span class="k ${n}">${n}${ref}</span>`}).join('')}
+function show(){const t=TB[cur];let h=`<div class="hd"><h1>${t.vn}</h1><span class="tag" style="background:${t.color}">${t.group}</span><span style="color:#64748b">tên trong chương trình: <code>${esc(t.en)}</code> · kho DFD: <b>${t.store}</b></span></div><p><b>${t.title}</b> — ${t.desc}</p>`;
+h+='<h3>Các cột</h3><table><tr><th>#</th><th>Tên cột</th><th>Tên trường (code)</th><th>Kiểu dữ liệu</th><th>Khóa / ràng buộc</th><th>Mô tả</th></tr>';
+t.cols.forEach((c,i)=>{h+=`<tr><td>${i+1}</td><td><b>${c[0]}</b></td><td><code>${esc(c[1])}</code></td><td>${esc(c[2])}</td><td>${keys(c[3])}</td><td>${c[4]}</td></tr>`});h+='</table>';
+if(t.cons.length)h+='<p><b>Ràng buộc bảng:</b> '+t.cons.map(x=>`<code>${x}</code>`).join(' ')+'</p>';
+h+='<h3>Quan hệ</h3><table><tr><th>Hướng</th><th>Bảng liên quan</th><th>Cột</th><th>Bản số</th></tr>';
+t.fkOut.forEach(r=>{h+=`<tr><td>Tham chiếu tới</td><td><a href="#${r[1]}" onclick="goName('${r[1]}')">${r[1]}</a></td><td>${r[0]}</td><td>N : 1${r[2]?' (không bắt buộc)':''}</td></tr>`});
+t.fkIn.forEach(r=>{h+=`<tr><td>Được tham chiếu bởi</td><td><a href="#${r[0]}" onclick="goName('${r[0]}')">${r[0]}</a></td><td>${r[1]}</td><td>1 : N</td></tr>`});
+if(!t.fkOut.length&&!t.fkIn.length)h+='<tr><td colspan="4">Không có</td></tr>';h+='</table>';
+h+='<h3>Được dùng trong các quy trình (R = đọc, W = ghi)</h3>'+(t.used.length?t.used.map(u=>`<span class="u"><b>${u[0]}</b> · ${u[1].split('').join('/')}</span>`).join(''):'<i>Chưa gắn với quy trình nào</i>');
+h+='<h3>Câu lệnh tạo bảng ({{DBMS}})</h3><pre>'+esc(t.ddl)+'</pre>';document.getElementById('main').innerHTML=h}
+function go(i){cur=i;history.replaceState(null,'','#'+TB[i].vn);side();show();window.scrollTo(0,0)}
+function goName(n){const i=TB.findIndex(t=>t.vn===n);if(i>=0)go(i)}
+const h0=location.hash.slice(1);const i0=TB.findIndex(t=>t.vn===h0);cur=i0>=0?i0:0;side();show();
+window.addEventListener('hashchange',()=>{const i=TB.findIndex(t=>t.vn===location.hash.slice(1));if(i>=0){cur=i;side();show()}});
+</script></body></html>

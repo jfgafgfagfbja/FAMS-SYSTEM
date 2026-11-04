@@ -1,0 +1,7 @@
+# Script shell chay ben trong container Linux phai giu ket thuc dong LF.
+# Clone tren Windows ma de git tu doi sang CRLF thi container bao
+# "exec ./entrypoint.sh: no such file or directory" va backend khong khoi dong duoc.
+*.sh text eol=lf
+entrypoint.sh text eol=lf
+Dockerfile text eol=lf
+*.conf text eol=lf

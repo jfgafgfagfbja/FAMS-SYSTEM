@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Sơ đồ quy trình tinh gọn - FAMS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+*{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:#f4f6f8;color:#1f2937}
+nav.top{display:flex;gap:6px;flex-wrap:wrap;padding:10px 24px;background:#0f2a3d}
+nav.top a{color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px}
+nav.top a:hover{background:rgba(255,255,255,.1)} nav.top a.on{background:#0e9594;color:#fff}
+h1{margin:0;font-size:21px} .sbt{color:#64748b;font-size:13px;margin-top:4px}
+
+body{--fill:#f4b49a;--stroke:#e08e6b;--fill2:#f7c9b6;--fill3:#fde6dc;--text:#4a2412;--accent:#e08e6b}
+body[data-theme="blue"]{--fill:#a9cbf0;--stroke:#6fa3db;--fill2:#c4dcf5;--fill3:#e3effb;--text:#14304f;--accent:#6fa3db}
+body[data-theme="green"]{--fill:#a8ddb5;--stroke:#6dbb84;--fill2:#c3e8cc;--fill3:#e2f5e7;--text:#143d22;--accent:#6dbb84}
+.page{max-width:1500px;margin:0 auto;padding:18px 28px 40px}
+.head{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.badge{background:var(--fill);color:var(--text);font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;letter-spacing:.03em}
+.modes{display:flex;gap:10px;margin:18px 0 10px;flex-wrap:wrap}
+.mode{border:none;background:#e5e9ee;color:#475569;font-weight:800;font-size:13px;padding:11px 18px;border-radius:10px;cursor:pointer;letter-spacing:.01em}
+.mode.on{background:#17324a;color:#fff}
+.subtabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.sub{white-space:nowrap;border:1px solid #e2e8f0;background:#fff;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;color:#475569}
+.sub.on{background:var(--fill);border-color:var(--stroke);color:var(--text)}
+.tools{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px;color:#64748b;flex-wrap:wrap}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #cbd5e1;cursor:pointer;padding:0}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:22px 24px;margin-top:8px}
+.card h2{margin:0 0 4px;font-size:18px} .card p{margin:0 0 14px;color:#64748b;font-size:13.5px}
+.scroll{overflow-x:auto;padding-bottom:10px;border-top:1px dashed #e2e8f0;padding-top:10px}
+.lg{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:#475569;margin-top:12px}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:700;font-size:11.5px}
+.pr{background:#dbeafe;color:#1e40af}.pw{background:#ffedd5;color:#9a3412}
+.tbls{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tbls a{text-decoration:none;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:8px;border:1px solid #e2e8f0;color:#1f2937;background:#f8fafc}
+.tbls a:hover{border-color:var(--stroke)}
+svg text{font-family:"Segoe UI",system-ui,sans-serif}
+.n-step{fill:var(--fill);stroke:var(--stroke);stroke-width:1.5}
+.n-start,.n-end{fill:var(--fill2);stroke:var(--stroke);stroke-width:1.5}
+.n-dec{fill:var(--fill3);stroke:var(--stroke);stroke-width:1.5}
+.n-no{fill:#fff;stroke:var(--stroke);stroke-width:1.5;stroke-dasharray:5 3}
+.tt{fill:var(--text);font-weight:700;font-size:12.5px}.ts{fill:var(--text);opacity:.78;font-size:10.5px}
+.edge{stroke:#64748b;stroke-width:1.6;fill:none}.elab{fill:#475569;font-size:11px;font-weight:700}
+.c-r{fill:#dbeafe;stroke:#93c5fd}.c-w{fill:#ffedd5;stroke:#fdba74}.ct-r{fill:#1e40af;font-size:10.5px;font-weight:700}.ct-w{fill:#9a3412;font-size:10.5px;font-weight:700}
+a .c-r,a .c-w{cursor:pointer}
+</style>
+</head>
+<body data-theme="salmon">
+<nav class="top"><a href="workflow_tong_quan.html" class="on">Sơ đồ quy trình</a><a href="erd_csdl.html" class="">CSDL (ERD)</a><a href="csdl_chi_tiet.html" class="">Chi tiết từng bảng CSDL</a><a href="chuc_nang_cay.html">Sơ đồ chức năng cây</a></nav>
+<div class="page">
+  <div class="head">
+    <div>
+      <h1>Sơ đồ quy trình tinh gọn (đúng và đủ từng bước nghiệp vụ)</h1>
+      <div class="sbt">Hệ thống FAMS – Quản lý sinh viên và điểm danh bằng nhận diện khuôn mặt • Trường Đại học Kiến trúc Đà Nẵng • Mô hình Client – Server (Flutter ↔ REST API /api/v1 ↔ FastAPI ↔ PostgreSQL) • 9 phân hệ chức năng và 9 nhóm đối tượng • Mỗi bước ghi rõ bảng CSDL đọc / ghi</div>
+    </div>
+    <span class="badge">GẮN VỚI CSDL 21 BẢNG</span>
+  </div>
+  <div class="modes">
+    <button class="mode" id="m-func" onclick="setMode('func')">1. QUY TRÌNH THEO PHÂN HỆ CHỨC NĂNG (PH1 → PH9)</button>
+    <button class="mode" id="m-role" onclick="setMode('role')">2. QUY TRÌNH THEO TỪNG NHÓM ĐỐI TƯỢNG (9 VAI TRÒ)</button>
+  </div>
+  <div class="subtabs" id="subs"></div>
+  <div class="tools">Màu sắc:
+    <button class="dot" style="background:#f4b49a" onclick="theme('salmon')" title="Cam"></button>
+    <button class="dot" style="background:#a9cbf0" onclick="theme('blue')" title="Xanh dương"></button>
+    <button class="dot" style="background:#a8ddb5" onclick="theme('green')" title="Xanh lá"></button>
+    <span style="flex:1"></span><span>Kéo thanh cuộn ngang để xem hết sơ đồ • Bấm vào chip bảng để mở chi tiết bảng CSDL</span>
+  </div>
+  <div class="card">
+    <h2 id="ttl"></h2><p id="dsc"></p>
+    <div class="scroll" id="svgbox"></div>
+    <div class="lg"><span><span class="pill pr">đọc</span> bảng được đọc (R)</span><span><span class="pill pw">ghi</span> bảng được ghi / cập nhật (W)</span><span>Hình thoi: điểm quyết định • Khung nét đứt: nhánh “Không”</span></div>
+    <h3 style="margin:18px 0 0;font-size:14px">Bảng CSDL được dùng trong quy trình này</h3>
+    <div class="tbls" id="tbls"></div>
+  </div>
+</div>
+<script>
+const FLOWS = [{"key": "master", "tab": "Toàn cảnh (Master)", "func": true, "title": "Toàn cảnh: từ danh mục đến báo cáo chuyên cần", "desc": "Chuỗi nghiệp vụ xuyên suốt của 9 vai trò. Mỗi bước ghi rõ bảng CSDL được đọc (R) hoặc ghi (W). Mọi thao tác ghi dữ liệu quản lý đều tự động sinh một dòng audit_logs.", "steps": [{"k": "start", "t": "Quản trị tạo đơn vị, cán bộ", "s": "vai trò suy ra từ loại đơn vị", "db": ["W:units", "W:users", "W:staff"]}, {"k": "step", "t": "P.ĐT tạo lớp, lịch, ghi danh", "s": "chặn trùng phòng cùng giờ", "db": ["W:classes", "W:schedules", "W:enrollments"]}, {"k": "dec", "t": "SV đồng ý sinh trắc?", "s": "", "db": ["W:students"], "no": {"t": "Chỉ điểm danh tay", "s": "GV xác nhận trực tiếp", "db": []}}, {"k": "step", "t": "SV đăng ký khuôn mặt", "s": "kiểm chất lượng, chống giả mạo", "db": ["W:face_embeddings"]}, {"k": "dec", "t": "P.CTSV duyệt khuôn mặt?", "s": "", "db": [], "no": {"t": "Từ chối + lý do", "s": "SV chụp lại", "db": ["W:face_embeddings"]}}, {"k": "step", "t": "GV mở phiên điểm danh", "s": "từ 15 phút trước giờ học", "db": ["R:schedules", "W:attendance_sessions"]}, {"k": "step", "t": "Quét camera / SV tự điểm danh", "s": "khuôn mặt + GPS + mã QR", "db": ["R:face_embeddings", "W:attendance_records"]}, {"k": "dec", "t": "Nhận diện và kiểm tra đạt?", "s": "", "db": [], "no": {"t": "GV xác nhận tay", "s": "trạng thái manual", "db": ["W:attendance_records"]}}, {"k": "step", "t": "Báo phụ huynh", "s": "trong app + email", "db": ["R:parent_students", "W:notifications"]}, {"k": "step", "t": "Đóng phiên, sinh vắng", "s": "tự đóng sau giờ kết thúc 30 phút", "db": ["W:attendance_sessions", "W:attendance_records"]}, {"k": "step", "t": "Duyệt có phép / sửa kết quả", "s": "bắt buộc lý do", "db": ["W:attendance_records", "W:attendance_audits"]}, {"k": "end", "t": "Báo cáo, cảnh báo vắng ≥ 20%", "s": "Excel, thống kê theo Khoa", "db": ["R:attendance_sessions", "R:attendance_records"]}]}, {"key": "ph1", "tab": "PH1. Xác thực & tài khoản", "func": true, "title": "Phân hệ PH1: Đăng nhập, token và mật khẩu", "desc": "Access token 480 phút + refresh token xoay vòng 30 ngày. Khóa tạm sau 5 lần sai trong 5 phút. Đổi / đặt lại mật khẩu làm mọi phiên cũ mất hiệu lực.", "steps": [{"k": "start", "t": "Nhập email + mật khẩu", "s": "form OAuth2", "db": []}, {"k": "dec", "t": "Chưa bị khóa tạm?", "s": "", "db": [], "no": {"t": "Từ chối (429)", "s": "ghi nhật ký login_locked", "db": ["W:audit_logs"]}}, {"k": "dec", "t": "Đúng mật khẩu?", "s": "", "db": ["R:users"], "no": {"t": "Từ chối (401)", "s": "đếm lần sai, ghi nhật ký", "db": ["W:audit_logs"]}}, {"k": "step", "t": "Cấp access + refresh token", "s": "chỉ lưu SHA-256 của refresh token", "db": ["W:refresh_tokens", "W:audit_logs"]}, {"k": "step", "t": "Gọi API kèm Bearer token", "s": "kiểm jti, token_version", "db": ["R:revoked_tokens", "R:users"]}, {"k": "dec", "t": "Access token còn hạn?", "s": "", "db": [], "no": {"t": "Làm mới, xoay vòng token", "s": "dùng lại token cũ ⇒ thu hồi hết", "db": ["W:refresh_tokens"]}}, {"k": "step", "t": "Quên mật khẩu: gửi OTP", "s": "6 số, hết hạn 10 phút", "db": ["W:password_resets"]}, {"k": "step", "t": "Đặt lại / đổi mật khẩu", "s": "tăng token_version", "db": ["R:password_resets", "W:users", "W:refresh_tokens"]}, {"k": "end", "t": "Đăng xuất", "s": "thu hồi jti + refresh token", "db": ["W:revoked_tokens", "W:refresh_tokens"]}]}, {"key": "ph2", "tab": "PH2. Danh mục hệ thống", "func": true, "title": "Phân hệ PH2: Đơn vị, cán bộ, địa điểm, phòng học", "desc": "Quản trị viên quản lý đơn vị và tài khoản cán bộ; Quản trị viên và P. Đào tạo quản lý địa điểm điểm danh và phòng học.", "steps": [{"k": "start", "t": "Tạo đơn vị", "s": "Khoa, P.ĐT, P.CTSV, Ban ngành", "db": ["W:units"]}, {"k": "dec", "t": "Mã đơn vị chưa trùng?", "s": "", "db": ["R:units"], "no": {"t": "Báo lỗi trùng mã", "s": "", "db": []}}, {"k": "step", "t": "Tạo tài khoản cán bộ", "s": "vai trò suy ra từ loại đơn vị", "db": ["W:users", "W:staff"]}, {"k": "step", "t": "Khai báo địa điểm", "s": "tọa độ, bán kính, mặc định", "db": ["W:locations"]}, {"k": "step", "t": "Khai báo phòng học", "s": "thuộc khu vực, bán kính ≥ 50 m", "db": ["R:locations", "W:rooms"]}, {"k": "dec", "t": "Không còn dữ liệu liên quan?", "s": "", "db": ["R:staff", "R:schedules"], "no": {"t": "Từ chối xóa (409)", "s": "gợi ý ngừng sử dụng phòng", "db": []}}, {"k": "end", "t": "Xóa / ngừng sử dụng", "s": "nhật ký ghi tự động", "db": ["W:units", "W:rooms", "W:audit_logs"]}]}, {"key": "ph3", "tab": "PH3. Đào tạo", "func": true, "title": "Phân hệ PH3: Giảng viên, lớp học phần, ghi danh, lịch học", "desc": "P. Đào tạo (toàn trường) và Văn phòng Khoa (Khoa mình) nhập lớp, ghi danh, xếp lịch; server chặn trùng phòng.", "steps": [{"k": "start", "t": "Tạo hồ sơ giảng viên", "s": "email, mã GV, bộ môn, Khoa", "db": ["W:users", "W:lecturers"]}, {"k": "step", "t": "Tạo lớp học phần", "s": "VP Khoa: lớp luôn thuộc Khoa mình", "db": ["R:lecturers", "W:classes"]}, {"k": "step", "t": "Ghi danh sinh viên", "s": "", "db": ["R:students", "W:enrollments"]}, {"k": "step", "t": "Chọn thứ, giờ, phòng", "s": "phòng đang sử dụng", "db": ["R:rooms"]}, {"k": "dec", "t": "Phòng trống khung giờ?", "s": "", "db": ["R:schedules"], "no": {"t": "Từ chối: trùng phòng", "s": "nêu lớp đang chiếm", "db": []}}, {"k": "step", "t": "Lưu lịch học", "s": "", "db": ["W:schedules"]}, {"k": "end", "t": "Lịch tuần, lịch dạy hôm nay", "s": "kèm trạng thái phiên", "db": ["R:schedules", "R:attendance_sessions"]}]}, {"key": "ph4", "tab": "PH4. Người học", "func": true, "title": "Phân hệ PH4: Sinh viên, đồng ý sinh trắc, phụ huynh", "desc": "P. CTSV quản lý hồ sơ sinh viên và phụ huynh; sinh viên tự đồng ý (hoặc cán bộ nhập bản giấy) theo nội dung có phiên bản.", "steps": [{"k": "start", "t": "Tạo hồ sơ sinh viên", "s": "MSSV, ngành, khóa, Khoa", "db": ["W:users", "W:students"]}, {"k": "step", "t": "SV đọc nội dung đồng ý", "s": "phiên bản 2026-10", "db": []}, {"k": "dec", "t": "Đồng ý đúng phiên bản?", "s": "", "db": [], "no": {"t": "Yêu cầu đọc lại (409)", "s": "", "db": []}}, {"k": "step", "t": "Ghi nhận đồng ý", "s": "self / paper, người ghi nhận", "db": ["W:students"]}, {"k": "step", "t": "Tạo tài khoản phụ huynh", "s": "", "db": ["W:users", "W:parents"]}, {"k": "step", "t": "Liên kết phụ huynh với con", "s": "bằng MSSV", "db": ["R:students", "W:parent_students"]}, {"k": "end", "t": "Rút đồng ý (khi cần)", "s": "xóa ngay vector + ảnh", "db": ["W:students", "W:face_embeddings"]}]}, {"key": "ph5", "tab": "PH5. Sinh trắc khuôn mặt", "func": true, "title": "Phân hệ PH5: Đăng ký và duyệt dữ liệu khuôn mặt", "desc": "Server kiểm chất lượng ảnh, chống giả mạo, chống trùng với sinh viên khác; P. CTSV duyệt; ảnh tạm xóa ngay sau quyết định.", "steps": [{"k": "start", "t": "Gửi một hoặc nhiều ảnh", "s": "SV, P.CTSV hoặc GV lớp mình", "db": ["R:students"]}, {"k": "dec", "t": "Đã đồng ý sinh trắc?", "s": "", "db": ["R:students"], "no": {"t": "Từ chối", "s": "yêu cầu đồng ý trước", "db": []}}, {"k": "dec", "t": "Ảnh đạt, là mặt thật?", "s": "", "db": [], "no": {"t": "Loại ảnh + lý do", "s": "mặt ≥ 112 px, đủ sáng, đủ nét", "db": []}}, {"k": "dec", "t": "Không giống SV khác?", "s": "", "db": ["R:face_embeddings"], "no": {"t": "Loại ảnh", "s": "độ giống > 0.60", "db": []}}, {"k": "step", "t": "Lưu vector chờ duyệt", "s": "ảnh cắt lưu tạm", "db": ["W:face_embeddings"]}, {"k": "dec", "t": "P.CTSV duyệt?", "s": "", "db": ["R:face_embeddings"], "no": {"t": "Từ chối + lý do", "s": "xóa ảnh tạm", "db": ["W:face_embeddings"]}}, {"k": "end", "t": "Approved, xóa ảnh tạm", "s": "dùng để nhận diện", "db": ["W:face_embeddings"]}]}, {"key": "ph6", "tab": "PH6. Điểm danh", "func": true, "title": "Phân hệ PH6: Phiên điểm danh và ghi nhận kết quả", "desc": "Quét camera cả lớp (xác nhận đủ 2 khung hình) hoặc sinh viên tự điểm danh (QR + GPS + khuôn mặt chính mình); đóng phiên thì sinh bản ghi vắng.", "steps": [{"k": "start", "t": "GV mở phiên", "s": "đúng ngày, đúng thứ", "db": ["R:schedules"]}, {"k": "dec", "t": "Trong khung giờ, chưa có phiên?", "s": "", "db": ["R:attendance_sessions"], "no": {"t": "Từ chối mở phiên", "s": "chưa đến giờ / đã kết thúc", "db": []}}, {"k": "step", "t": "Phiên đang mở", "s": "bật / tắt yêu cầu QR", "db": ["W:attendance_sessions"]}, {"k": "step", "t": "Quét camera / SV tự chụp", "s": "kiểm QR, GPS trước nhận diện", "db": ["R:enrollments", "R:rooms", "R:locations"]}, {"k": "dec", "t": "Khớp khuôn mặt, ảnh thật?", "s": "", "db": ["R:face_embeddings"], "no": {"t": "Không ghi nhận", "s": "giả mạo: lưu ảnh bằng chứng", "db": []}}, {"k": "step", "t": "Ghi present / late", "s": "nguồn camera / selfie", "db": ["W:attendance_records"]}, {"k": "step", "t": "Xác nhận tay (khi cần)", "s": "trạng thái manual", "db": ["W:attendance_records"]}, {"k": "step", "t": "Đóng phiên", "s": "GV đóng hoặc tự đóng +30 phút", "db": ["W:attendance_sessions"]}, {"k": "step", "t": "Sinh bản ghi vắng", "s": "SV chưa có bản ghi", "db": ["R:enrollments", "W:attendance_records"]}, {"k": "end", "t": "Sửa / duyệt có phép", "s": "bắt buộc lý do, lưu lịch sử", "db": ["W:attendance_records", "W:attendance_audits"]}]}, {"key": "ph7", "tab": "PH7. Thông báo", "func": true, "title": "Phân hệ PH7: Thông báo điểm danh cho phụ huynh", "desc": "Sinh tự động trong cùng giao dịch ghi điểm danh; email gửi sau bằng tác vụ nền nên mạng chậm không làm chậm việc điểm danh.", "steps": [{"k": "start", "t": "Bản ghi điểm danh tạo / đổi", "s": "sự kiện before_flush", "db": ["R:attendance_records"]}, {"k": "dec", "t": "SV có phụ huynh liên kết?", "s": "", "db": ["R:parent_students"], "no": {"t": "Không tạo thông báo", "s": "", "db": []}}, {"k": "dec", "t": "Phụ huynh nhận loại này?", "s": "", "db": ["R:parents"], "no": {"t": "Bỏ qua tin \"có mặt\"", "s": "phụ huynh đã tắt", "db": []}}, {"k": "step", "t": "Tạo thông báo trong app", "s": "mỗi loại một lần / bản ghi", "db": ["W:notifications"]}, {"k": "step", "t": "Gửi email theo hàng đợi", "s": "15 giây / lần, thử tối đa 3 lần", "db": ["W:notifications"]}, {"k": "step", "t": "Phụ huynh xem hộp thư", "s": "chuông đếm chưa đọc", "db": ["R:notifications"]}, {"k": "end", "t": "Đánh dấu đã đọc", "s": "", "db": ["W:notifications"]}]}, {"key": "ph8", "tab": "PH8. Báo cáo, thống kê", "func": true, "title": "Phân hệ PH8: Chuyên cần, cảnh báo vắng, thống kê", "desc": "Chỉ tính phiên đã đóng. Tỉ lệ vắng = số buổi absent / tổng phiên đã đóng; có phép không tính vắng; cảnh báo khi ≥ 20%.", "steps": [{"k": "start", "t": "Chọn lớp / học kỳ", "s": "theo phạm vi xem", "db": ["R:classes"]}, {"k": "step", "t": "Đếm phiên đã đóng", "s": "", "db": ["R:attendance_sessions"]}, {"k": "step", "t": "Gom bản ghi theo SV", "s": "present, late, absent, excused, manual", "db": ["R:attendance_records"]}, {"k": "dec", "t": "Tỉ lệ vắng ≥ 20%?", "s": "", "db": [], "no": {"t": "Không cảnh báo", "s": "", "db": []}}, {"k": "step", "t": "Đánh dấu cảnh báo", "s": "báo cho GV, cán bộ", "db": []}, {"k": "step", "t": "Xuất Excel", "s": "ghi nhật ký report.exported", "db": ["R:students", "W:audit_logs"]}, {"k": "end", "t": "Thống kê tổng hợp theo Khoa", "s": "chỉ số liệu, không tên / ảnh", "db": ["R:units", "R:enrollments"]}]}, {"key": "ph9", "tab": "PH9. Nhật ký hệ thống", "func": true, "title": "Phân hệ PH9: Ghi và tra cứu nhật ký hệ thống", "desc": "Ghi tự động ở tầng CSDL nên không phụ thuộc từng chức năng nhớ ghi log; cột nhạy cảm chỉ ghi là \"đã thay đổi\".", "steps": [{"k": "start", "t": "Thêm / sửa / xóa dữ liệu", "s": "15 loại đối tượng quản lý", "db": []}, {"k": "step", "t": "Ghi nhật ký tự động", "s": "sự kiện after_flush", "db": ["W:audit_logs"]}, {"k": "step", "t": "Ghi đăng nhập, xuất báo cáo", "s": "ghi tường minh", "db": ["W:audit_logs"]}, {"k": "step", "t": "Che cột nhạy cảm", "s": "mật khẩu, vector, OTP, token", "db": []}, {"k": "dec", "t": "Người xem là Quản trị?", "s": "", "db": ["R:staff"], "no": {"t": "Lãnh đạo Khoa: Khoa mình", "s": "lọc theo faculty_id", "db": ["R:audit_logs"]}}, {"k": "end", "t": "Tra cứu, lọc nhật ký", "s": "từ khóa, nhóm, kết quả, ngày", "db": ["R:audit_logs"]}]}, {"key": "qt", "tab": "1. Quản trị viên", "func": false, "title": "Quy trình nghiệp vụ của Quản trị viên", "desc": "Quản lý đơn vị, tài khoản cán bộ, danh mục; có toàn quyền điểm danh và xem nhật ký toàn trường.", "steps": [{"k": "start", "t": "Đăng nhập", "s": "", "db": ["R:users"]}, {"k": "step", "t": "Quản lý đơn vị", "s": "", "db": ["W:units"]}, {"k": "step", "t": "Tạo, sửa tài khoản cán bộ", "s": "", "db": ["W:users", "W:staff"]}, {"k": "step", "t": "Địa điểm, phòng học", "s": "", "db": ["W:locations", "W:rooms"]}, {"k": "step", "t": "Duyệt khuôn mặt", "s": "", "db": ["W:face_embeddings"]}, {"k": "step", "t": "Mở phiên, sửa điểm danh", "s": "mọi lớp", "db": ["W:attendance_sessions", "W:attendance_records"]}, {"k": "step", "t": "Xem thống kê toàn trường", "s": "", "db": ["R:attendance_records"]}, {"k": "end", "t": "Xem nhật ký hệ thống", "s": "", "db": ["R:audit_logs"]}]}, {"key": "dt", "tab": "2. Phòng Đào tạo", "func": false, "title": "Quy trình nghiệp vụ của Phòng Đào tạo", "desc": "Quản lý giảng viên, lớp học phần, ghi danh, lịch học, phòng và địa điểm toàn trường; xem điểm danh, báo cáo.", "steps": [{"k": "start", "t": "Hồ sơ giảng viên", "s": "", "db": ["W:lecturers"]}, {"k": "step", "t": "Lớp học phần, ghi danh", "s": "", "db": ["W:classes", "W:enrollments"]}, {"k": "step", "t": "Xếp lịch học", "s": "", "db": ["R:rooms"]}, {"k": "dec", "t": "Phòng trống khung giờ?", "s": "", "db": ["R:schedules"], "no": {"t": "Chọn phòng / giờ khác", "s": "", "db": []}}, {"k": "step", "t": "Lưu lịch học", "s": "", "db": ["W:schedules"]}, {"k": "step", "t": "Địa điểm, phòng học", "s": "", "db": ["W:locations", "W:rooms"]}, {"k": "end", "t": "Xem điểm danh, cảnh báo, Excel", "s": "toàn trường", "db": ["R:attendance_records"]}]}, {"key": "ctsv", "tab": "3. Phòng CTSV", "func": false, "title": "Quy trình nghiệp vụ của Phòng Công tác sinh viên", "desc": "Quản lý hồ sơ sinh viên, phụ huynh, đồng ý sinh trắc; duyệt khuôn mặt; duyệt vắng có phép toàn trường.", "steps": [{"k": "start", "t": "Hồ sơ sinh viên", "s": "", "db": ["W:students"]}, {"k": "step", "t": "Ghi nhận đồng ý bản giấy", "s": "method = paper", "db": ["W:students"]}, {"k": "step", "t": "Phụ huynh, liên kết con", "s": "", "db": ["W:parents", "W:parent_students"]}, {"k": "step", "t": "Xem khuôn mặt chờ duyệt", "s": "kèm cảnh báo trùng", "db": ["R:face_embeddings"]}, {"k": "dec", "t": "Ảnh hợp lệ, không trùng?", "s": "", "db": [], "no": {"t": "Từ chối + lý do", "s": "", "db": ["W:face_embeddings"]}}, {"k": "step", "t": "Duyệt khuôn mặt", "s": "", "db": ["W:face_embeddings"]}, {"k": "step", "t": "Duyệt vắng có phép", "s": "toàn trường", "db": ["W:attendance_records", "W:attendance_audits"]}, {"k": "end", "t": "Xem báo cáo, cảnh báo vắng", "s": "", "db": ["R:attendance_records"]}]}, {"key": "vpk", "tab": "4. Văn phòng Khoa", "func": false, "title": "Quy trình nghiệp vụ của Văn phòng Khoa", "desc": "Nhập liệu trong phạm vi Khoa mình: lớp học phần, ghi danh, lịch học, phân công giảng viên; xem dữ liệu của Khoa.", "steps": [{"k": "start", "t": "Đăng nhập (gắn Khoa)", "s": "", "db": ["R:staff"]}, {"k": "step", "t": "Lớp học phần của Khoa", "s": "lớp luôn thuộc Khoa mình", "db": ["W:classes"]}, {"k": "step", "t": "Ghi danh, xếp lịch", "s": "chặn trùng phòng", "db": ["W:enrollments", "W:schedules"]}, {"k": "step", "t": "Phân công GV dạy lớp", "s": "", "db": ["R:lecturers", "W:classes"]}, {"k": "step", "t": "Xem SV, GV của Khoa", "s": "", "db": ["R:students", "R:lecturers"]}, {"k": "end", "t": "Xem điểm danh, báo cáo Khoa", "s": "", "db": ["R:attendance_records"]}]}, {"key": "ldk", "tab": "5. Lãnh đạo Khoa", "func": false, "title": "Quy trình nghiệp vụ của Lãnh đạo Khoa", "desc": "Giám sát và phê duyệt trong Khoa mình; không nhập liệu (việc của Văn phòng Khoa).", "steps": [{"k": "start", "t": "Đăng nhập (gắn Khoa)", "s": "", "db": ["R:staff"]}, {"k": "step", "t": "Giám sát điểm danh Khoa", "s": "", "db": ["R:attendance_sessions", "R:attendance_records"]}, {"k": "step", "t": "Xem cảnh báo vắng", "s": "", "db": ["R:attendance_records"]}, {"k": "dec", "t": "Đơn xin phép hợp lệ?", "s": "", "db": [], "no": {"t": "Giữ trạng thái vắng", "s": "", "db": []}}, {"k": "step", "t": "Duyệt có phép", "s": "bắt buộc lý do", "db": ["W:attendance_records", "W:attendance_audits"]}, {"k": "step", "t": "Thống kê tổng hợp Khoa", "s": "", "db": ["R:classes"]}, {"k": "end", "t": "Xem nhật ký của Khoa", "s": "", "db": ["R:audit_logs"]}]}, {"key": "bn", "tab": "6. Ban ngành", "func": false, "title": "Quy trình nghiệp vụ của Ban ngành", "desc": "Chỉ xem số liệu thống kê tổng hợp toàn trường; không có tên, ảnh sinh viên.", "steps": [{"k": "start", "t": "Đăng nhập", "s": "", "db": ["R:users"]}, {"k": "step", "t": "Chọn học kỳ", "s": "mặc định học kỳ mới nhất", "db": ["R:classes"]}, {"k": "step", "t": "Thống kê tổng hợp", "s": "tỉ lệ đi học, tỉ lệ vắng", "db": ["R:attendance_sessions", "R:attendance_records"]}, {"k": "end", "t": "So sánh giữa các Khoa", "s": "", "db": ["R:units"]}]}, {"key": "gv", "tab": "7. Giảng viên", "func": false, "title": "Quy trình nghiệp vụ của Giảng viên", "desc": "Mở phiên, quét camera, chiếu mã QR, xác nhận tay, đóng phiên và sửa kết quả cho lớp mình dạy.", "steps": [{"k": "start", "t": "Xem lịch dạy hôm nay", "s": "", "db": ["R:schedules"]}, {"k": "step", "t": "Mở phiên", "s": "", "db": ["W:attendance_sessions"]}, {"k": "step", "t": "Bật QR, chiếu mã", "s": "mã đổi sau 30 giây", "db": ["W:attendance_sessions"]}, {"k": "step", "t": "Quét camera cả lớp", "s": "", "db": ["R:face_embeddings", "W:attendance_records"]}, {"k": "dec", "t": "SV được nhận diện?", "s": "", "db": [], "no": {"t": "Xác nhận tay", "s": "", "db": ["W:attendance_records"]}}, {"k": "step", "t": "Đóng phiên, sinh vắng", "s": "", "db": ["W:attendance_sessions", "W:attendance_records"]}, {"k": "step", "t": "Sửa kết quả (có lý do)", "s": "", "db": ["W:attendance_records", "W:attendance_audits"]}, {"k": "end", "t": "Báo cáo lớp, xuất Excel", "s": "", "db": ["R:attendance_records"]}]}, {"key": "sv", "tab": "8. Sinh viên", "func": false, "title": "Quy trình nghiệp vụ của Sinh viên", "desc": "Đồng ý sinh trắc → đăng ký khuôn mặt → tự điểm danh (QR + GPS + ảnh) → xem chuyên cần.", "steps": [{"k": "start", "t": "Đăng nhập, xem lịch tuần", "s": "", "db": ["R:schedules"]}, {"k": "step", "t": "Đồng ý sinh trắc", "s": "", "db": ["W:students"]}, {"k": "step", "t": "Đăng ký khuôn mặt", "s": "", "db": ["W:face_embeddings"]}, {"k": "dec", "t": "Được duyệt?", "s": "", "db": [], "no": {"t": "Chụp lại ảnh khác", "s": "xem lý do từ chối", "db": ["W:face_embeddings"]}}, {"k": "step", "t": "Vào buổi học đang mở", "s": "", "db": ["R:attendance_sessions"]}, {"k": "step", "t": "Quét QR, bật GPS, chụp ảnh", "s": "", "db": ["R:rooms", "R:locations"]}, {"k": "dec", "t": "Đạt kiểm tra?", "s": "", "db": [], "no": {"t": "Báo lý do, thử lại", "s": "hoặc nhờ GV xác nhận tay", "db": []}}, {"k": "step", "t": "Ghi điểm danh", "s": "present / late", "db": ["W:attendance_records"]}, {"k": "end", "t": "Xem chuyên cần, cảnh báo", "s": "", "db": ["R:attendance_records"]}]}, {"key": "ph", "tab": "9. Phụ huynh", "func": false, "title": "Quy trình nghiệp vụ của Phụ huynh", "desc": "Theo dõi chuyên cần và nhận thông báo điểm danh của con đã được liên kết.", "steps": [{"k": "start", "t": "Đăng nhập", "s": "", "db": ["R:users"]}, {"k": "step", "t": "Xem danh sách con", "s": "", "db": ["R:parent_students"]}, {"k": "step", "t": "Nhận thông báo điểm danh", "s": "chuông + email", "db": ["R:notifications"]}, {"k": "step", "t": "Xem chuyên cần của con", "s": "chi tiết từng buổi", "db": ["R:attendance_records"]}, {"k": "step", "t": "Đánh dấu đã đọc", "s": "", "db": ["W:notifications"]}, {"k": "end", "t": "Tùy chọn nhận email", "s": "", "db": ["W:parents"]}]}];
+let mode = 'func', key = 'master';
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function wrap(s, n, maxLines) {
+  if (!s) return [];
+  const words = String(s).split(' '); const lines = []; let cur = '';
+  for (const w of words) {
+    if ((cur ? cur + ' ' + w : w).length > n && cur) { lines.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w;
+  }
+  if (cur) lines.push(cur);
+  if (maxLines && lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] += '…'; }
+  return lines;
+}
+function chip(cx, y, item) {
+  const [rw, tb] = item.split(':');
+  const label = (rw === 'R' ? 'đọc ' : 'ghi ') + tb;
+  const w = label.length * 6.1 + 16, x = cx - w / 2;
+  const cls = rw === 'R' ? 'r' : 'w';
+  return `<a href="csdl_chi_tiet.html#${tb}" target="_blank"><rect class="c-${cls}" x="${x}" y="${y}" width="${w}" height="19" rx="9.5"/><text class="ct-${cls}" x="${cx}" y="${y + 13.2}" text-anchor="middle">${esc(label)}</text></a>`;
+}
+function textBlock(cx, cy, tl, sl) {
+  const lh1 = 15, lh2 = 13, total = tl.length * lh1 + sl.length * lh2 + (sl.length ? 3 : 0);
+  let y = cy - total / 2 + 11; let out = '';
+  tl.forEach(l => { out += `<text class="tt" x="${cx}" y="${y}" text-anchor="middle">${esc(l)}</text>`; y += lh1; });
+  if (sl.length) y += 3;
+  sl.forEach(l => { out += `<text class="ts" x="${cx}" y="${y - 2}" text-anchor="middle">${esc(l)}</text>`; y += lh2; });
+  return out;
+}
+function buildSvg(steps) {
+  const NW = 172, DW = 160, DH = 108, GAP = 52, PADX = 24, CH = 22;
+  const info = steps.map(s => {
+    if (s.k === 'dec') return {w: DW, h: DH, tl: wrap(s.t, 15, 4), sl: []};
+    const tl = wrap(s.t, 18, 3), sl = wrap(s.s, 27, 2);
+    return {w: NW, h: Math.max(66, tl.length * 15 + sl.length * 13 + 24), tl, sl};
+  });
+  const maxH = Math.max(...info.map(i => i.h));
+  const decChips = Math.max(0, ...steps.filter(s => s.k === 'dec').map(s => s.db.length));
+  const cy = 18 + decChips * CH + maxH / 2;
+  let x = PADX, svg = '', bottom = cy + maxH / 2;
+  const pos = [];
+  steps.forEach((s, i) => {
+    const n = info[i]; const cx = x + n.w / 2; pos.push({x, cx, w: n.w});
+    if (s.k === 'dec') {
+      svg += `<polygon class="n-dec" points="${cx},${cy - n.h / 2} ${x + n.w},${cy} ${cx},${cy + n.h / 2} ${x},${cy}"/>` + textBlock(cx, cy, n.tl, []);
+      s.db.forEach((it, j) => { svg += chip(cx, cy - n.h / 2 - (j + 1) * CH, it); });
+      const no = s.no, nl = wrap(no.t, 18, 3), ns = wrap(no.s, 27, 2), nh = Math.max(60, nl.length * 15 + ns.length * 13 + 22);
+      const top = cy + n.h / 2 + 40;
+      svg += `<line class="edge" x1="${cx}" y1="${cy + n.h / 2}" x2="${cx}" y2="${top - 2}" marker-end="url(#ar)"/><text class="elab" x="${cx + 8}" y="${cy + n.h / 2 + 22}">Không</text>`;
+      svg += `<rect class="n-no" x="${cx - NW / 2}" y="${top}" width="${NW}" height="${nh}" rx="10"/>` + textBlock(cx, top + nh / 2, nl, ns);
+      let yy = top + nh + 8;
+      no.db.forEach(it => { svg += chip(cx, yy, it); yy += CH; });
+      bottom = Math.max(bottom, yy);
+    } else {
+      const r = s.k === 'step' ? 10 : 33;
+      svg += `<rect class="n-${s.k}" x="${x}" y="${cy - n.h / 2}" width="${n.w}" height="${n.h}" rx="${r}"/>` + textBlock(cx, cy, n.tl, n.sl);
+      let yy = cy + n.h / 2 + 8;
+      s.db.forEach(it => { svg += chip(cx, yy, it); yy += CH; });
+      bottom = Math.max(bottom, yy);
+    }
+    if (i > 0) {
+      const p = pos[i - 1];
+      svg += `<line class="edge" x1="${p.x + p.w}" y1="${cy}" x2="${x - 2}" y2="${cy}" marker-end="url(#ar)"/>`;
+      if (steps[i - 1].k === 'dec') svg += `<text class="elab" x="${(p.x + p.w + x) / 2}" y="${cy - 7}" text-anchor="middle">Có</text>`;
+    }
+    x += n.w + GAP;
+  });
+  const W = x - GAP + PADX, H = bottom + 14;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>${svg}</svg>`;
+}
+function tablesOf(steps) {
+  const m = {};
+  steps.forEach(s => [...s.db, ...(s.k === 'dec' ? s.no.db : [])].forEach(it => { const [rw, tb] = it.split(':'); (m[tb] = m[tb] || new Set()).add(rw); }));
+  return m;
+}
+function render() {
+  document.getElementById('m-func').classList.toggle('on', mode === 'func');
+  document.getElementById('m-role').classList.toggle('on', mode === 'role');
+  const list = FLOWS.filter(f => f.func === (mode === 'func'));
+  document.getElementById('subs').innerHTML = list.map(f => `<button class="sub ${f.key === key ? 'on' : ''}" onclick="pick('${f.key}')">${esc(f.tab)}</button>`).join('');
+  const f = FLOWS.find(x => x.key === key);
+  document.getElementById('ttl').textContent = f.title;
+  document.getElementById('dsc').textContent = f.desc;
+  document.getElementById('svgbox').innerHTML = buildSvg(f.steps);
+  const m = tablesOf(f.steps);
+  document.getElementById('tbls').innerHTML = Object.keys(m).map(tb => `<a href="csdl_chi_tiet.html#${tb}" target="_blank">${tb} <span class="pill ${m[tb].has('W') ? 'pw' : 'pr'}">${[...m[tb]].sort().map(x => x === 'R' ? 'đọc' : 'ghi').join(' + ')}</span></a>`).join('');
+  history.replaceState(null, '', '#' + mode + ':' + key);
+}
+function setMode(m) { mode = m; key = FLOWS.find(f => f.func === (m === 'func')).key; render(); }
+function pick(k) { key = k; render(); }
+function theme(t) { document.body.dataset.theme = t; }
+const h = location.hash.slice(1).split(':');
+if (h.length === 2 && FLOWS.some(f => f.key === h[1])) { mode = h[0]; key = h[1]; }
+window.addEventListener('hashchange',()=>{const q=location.hash.slice(1).split(':');if(q.length===2&&FLOWS.some(f=>f.key===q[1])&&(q[0]!==mode||q[1]!==key)){mode=q[0];key=q[1];render();}});
+render();
+</script>
+</body>
+</html>

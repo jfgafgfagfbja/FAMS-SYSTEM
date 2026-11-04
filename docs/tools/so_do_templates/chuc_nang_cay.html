@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F2A3D;
+    --navy-deep:#0A1E2C;
+    --teal:#0E9594;
+    --paper:#F7F7F5;
+    --ink:#16222B;
+    --sub:#5B6B74;
+    --line:#E3E1DB;
+
+    --kh:#059669;   --kh-tint:#E7F6EF;
+    --cn:#2563EB;   --cn-tint:#EAF1FE;
+    --ql:#D97706;   --ql-tint:#FDF2E3;
+    --nv:#7C3AED;   --nv-tint:#F1EBFD;
+    --qt:#DC2626;   --qt-tint:#FCEAEA;
+    --lt:#0891B2;   --lt-tint:#E0F4F8;
+    --ca:#475569;   --ca-tint:#EAEEF2;
+  }
+  :root:not([data-theme="light"]){ }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12191D; --ink:#EDEFEF; --sub:#9AA7AD; --line:#283136;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12191D; --ink:#EDEFEF; --sub:#9AA7AD; --line:#283136;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  h1,h2,h3,.display{ font-family:'Be Vietnam Pro',system-ui,sans-serif; }
+
+  .shell{ display:flex; min-height:100vh; min-height:100dvh; }
+
+  /* ---------------- SIDEBAR ---------------- */
+  .sidebar{
+    width:280px; flex:0 0 280px;
+    background:linear-gradient(180deg,var(--navy) 0%, var(--navy-deep) 100%);
+    color:#DCE8EC;
+    padding:28px 20px 24px;
+    position:sticky; top:0; align-self:flex-start;
+    height:100vh; height:100dvh; overflow-y:auto;
+  }
+  .brand{ padding-bottom:18px; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,.12); }
+  .brand .tag{ font-size:12.5px; letter-spacing:.02em; color:var(--teal); font-weight:600; }
+  .brand h1{ font-size:19px; line-height:1.35; margin:6px 0 0; color:#fff; font-weight:700; }
+
+  .navlabel{ font-size:11.5px; color:#7E99A3; margin:18px 4px 8px; font-weight:600; }
+  nav{ display:flex; flex-direction:column; gap:3px; }
+  .navitem{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px; border-radius:9px; cursor:pointer;
+    font-size:14.5px; font-weight:500; color:#C8D7DC;
+    border:1px solid transparent; background:none; text-align:left; width:100%;
+    font-family:inherit;
+  }
+  .navitem .dot{ width:9px; height:9px; border-radius:50%; flex:0 0 9px; background:#577078; }
+  .navitem:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .navitem.active{ background:rgba(14,149,148,.16); color:#fff; border-color:rgba(14,149,148,.4); }
+  .navitem .count{ margin-left:auto; font-size:11.5px; color:#7E99A3; font-weight:600; }
+  .navitem.active .count{ color:var(--teal); }
+
+  .sidebar-foot{ margin-top:22px; padding-top:16px; border-top:1px solid rgba(255,255,255,.1); font-size:12px; color:#7E99A3; line-height:1.6; }
+
+  /* ---------------- CONTENT ---------------- */
+  .content{ flex:1; min-width:0; padding:36px 44px 60px; max-width:1180px; }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+
+  .panel-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:6px; }
+  .role-badge{
+    width:46px; height:46px; border-radius:12px; flex:0 0 46px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Be Vietnam Pro',sans-serif; font-weight:800; font-size:17px; color:#fff;
+  }
+  .panel-head h2{ font-size:25px; margin:0 0 4px; font-weight:700; }
+  .panel-head p{ margin:0; color:var(--sub); font-size:14.5px; max-width:62ch; line-height:1.55; }
+
+  .stats{ display:flex; gap:22px; margin:18px 0 26px; flex-wrap:wrap; }
+  .stat{ font-size:13px; color:var(--sub); }
+  .stat b{ color:var(--ink); font-family:'Be Vietnam Pro',sans-serif; font-size:16px; display:block; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.8px; }
+  thead th{
+    text-align:left; font-weight:600; font-size:12.5px; color:#fff;
+    background:var(--navy); padding:11px 14px; position:sticky; top:0;
+  }
+  thead th:first-child{ border-top-left-radius:8px; }
+  thead th:last-child{ border-top-right-radius:8px; }
+  tbody td{ padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45; }
+  tbody tr:last-child td{ border-bottom:none; }
+  .ro-tag{ display:block; margin-top:6px; width:max-content; font-size:10.5px; font-weight:600; padding:1px 7px; border-radius:5px; background:#FEF3C7; color:#92400E; }
+  .col-menu{ font-weight:600; white-space:nowrap; }
+  .col-sub{ color:var(--ink); }
+  .col-io{ color:var(--sub); font-size:13.2px; }
+  .tbl-wrap{ border:1px solid var(--line); border-radius:10px; overflow:hidden; overflow-x:auto; }
+
+  .io-tag{ display:inline-block; font-size:10.5px; font-weight:600; padding:1px 6px; border-radius:5px; margin-right:6px; vertical-align:1px; }
+  .io-in{ background:#EAF1FE; color:#1D4ED8; }
+  .io-out{ background:#E7F6EF; color:#047857; }
+  :root[data-theme="dark"] .io-in, @media (prefers-color-scheme:dark){ .io-in{ background:#17304f; color:#9DC0FF; } }
+
+  footer.page{ margin-top:34px; font-size:12px; color:var(--sub); }
+
+  /* responsive */
+  @media (max-width: 880px){
+    .shell{ flex-direction:column; }
+    .sidebar{ width:100%; flex:none; position:relative; height:auto; max-height:none; }
+    .content{ padding:26px 18px 50px; }
+    nav{ flex-direction:row; flex-wrap:wrap; }
+    .navitem{ width:auto; }
+    thead th:nth-child(3), tbody td:nth-child(3){ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="tag">{{COURSE}}</div>
+      <h1>{{H1}}</h1>
+    </div>
+
+    <div class="navlabel">{{NAVLABEL}}</div>
+    <nav id="nav"></nav>
+
+    <div class="sidebar-foot">{{SIDEFOOT}}</div>
+  </aside>
+
+  <main class="content" id="content"></main>
+</div>
+
+<script>
+const DATA = {{DATA_JSON}};
+
+function countFns(sub){ return sub.groups.reduce((s,g)=>s+g.rows.length,0); }
+
+const nav = document.getElementById('nav');
+const content = document.getElementById('content');
+
+DATA.forEach((sub,i)=>{
+  const btn = document.createElement('button');
+  btn.className = 'navitem' + (i===0?' active':'');
+  btn.dataset.id = sub.id;
+  btn.innerHTML = `<span class="dot" style="background:${sub.color}"></span>${sub.name}<span class="count">${countFns(sub)}</span>`;
+  btn.addEventListener('click', ()=>selectTab(sub.id));
+  nav.appendChild(btn);
+
+  const panel = document.createElement('section');
+  panel.className = 'panel' + (i===0?' active':'');
+  panel.id = 'panel-'+sub.id;
+
+  let rowsHtml = '';
+  sub.groups.forEach(g=>{
+    g.rows.forEach((r,ri)=>{
+      rowsHtml += `<tr>
+        ${ri===0 ? `<td class="col-menu" rowspan="${g.rows.length}" style="border-left:3px solid ${sub.color}">${g.menu.replace(/\n/g,'<br>')}${g.readonly ? '<span class="ro-tag">Chỉ xem</span>' : ''}</td>` : ''}
+        <td class="col-sub">${r[0]}</td>
+        <td class="col-io"><span class="io-tag io-in">IN</span>${r[1]}</td>
+        <td class="col-io"><span class="io-tag io-out">OUT</span>${r[2]}</td>
+      </tr>`;
+    });
+  });
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <div class="role-badge" style="background:${sub.color}">${sub.letter}</div>
+      <div>
+        <h2>${sub.name} <span style="color:var(--sub);font-weight:500;font-size:16px;">(${sub.role})</span></h2>
+        <p>${sub.desc}</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${sub.groups.length}</b>Nhóm Menu</div>
+      <div class="stat"><b>${countFns(sub)}</b>Chức năng con</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:16%">Menu</th>
+          <th style="width:30%">Chức năng con</th>
+          <th style="width:27%">Input</th>
+          <th style="width:27%">Output</th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>
+    <footer class="page">{{FOOTER}}</footer>
+  `;
+  content.appendChild(panel);
+});
+
+function selectTab(id){
+  document.querySelectorAll('.navitem').forEach(b=>b.classList.toggle('active', b.dataset.id===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id==='panel-'+id));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>

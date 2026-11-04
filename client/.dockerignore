@@ -1,0 +1,11 @@
+build/
+.dart_tool/
+.idea/
+android/.gradle/
+android/app/build/
+ios/Pods/
+ios/.symlinks/
+*.iml
+flutter_machine*.jsonl
+flutter_results*.json
+*.err

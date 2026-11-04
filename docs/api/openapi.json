@@ -1,0 +1,9389 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "FAMS — Face Attendance Management System",
+  "description": "\nHe thong diem danh sinh vien bang nhan dien khuon mat - Truong Dai hoc Kien truc Da Nang.\n\n* Xac thuc: `POST /api/v1/auth/login` (form `username`, `password`) lay access token, gui kem\n  header `Authorization: Bearer <token>`. Nut **Authorize** o tren dung luong nay.\n* Loi: `{\"detail\": \"...\", \"code\": \"...\"}`; moi response co header `X-Request-ID`.\n* Danh sach co phan trang: tham so `limit`, `offset`; tong so ban ghi o header `X-Total-Count`.\n",
+  "version": "2.0.0"
+ },
+ "paths": {
+  "/": {
+   "get": {
+    "tags": [
+     "health"
+    ],
+    "summary": "Root",
+    "operationId": "root__get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/health": {
+   "get": {
+    "tags": [
+     "health"
+    ],
+    "summary": "Health",
+    "operationId": "health_api_v1_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/login": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Login",
+    "description": "Form `username` (email), `password`. Tra access token + refresh token + vai tro.",
+    "operationId": "login_api_v1_auth_login_post",
+    "requestBody": {
+     "content": {
+      "application/x-www-form-urlencoded": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_login_api_v1_auth_login_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Token"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/refresh": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Refresh",
+    "description": "Doi refresh token lay cap token moi (token cu bi thu hoi - xoay vong).",
+    "operationId": "refresh_api_v1_auth_refresh_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RefreshRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Token"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/forgot-password": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Forgot Password",
+    "description": "Gui ma OTP qua email; luon tra thong bao chung (khong lo email ton tai hay khong).",
+    "operationId": "forgot_password_api_v1_auth_forgot_password_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ForgotPasswordRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/reset-password": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Reset Password",
+    "description": "Dat lai mat khau bang OTP; moi token cu mat hieu luc.",
+    "operationId": "reset_password_api_v1_auth_reset_password_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResetPasswordRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/auth/change-password": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Change Password",
+    "description": "Doi mat khau (phai dung mat khau hien tai); cap token moi cho phien hien tai.",
+    "operationId": "change_password_api_v1_auth_change_password_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ChangePasswordRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Token"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/auth/logout": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Logout",
+    "operationId": "logout_api_v1_auth_logout_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/LogoutRequest"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/auth/me": {
+   "get": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Get Me",
+    "description": "Thong tin tai khoan dang dang nhap kem ho so theo vai tro.",
+    "operationId": "get_me_api_v1_auth_me_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/units": {
+   "get": {
+    "tags": [
+     "units"
+    ],
+    "summary": "List Units",
+    "operationId": "list_units_api_v1_units_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "type",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Type"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/UnitOut"
+         },
+         "title": "Response List Units Api V1 Units Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "units"
+    ],
+    "summary": "Create Unit",
+    "operationId": "create_unit_api_v1_units_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UnitCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UnitOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/units/{unit_id}": {
+   "patch": {
+    "tags": [
+     "units"
+    ],
+    "summary": "Update Unit",
+    "operationId": "update_unit_api_v1_units__unit_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "unit_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Unit Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UnitUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UnitOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "units"
+    ],
+    "summary": "Delete Unit",
+    "operationId": "delete_unit_api_v1_units__unit_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "unit_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Unit Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/staff": {
+   "get": {
+    "tags": [
+     "staff"
+    ],
+    "summary": "List Staff",
+    "operationId": "list_staff_api_v1_staff_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "name": "unit_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Unit Id"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/StaffOut"
+         },
+         "title": "Response List Staff Api V1 Staff Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "staff"
+    ],
+    "summary": "Create Staff",
+    "operationId": "create_staff_api_v1_staff_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StaffCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StaffOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/staff/{staff_id}": {
+   "patch": {
+    "tags": [
+     "staff"
+    ],
+    "summary": "Update Staff",
+    "operationId": "update_staff_api_v1_staff__staff_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "staff_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Staff Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StaffUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StaffOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "staff"
+    ],
+    "summary": "Delete Staff",
+    "operationId": "delete_staff_api_v1_staff__staff_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "staff_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Staff Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/locations": {
+   "get": {
+    "tags": [
+     "locations"
+    ],
+    "summary": "List Locations",
+    "operationId": "list_locations_api_v1_locations_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/LocationOut"
+         },
+         "type": "array",
+         "title": "Response List Locations Api V1 Locations Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "locations"
+    ],
+    "summary": "Create Location",
+    "operationId": "create_location_api_v1_locations_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LocationCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LocationOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/locations/{location_id}": {
+   "patch": {
+    "tags": [
+     "locations"
+    ],
+    "summary": "Update Location",
+    "operationId": "update_location_api_v1_locations__location_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "location_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Location Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LocationUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LocationOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "locations"
+    ],
+    "summary": "Delete Location",
+    "operationId": "delete_location_api_v1_locations__location_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "location_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Location Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/rooms": {
+   "get": {
+    "tags": [
+     "rooms"
+    ],
+    "summary": "List Rooms",
+    "operationId": "list_rooms_api_v1_rooms_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "location_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Location Id"
+      }
+     },
+     {
+      "name": "building",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Building"
+      }
+     },
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Tim theo ma hoac ten phong",
+       "title": "Q"
+      },
+      "description": "Tim theo ma hoac ten phong"
+     },
+     {
+      "name": "only_active",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": true,
+       "title": "Only Active"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/RoomOut"
+         },
+         "title": "Response List Rooms Api V1 Rooms Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "rooms"
+    ],
+    "summary": "Create Room",
+    "operationId": "create_room_api_v1_rooms_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RoomCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RoomOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/rooms/buildings": {
+   "get": {
+    "tags": [
+     "rooms"
+    ],
+    "summary": "List Buildings",
+    "description": "Danh sach toa nha dang co - de loc nhanh o man quan ly va o chon phong.",
+    "operationId": "list_buildings_api_v1_rooms_buildings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array",
+         "title": "Response List Buildings Api V1 Rooms Buildings Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/rooms/{room_id}": {
+   "patch": {
+    "tags": [
+     "rooms"
+    ],
+    "summary": "Update Room",
+    "operationId": "update_room_api_v1_rooms__room_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "room_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Room Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RoomUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RoomOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "rooms"
+    ],
+    "summary": "Delete Room",
+    "operationId": "delete_room_api_v1_rooms__room_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "room_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Room Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/lecturers": {
+   "post": {
+    "tags": [
+     "lecturers"
+    ],
+    "summary": "Create Lecturer",
+    "operationId": "create_lecturer_api_v1_lecturers_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LecturerCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LecturerOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "lecturers"
+    ],
+    "summary": "List Lecturers",
+    "description": "q loc theo ma GV/ho ten, limit/offset phan trang - khong truyen limit thi tra ve toan\nbo. Can bo Khoa chi thay GV thuoc Khoa minh. Tong so ban ghi o header X-Total-Count.",
+    "operationId": "list_lecturers_api_v1_lecturers_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "name": "faculty_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Faculty Id"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/LecturerOut"
+         },
+         "title": "Response List Lecturers Api V1 Lecturers Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/lecturers/{lecturer_id}": {
+   "patch": {
+    "tags": [
+     "lecturers"
+    ],
+    "summary": "Update Lecturer",
+    "operationId": "update_lecturer_api_v1_lecturers__lecturer_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "lecturer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Lecturer Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LecturerUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LecturerOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "lecturers"
+    ],
+    "summary": "Delete Lecturer",
+    "operationId": "delete_lecturer_api_v1_lecturers__lecturer_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "lecturer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Lecturer Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/lecturers/me/today-schedules": {
+   "get": {
+    "tags": [
+     "lecturers"
+    ],
+    "summary": "My Today Schedules",
+    "description": "Lich day hom nay cua giang vien dang dang nhap, kem phien da mo hom nay (neu co).",
+    "operationId": "my_today_schedules_api_v1_lecturers_me_today_schedules_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/TodayScheduleOut"
+         },
+         "type": "array",
+         "title": "Response My Today Schedules Api V1 Lecturers Me Today Schedules Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/classes": {
+   "post": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Create Class",
+    "operationId": "create_class_api_v1_classes_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ClassCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ClassOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "List Classes",
+    "description": "Danh sach lop trong pham vi xem cua user: admin/P.DT/P.CTSV toan truong, Khoa chi\nlop Khoa quan ly, giang vien chi lop minh day (tham so mine giu de tuong thich).\nLoc theo q (ma lop/ten mon), semester, faculty_id; phan trang limit/offset, tong so\nban ghi tra qua header X-Total-Count.",
+    "operationId": "list_classes_api_v1_classes_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "mine",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Mine"
+      }
+     },
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "name": "semester",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Semester"
+      }
+     },
+     {
+      "name": "faculty_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Faculty Id"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ClassOut"
+         },
+         "title": "Response List Classes Api V1 Classes Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/classes/schedules": {
+   "post": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Create Schedule",
+    "operationId": "create_schedule_api_v1_classes_schedules_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ScheduleCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScheduleOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/classes/schedules/{schedule_id}": {
+   "patch": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Update Schedule",
+    "operationId": "update_schedule_api_v1_classes_schedules__schedule_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "schedule_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Schedule Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ScheduleUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScheduleOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Delete Schedule",
+    "operationId": "delete_schedule_api_v1_classes_schedules__schedule_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "schedule_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Schedule Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/classes/{class_id}": {
+   "get": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Get Class",
+    "operationId": "get_class_api_v1_classes__class_id__get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ClassOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Update Class",
+    "operationId": "update_class_api_v1_classes__class_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ClassUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ClassOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Delete Class",
+    "operationId": "delete_class_api_v1_classes__class_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/classes/{class_id}/enroll/{student_id}": {
+   "post": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Enroll Student",
+    "operationId": "enroll_student_api_v1_classes__class_id__enroll__student_id__post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     },
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "Unenroll Student",
+    "operationId": "unenroll_student_api_v1_classes__class_id__enroll__student_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     },
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/classes/{class_id}/students": {
+   "get": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "List Class Students",
+    "operationId": "list_class_students_api_v1_classes__class_id__students_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/StudentOut"
+         },
+         "title": "Response List Class Students Api V1 Classes  Class Id  Students Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/classes/{class_id}/schedules": {
+   "get": {
+    "tags": [
+     "classes"
+    ],
+    "summary": "List Class Schedules",
+    "description": "Lich hoc cua lop: nguoi xem duoc lop, hoac SV dang ghi danh lop do.",
+    "operationId": "list_class_schedules_api_v1_classes__class_id__schedules_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ScheduleOut"
+         },
+         "title": "Response List Class Schedules Api V1 Classes  Class Id  Schedules Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/schedules": {
+   "get": {
+    "tags": [
+     "schedules"
+    ],
+    "summary": "List All Schedules",
+    "description": "Lich hoc kem thong tin lop trong pham vi xem - loc theo q (ma lop/ten mon/phong),\nphan trang limit/offset, tong so ban ghi o header X-Total-Count.",
+    "operationId": "list_all_schedules_api_v1_schedules_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ScheduleWithClassOut"
+         },
+         "title": "Response List All Schedules Api V1 Schedules Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/schedules/week": {
+   "get": {
+    "tags": [
+     "schedules"
+    ],
+    "summary": "Week Schedule",
+    "description": "Lich hoc/day theo tuan (Thu 2 - CN) chua ngay `start` (mac dinh hom nay).",
+    "operationId": "week_schedule_api_v1_schedules_week_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "start",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Start"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/WeekSlotOut"
+         },
+         "title": "Response Week Schedule Api V1 Schedules Week Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/students": {
+   "post": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Create Student",
+    "operationId": "create_student_api_v1_students_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StudentCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StudentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "students"
+    ],
+    "summary": "List Students",
+    "description": "Danh sach SV trong pham vi xem cua user, loc theo q (MSSV hoac ho ten)/faculty_id va\nphan trang qua limit/offset. Tong so ban ghi tra qua header X-Total-Count.",
+    "operationId": "list_students_api_v1_students_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "name": "faculty_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Faculty Id"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/StudentOut"
+         },
+         "title": "Response List Students Api V1 Students Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/students/consent-policy": {
+   "get": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Consent Policy Text",
+    "operationId": "consent_policy_text_api_v1_students_consent_policy_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ConsentPolicyOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/students/me": {
+   "get": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Get My Student Record",
+    "operationId": "get_my_student_record_api_v1_students_me_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StudentOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/students/me/attendance": {
+   "get": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Get My Attendance",
+    "operationId": "get_my_attendance_api_v1_students_me_attendance_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "semester",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Semester"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/MyClassAttendanceOut"
+         },
+         "title": "Response Get My Attendance Api V1 Students Me Attendance Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/students/{student_id}": {
+   "get": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Get Student",
+    "operationId": "get_student_api_v1_students__student_id__get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StudentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Update Student",
+    "operationId": "update_student_api_v1_students__student_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StudentUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StudentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Delete Student",
+    "operationId": "delete_student_api_v1_students__student_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/students/{student_id}/attendance": {
+   "get": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Get Student Attendance",
+    "description": "Phong ban/Khoa xem chuyen can chi tiet 1 SV (vd de duyet don xin phep).",
+    "operationId": "get_student_attendance_api_v1_students__student_id__attendance_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     },
+     {
+      "name": "semester",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Semester"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/MyClassAttendanceOut"
+         },
+         "title": "Response Get Student Attendance Api V1 Students  Student Id  Attendance Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/students/{student_id}/consent": {
+   "post": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Give Consent",
+    "description": "SV tu xac nhan (method=self) hoac admin/P.CTSV nhap ban giay (method=paper).",
+    "operationId": "give_consent_api_v1_students__student_id__consent_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ConsentRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/students/{student_id}/consent/withdraw": {
+   "post": {
+    "tags": [
+     "students"
+    ],
+    "summary": "Withdraw Student Consent",
+    "description": "Rut dong y: xoa ngay toan bo anh va vector khuon mat.",
+    "operationId": "withdraw_student_consent_api_v1_students__student_id__consent_withdraw_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/parents": {
+   "post": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "Create Parent",
+    "operationId": "create_parent_api_v1_parents_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ParentCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ParentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "List Parents",
+    "description": "Tim theo ten/email, phan trang (X-Total-Count qua header).",
+    "operationId": "list_parents_api_v1_parents_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ParentOut"
+         },
+         "title": "Response List Parents Api V1 Parents Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/parents/{parent_id}": {
+   "patch": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "Update Parent",
+    "operationId": "update_parent_api_v1_parents__parent_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "parent_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Parent Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ParentUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ParentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "Delete Parent",
+    "operationId": "delete_parent_api_v1_parents__parent_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "parent_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Parent Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/parents/me/preferences": {
+   "get": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "My Preferences",
+    "operationId": "my_preferences_api_v1_parents_me_preferences_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ParentPreferencesOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   },
+   "patch": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "Update My Preferences",
+    "operationId": "update_my_preferences_api_v1_parents_me_preferences_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ParentPreferencesUpdate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ParentPreferencesOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/parents/me/children": {
+   "get": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "My Children",
+    "operationId": "my_children_api_v1_parents_me_children_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ParentChildOut"
+         },
+         "type": "array",
+         "title": "Response My Children Api V1 Parents Me Children Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/parents/me/children/{student_id}/attendance": {
+   "get": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "Child Attendance",
+    "operationId": "child_attendance_api_v1_parents_me_children__student_id__attendance_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     },
+     {
+      "name": "semester",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Semester"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/MyClassAttendanceOut"
+         },
+         "title": "Response Child Attendance Api V1 Parents Me Children  Student Id  Attendance Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/parents/{parent_id}/children": {
+   "get": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "List Parent Children",
+    "operationId": "list_parent_children_api_v1_parents__parent_id__children_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "parent_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Parent Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/StudentOut"
+         },
+         "title": "Response List Parent Children Api V1 Parents  Parent Id  Children Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "Link Child",
+    "operationId": "link_child_api_v1_parents__parent_id__children_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "parent_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Parent Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ParentLinkChild"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/parents/{parent_id}/children/{student_id}": {
+   "delete": {
+    "tags": [
+     "parents"
+    ],
+    "summary": "Unlink Child",
+    "operationId": "unlink_child_api_v1_parents__parent_id__children__student_id__delete",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "parent_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Parent Id"
+      }
+     },
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/faces/enroll/{student_id}": {
+   "post": {
+    "tags": [
+     "faces"
+    ],
+    "summary": "Enroll",
+    "description": "Dang ky khuon mat: chinh SV, admin/P.CTSV, hoac GV voi SV lop minh day.",
+    "operationId": "enroll_api_v1_faces_enroll__student_id__post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "student_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Student Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_enroll_api_v1_faces_enroll__student_id__post"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EnrollResult"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/faces/mine": {
+   "get": {
+    "tags": [
+     "faces"
+    ],
+    "summary": "My Faces",
+    "operationId": "my_faces_api_v1_faces_mine_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/FaceMineOut"
+         },
+         "type": "array",
+         "title": "Response My Faces Api V1 Faces Mine Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   },
+   "delete": {
+    "tags": [
+     "faces"
+    ],
+    "summary": "Delete My Faces",
+    "operationId": "delete_my_faces_api_v1_faces_mine_delete",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/faces/pending": {
+   "get": {
+    "tags": [
+     "faces"
+    ],
+    "summary": "List Pending",
+    "operationId": "list_pending_api_v1_faces_pending_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/FacePendingOut"
+         },
+         "type": "array",
+         "title": "Response List Pending Api V1 Faces Pending Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/faces/{embedding_id}/approve": {
+   "patch": {
+    "tags": [
+     "faces"
+    ],
+    "summary": "Approve Face",
+    "operationId": "approve_face_api_v1_faces__embedding_id__approve_patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "embedding_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Embedding Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/faces/{embedding_id}/reject": {
+   "patch": {
+    "tags": [
+     "faces"
+    ],
+    "summary": "Reject Face",
+    "operationId": "reject_face_api_v1_faces__embedding_id__reject_patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "embedding_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Embedding Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/FaceRejectBody"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions": {
+   "post": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Open Session",
+    "description": "Mo phien: dung ngay hom nay, dung thu cua lich, trong khung\n[gio bat dau - EARLY_OPEN_MINUTES, gio ket thuc], moi lich toi da 1 phien/ngay.",
+    "operationId": "open_session_api_v1_sessions_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SessionCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SessionOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "List Sessions",
+    "description": "Phien trong pham vi xem lop cua user, loc theo status (open/closed) va class_id.\nTham so mine giu de tuong thich - pham vi da duoc gioi han theo vai tro.",
+    "operationId": "list_sessions_api_v1_sessions_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "name": "class_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Class Id"
+      }
+     },
+     {
+      "name": "mine",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Mine"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/SessionDetail"
+         },
+         "title": "Response List Sessions Api V1 Sessions Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}": {
+   "get": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Get Session",
+    "operationId": "get_session_api_v1_sessions__session_id__get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SessionDetail"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Update Session",
+    "description": "Bat/tat yeu cau quet ma QR cho buoi dang dien ra.",
+    "operationId": "update_session_api_v1_sessions__session_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SessionUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SessionDetail"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/checkin-info": {
+   "get": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Checkin Info",
+    "operationId": "checkin_info_api_v1_sessions__session_id__checkin_info_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CheckinInfoOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/checkin-code": {
+   "get": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Session Checkin Code",
+    "description": "Ma QR dang hieu luc de giang vien chieu trong phong (chi nguoi day/quan ly lop).",
+    "operationId": "session_checkin_code_api_v1_sessions__session_id__checkin_code_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CheckinCodeOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/roster": {
+   "get": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Session Roster",
+    "description": "Danh sach SV cua lop gop voi trang thai diem danh cua phien nay.",
+    "operationId": "session_roster_api_v1_sessions__session_id__roster_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/RosterEntryOut"
+         },
+         "title": "Response Session Roster Api V1 Sessions  Session Id  Roster Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/close": {
+   "patch": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Close Session",
+    "description": "Dong phien: SV chua co record -> absent; tra kem SV vua vuot nguong canh bao.",
+    "operationId": "close_session_api_v1_sessions__session_id__close_patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/recognize": {
+   "post": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Recognize",
+    "description": "Nhan 1 frame tu camera lop hoc, nhan dien va tu dong ghi diem danh.",
+    "operationId": "recognize_api_v1_sessions__session_id__recognize_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_recognize_api_v1_sessions__session_id__recognize_post"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/RecognizeResult"
+         },
+         "title": "Response Recognize Api V1 Sessions  Session Id  Recognize Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/manual": {
+   "post": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Manual Check",
+    "operationId": "manual_check_api_v1_sessions__session_id__manual_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ManualCheck"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RecordOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/self-checkin": {
+   "post": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Self Checkin",
+    "description": "SV tu diem danh: anh tu chup + GPS (+ ma QR neu buoi hoc yeu cau).",
+    "operationId": "self_checkin_api_v1_sessions__session_id__self_checkin_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_self_checkin_api_v1_sessions__session_id__self_checkin_post"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SelfCheckinResult"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/records": {
+   "get": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "List Records",
+    "operationId": "list_records_api_v1_sessions__session_id__records_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/RecordOut"
+         },
+         "title": "Response List Records Api V1 Sessions  Session Id  Records Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/records/{record_id}": {
+   "patch": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "Update Record",
+    "description": "Sua trang thai (bat buoc ly do, luu lich su). Phong ban chi duyet/huy \"Co phep\".",
+    "operationId": "update_record_api_v1_sessions__session_id__records__record_id__patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     },
+     {
+      "name": "record_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Record Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RecordOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/sessions/{session_id}/records/{record_id}/audits": {
+   "get": {
+    "tags": [
+     "attendance"
+    ],
+    "summary": "List Record Audits",
+    "description": "Lich su sua diem danh cua 1 record.",
+    "operationId": "list_record_audits_api_v1_sessions__session_id__records__record_id__audits_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "session_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Session Id"
+      }
+     },
+     {
+      "name": "record_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Record Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/AttendanceAuditOut"
+         },
+         "title": "Response List Record Audits Api V1 Sessions  Session Id  Records  Record Id  Audits Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/reports/attendance/warnings": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Attendance Warnings",
+    "description": "Danh sach SV vuot nguong vang (absent / tong buoi da hoc >= ABSENCE_WARN_RATIO).\nexcused khong tinh la vang.",
+    "operationId": "attendance_warnings_api_v1_reports_attendance_warnings_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/reports/attendance/export": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Export Attendance",
+    "description": "File Excel diem danh: sheet 1 ma tran SV x buoi hoc, sheet 2 thong ke lop.",
+    "operationId": "export_attendance_api_v1_reports_attendance_export_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     },
+     {
+      "name": "semester",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Semester"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/reports/overview": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Attendance Overview",
+    "description": "Thong ke tong hop theo hoc ky, chia theo Khoa (chi so lieu, khong ten/anh).",
+    "operationId": "attendance_overview_api_v1_reports_overview_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "semester",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Semester"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OverviewOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/reports/attendance/{class_id}": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Class Attendance",
+    "description": "Thong ke chuyen can theo lop: ti le vang tung SV + canh bao.",
+    "operationId": "class_attendance_api_v1_reports_attendance__class_id__get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "class_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Class Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/reports/my-attendance": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "My Attendance",
+    "description": "Sinh vien tu xem tom tat chuyen can theo tung lop (chi tinh phien da dong).",
+    "operationId": "my_attendance_api_v1_reports_my_attendance_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/notifications": {
+   "get": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "List Notifications",
+    "operationId": "list_notifications_api_v1_notifications_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "unread_only",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Unread Only"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 200,
+       "minimum": 1,
+       "default": 50,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/NotificationOut"
+         },
+         "title": "Response List Notifications Api V1 Notifications Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/notifications/unread-count": {
+   "get": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Unread Count",
+    "operationId": "unread_count_api_v1_notifications_unread_count_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UnreadCountOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/notifications/read-all": {
+   "post": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Mark All Read",
+    "operationId": "mark_all_read_api_v1_notifications_read_all_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/notifications/{notification_id}/read": {
+   "post": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Mark Read",
+    "operationId": "mark_read_api_v1_notifications__notification_id__read_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "notification_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Notification Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/NotificationOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/audit-logs": {
+   "get": {
+    "tags": [
+     "audit"
+    ],
+    "summary": "List Audit Logs",
+    "operationId": "list_audit_logs_api_v1_audit_logs_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Tim theo email nguoi thao tac, doi tuong, hanh dong",
+       "title": "Q"
+      },
+      "description": "Tim theo email nguoi thao tac, doi tuong, hanh dong"
+     },
+     {
+      "name": "action",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Loc theo nhom, vd 'auth.' hoac 'student.'",
+       "title": "Action"
+      },
+      "description": "Loc theo nhom, vd 'auth.' hoac 'student.'"
+     },
+     {
+      "name": "success",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Success"
+      }
+     },
+     {
+      "name": "date_from",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "name": "date_to",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 500,
+       "minimum": 1,
+       "default": 50,
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/AuditLogOut"
+         },
+         "title": "Response List Audit Logs Api V1 Audit Logs Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/evidence/{file_path}": {
+   "get": {
+    "tags": [
+     "media"
+    ],
+    "summary": "Get Media",
+    "description": "Tra anh khi URL co chu ky hop le va con han.",
+    "operationId": "get_media_api_v1_evidence__file_path__get",
+    "parameters": [
+     {
+      "name": "file_path",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "File Path"
+      }
+     },
+     {
+      "name": "exp",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Exp"
+      }
+     },
+     {
+      "name": "sig",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "default": "",
+       "title": "Sig"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "AttendanceAuditOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "record_id": {
+      "type": "integer",
+      "title": "Record Id"
+     },
+     "changed_by": {
+      "type": "integer",
+      "title": "Changed By"
+     },
+     "old_status": {
+      "type": "string",
+      "title": "Old Status"
+     },
+     "new_status": {
+      "type": "string",
+      "title": "New Status"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "changed_at": {
+      "type": "string",
+      "title": "Changed At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "record_id",
+     "changed_by",
+     "old_status",
+     "new_status",
+     "reason",
+     "changed_at"
+    ],
+    "title": "AttendanceAuditOut"
+   },
+   "AuditLogOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "created_at": {
+      "type": "string",
+      "title": "Created At"
+     },
+     "actor_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Actor Id"
+     },
+     "actor_email": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Actor Email"
+     },
+     "actor_role": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Actor Role"
+     },
+     "action": {
+      "type": "string",
+      "title": "Action"
+     },
+     "target_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target Type"
+     },
+     "target_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target Id"
+     },
+     "target_label": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target Label"
+     },
+     "ip": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ip"
+     },
+     "success": {
+      "type": "boolean",
+      "title": "Success"
+     },
+     "detail": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "created_at",
+     "action",
+     "success"
+    ],
+    "title": "AuditLogOut"
+   },
+   "Body_enroll_api_v1_faces_enroll__student_id__post": {
+    "properties": {
+     "images": {
+      "items": {
+       "type": "string",
+       "format": "binary"
+      },
+      "type": "array",
+      "title": "Images",
+      "description": "1 hoac nhieu anh khuon mat"
+     }
+    },
+    "type": "object",
+    "required": [
+     "images"
+    ],
+    "title": "Body_enroll_api_v1_faces_enroll__student_id__post"
+   },
+   "Body_login_api_v1_auth_login_post": {
+    "properties": {
+     "grant_type": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^password$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Grant Type"
+     },
+     "username": {
+      "type": "string",
+      "title": "Username"
+     },
+     "password": {
+      "type": "string",
+      "format": "password",
+      "title": "Password"
+     },
+     "scope": {
+      "type": "string",
+      "title": "Scope",
+      "default": ""
+     },
+     "client_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Client Id"
+     },
+     "client_secret": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "format": "password",
+      "title": "Client Secret"
+     }
+    },
+    "type": "object",
+    "required": [
+     "username",
+     "password"
+    ],
+    "title": "Body_login_api_v1_auth_login_post"
+   },
+   "Body_recognize_api_v1_sessions__session_id__recognize_post": {
+    "properties": {
+     "frame": {
+      "type": "string",
+      "format": "binary",
+      "title": "Frame"
+     }
+    },
+    "type": "object",
+    "required": [
+     "frame"
+    ],
+    "title": "Body_recognize_api_v1_sessions__session_id__recognize_post"
+   },
+   "Body_self_checkin_api_v1_sessions__session_id__self_checkin_post": {
+    "properties": {
+     "frame": {
+      "type": "string",
+      "format": "binary",
+      "title": "Frame"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "accuracy": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Accuracy"
+     },
+     "is_mocked": {
+      "type": "boolean",
+      "title": "Is Mocked",
+      "default": false
+     },
+     "checkin_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Checkin Code"
+     }
+    },
+    "type": "object",
+    "required": [
+     "frame"
+    ],
+    "title": "Body_self_checkin_api_v1_sessions__session_id__self_checkin_post"
+   },
+   "ChangePasswordRequest": {
+    "properties": {
+     "current_password": {
+      "type": "string",
+      "title": "Current Password"
+     },
+     "new_password": {
+      "type": "string",
+      "title": "New Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "current_password",
+     "new_password"
+    ],
+    "title": "ChangePasswordRequest",
+    "description": "Nguoi dang dang nhap tu doi mat khau - bat buoc nhap dung mat khau hien tai."
+   },
+   "CheckinCodeOut": {
+    "properties": {
+     "session_id": {
+      "type": "integer",
+      "title": "Session Id"
+     },
+     "qr_payload": {
+      "type": "string",
+      "title": "Qr Payload"
+     },
+     "digits": {
+      "type": "string",
+      "title": "Digits"
+     },
+     "rotate_seconds": {
+      "type": "integer",
+      "title": "Rotate Seconds"
+     },
+     "expires_in_seconds": {
+      "type": "integer",
+      "title": "Expires In Seconds"
+     }
+    },
+    "type": "object",
+    "required": [
+     "session_id",
+     "qr_payload",
+     "digits",
+     "rotate_seconds",
+     "expires_in_seconds"
+    ],
+    "title": "CheckinCodeOut",
+    "description": "Ma diem danh dang hieu luc cua mot phien - giang vien chieu len man hinh."
+   },
+   "CheckinInfoOut": {
+    "properties": {
+     "session_id": {
+      "type": "integer",
+      "title": "Session Id"
+     },
+     "require_qr": {
+      "type": "boolean",
+      "title": "Require Qr"
+     },
+     "room": {
+      "type": "string",
+      "title": "Room"
+     }
+    },
+    "type": "object",
+    "required": [
+     "session_id",
+     "require_qr",
+     "room"
+    ],
+    "title": "CheckinInfoOut",
+    "description": "Thong tin toi thieu SV can truoc khi tu diem danh - khong lo danh sach lop\nhay ket qua cua nguoi khac nhu SessionDetail."
+   },
+   "ClassCreate": {
+    "properties": {
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "lecturer_id": {
+      "type": "integer",
+      "title": "Lecturer Id"
+     },
+     "semester": {
+      "type": "string",
+      "title": "Semester"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "class_code",
+     "subject_name",
+     "lecturer_id",
+     "semester"
+    ],
+    "title": "ClassCreate"
+   },
+   "ClassOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "lecturer_id": {
+      "type": "integer",
+      "title": "Lecturer Id"
+     },
+     "semester": {
+      "type": "string",
+      "title": "Semester"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     },
+     "lecturer_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lecturer Name"
+     },
+     "faculty_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Name"
+     },
+     "student_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Student Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "class_code",
+     "subject_name",
+     "lecturer_id",
+     "semester"
+    ],
+    "title": "ClassOut"
+   },
+   "ClassUpdate": {
+    "properties": {
+     "class_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject Name"
+     },
+     "lecturer_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lecturer Id"
+     },
+     "semester": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Semester"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     }
+    },
+    "type": "object",
+    "title": "ClassUpdate"
+   },
+   "ConsentPolicyOut": {
+    "properties": {
+     "version": {
+      "type": "string",
+      "title": "Version"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "items": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Items"
+     },
+     "checkbox": {
+      "type": "string",
+      "title": "Checkbox"
+     }
+    },
+    "type": "object",
+    "required": [
+     "version",
+     "title",
+     "items",
+     "checkbox"
+    ],
+    "title": "ConsentPolicyOut"
+   },
+   "ConsentRequest": {
+    "properties": {
+     "agreed": {
+      "type": "boolean",
+      "title": "Agreed"
+     },
+     "version": {
+      "type": "string",
+      "title": "Version"
+     },
+     "method": {
+      "type": "string",
+      "title": "Method",
+      "default": "self"
+     }
+    },
+    "type": "object",
+    "required": [
+     "agreed",
+     "version"
+    ],
+    "title": "ConsentRequest",
+    "description": "Phai gui dung phien ban noi dung dang hien hanh: SV dong y voi cai da doc."
+   },
+   "EnrollResult": {
+    "properties": {
+     "ok": {
+      "type": "boolean",
+      "title": "Ok"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "num_embeddings": {
+      "type": "integer",
+      "title": "Num Embeddings",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "ok",
+     "message"
+    ],
+    "title": "EnrollResult"
+   },
+   "FaceMineOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "reject_reason": {
+      "type": "string",
+      "title": "Reject Reason"
+     },
+     "created_at": {
+      "type": "string",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "status",
+     "reject_reason",
+     "created_at"
+    ],
+    "title": "FaceMineOut",
+    "description": "Du lieu khuon mat cua chinh SV dang dang nhap (khong tra embedding)."
+   },
+   "FacePendingOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "student_id": {
+      "type": "integer",
+      "title": "Student Id"
+     },
+     "student_code": {
+      "type": "string",
+      "title": "Student Code"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "source_image": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source Image",
+      "default": ""
+     },
+     "created_at": {
+      "type": "string",
+      "title": "Created At"
+     },
+     "duplicate_warning": {
+      "type": "boolean",
+      "title": "Duplicate Warning",
+      "default": false
+     },
+     "duplicate_student_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duplicate Student Code"
+     },
+     "duplicate_similarity": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duplicate Similarity"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "student_id",
+     "student_code",
+     "full_name",
+     "created_at"
+    ],
+    "title": "FacePendingOut",
+    "description": "1 embedding cho duyet, kem anh doi chieu va canh bao trung (neu co)."
+   },
+   "FaceRejectBody": {
+    "properties": {
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "reason"
+    ],
+    "title": "FaceRejectBody"
+   },
+   "ForgotPasswordRequest": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "title": "Email"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email"
+    ],
+    "title": "ForgotPasswordRequest"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "LecturerCreate": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "title": "Password"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "lecturer_code": {
+      "type": "string",
+      "title": "Lecturer Code"
+     },
+     "department": {
+      "type": "string",
+      "title": "Department",
+      "default": ""
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "password",
+     "full_name",
+     "lecturer_code"
+    ],
+    "title": "LecturerCreate"
+   },
+   "LecturerOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "lecturer_code": {
+      "type": "string",
+      "title": "Lecturer Code"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "department": {
+      "type": "string",
+      "title": "Department"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     },
+     "faculty_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Name"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "lecturer_code",
+     "full_name",
+     "department"
+    ],
+    "title": "LecturerOut"
+   },
+   "LecturerUpdate": {
+    "properties": {
+     "full_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Full Name"
+     },
+     "department": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Department"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     }
+    },
+    "type": "object",
+    "title": "LecturerUpdate"
+   },
+   "LocationCreate": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "latitude": {
+      "type": "number",
+      "title": "Latitude"
+     },
+     "longitude": {
+      "type": "number",
+      "title": "Longitude"
+     },
+     "radius_m": {
+      "type": "number",
+      "title": "Radius M",
+      "default": 150.0
+     },
+     "is_default": {
+      "type": "boolean",
+      "title": "Is Default",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "code",
+     "name",
+     "latitude",
+     "longitude"
+    ],
+    "title": "LocationCreate"
+   },
+   "LocationOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "latitude": {
+      "type": "number",
+      "title": "Latitude"
+     },
+     "longitude": {
+      "type": "number",
+      "title": "Longitude"
+     },
+     "radius_m": {
+      "type": "number",
+      "title": "Radius M"
+     },
+     "is_default": {
+      "type": "boolean",
+      "title": "Is Default"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "code",
+     "name",
+     "latitude",
+     "longitude",
+     "radius_m",
+     "is_default"
+    ],
+    "title": "LocationOut"
+   },
+   "LocationUpdate": {
+    "properties": {
+     "code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Code"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "radius_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Radius M"
+     },
+     "is_default": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Default"
+     }
+    },
+    "type": "object",
+    "title": "LocationUpdate"
+   },
+   "LogoutRequest": {
+    "properties": {
+     "refresh_token": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Refresh Token"
+     }
+    },
+    "type": "object",
+    "title": "LogoutRequest"
+   },
+   "ManualCheck": {
+    "properties": {
+     "student_id": {
+      "type": "integer",
+      "title": "Student Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "student_id"
+    ],
+    "title": "ManualCheck"
+   },
+   "MeClassBrief": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "semester": {
+      "type": "string",
+      "title": "Semester"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "class_code",
+     "subject_name",
+     "semester"
+    ],
+    "title": "MeClassBrief",
+    "description": "Thong tin rut gon 1 lop, dung trong GET /me de frontend lay lich hoc/day."
+   },
+   "MeOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "role": {
+      "type": "string",
+      "title": "Role"
+     },
+     "student_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Student Id"
+     },
+     "student_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Student Code"
+     },
+     "major": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Major"
+     },
+     "cohort": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cohort"
+     },
+     "consent_given": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Given"
+     },
+     "consent_outdated": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Outdated"
+     },
+     "face_status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Face Status"
+     },
+     "lecturer_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lecturer Id"
+     },
+     "lecturer_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lecturer Code"
+     },
+     "department": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Department"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     },
+     "faculty_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Name"
+     },
+     "unit_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit Id"
+     },
+     "unit_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit Code"
+     },
+     "unit_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit Name"
+     },
+     "unit_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit Type"
+     },
+     "position": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Position"
+     },
+     "classes": {
+      "items": {
+       "$ref": "#/components/schemas/MeClassBrief"
+      },
+      "type": "array",
+      "title": "Classes",
+      "default": []
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "email",
+     "full_name",
+     "role"
+    ],
+    "title": "MeOut",
+    "description": "Thong tin tai khoan dang dang nhap, kem ho so va danh sach lop lien quan."
+   },
+   "MyAttendanceSessionOut": {
+    "properties": {
+     "session_id": {
+      "type": "integer",
+      "title": "Session Id"
+     },
+     "session_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Session Date"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "checked_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Checked At"
+     },
+     "confidence": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Confidence"
+     },
+     "evidence_image": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Evidence Image"
+     },
+     "record_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Record Id"
+     },
+     "source": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "location_accuracy": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Accuracy"
+     },
+     "distance_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Distance M"
+     }
+    },
+    "type": "object",
+    "required": [
+     "session_id",
+     "session_date"
+    ],
+    "title": "MyAttendanceSessionOut",
+    "description": "1 buoi hoc trong 1 lop, dung khi SV mo rong chi tiet tren trang chuyen can."
+   },
+   "MyClassAttendanceOut": {
+    "properties": {
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "semester": {
+      "type": "string",
+      "title": "Semester"
+     },
+     "lecturer_name": {
+      "type": "string",
+      "title": "Lecturer Name"
+     },
+     "lecturer_email": {
+      "type": "string",
+      "title": "Lecturer Email"
+     },
+     "present": {
+      "type": "integer",
+      "title": "Present"
+     },
+     "late": {
+      "type": "integer",
+      "title": "Late"
+     },
+     "absent": {
+      "type": "integer",
+      "title": "Absent"
+     },
+     "excused": {
+      "type": "integer",
+      "title": "Excused"
+     },
+     "manual": {
+      "type": "integer",
+      "title": "Manual"
+     },
+     "total_sessions": {
+      "type": "integer",
+      "title": "Total Sessions"
+     },
+     "absent_ratio": {
+      "type": "number",
+      "title": "Absent Ratio"
+     },
+     "warn_ratio": {
+      "type": "number",
+      "title": "Warn Ratio"
+     },
+     "warning": {
+      "type": "boolean",
+      "title": "Warning"
+     },
+     "sessions": {
+      "items": {
+       "$ref": "#/components/schemas/MyAttendanceSessionOut"
+      },
+      "type": "array",
+      "title": "Sessions"
+     }
+    },
+    "type": "object",
+    "required": [
+     "class_id",
+     "class_code",
+     "subject_name",
+     "semester",
+     "lecturer_name",
+     "lecturer_email",
+     "present",
+     "late",
+     "absent",
+     "excused",
+     "manual",
+     "total_sessions",
+     "absent_ratio",
+     "warn_ratio",
+     "warning",
+     "sessions"
+    ],
+    "title": "MyClassAttendanceOut",
+    "description": "Chuyen can 1 lop hoc phan trong 1 hoc ky cua 1 SV."
+   },
+   "NotificationOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "body": {
+      "type": "string",
+      "title": "Body"
+     },
+     "link": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Link"
+     },
+     "created_at": {
+      "type": "string",
+      "title": "Created At"
+     },
+     "read_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Read At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "kind",
+     "title",
+     "body",
+     "created_at"
+    ],
+    "title": "NotificationOut"
+   },
+   "OverviewFacultyRow": {
+    "properties": {
+     "classes": {
+      "type": "integer",
+      "title": "Classes"
+     },
+     "students": {
+      "type": "integer",
+      "title": "Students"
+     },
+     "lecturers": {
+      "type": "integer",
+      "title": "Lecturers"
+     },
+     "closed_sessions": {
+      "type": "integer",
+      "title": "Closed Sessions"
+     },
+     "records": {
+      "type": "integer",
+      "title": "Records"
+     },
+     "present": {
+      "type": "integer",
+      "title": "Present"
+     },
+     "late": {
+      "type": "integer",
+      "title": "Late"
+     },
+     "manual": {
+      "type": "integer",
+      "title": "Manual"
+     },
+     "absent": {
+      "type": "integer",
+      "title": "Absent"
+     },
+     "excused": {
+      "type": "integer",
+      "title": "Excused"
+     },
+     "attendance_rate": {
+      "type": "number",
+      "title": "Attendance Rate"
+     },
+     "absent_rate": {
+      "type": "number",
+      "title": "Absent Rate"
+     },
+     "warned_students": {
+      "type": "integer",
+      "title": "Warned Students"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     },
+     "faculty_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Code"
+     },
+     "faculty_name": {
+      "type": "string",
+      "title": "Faculty Name"
+     }
+    },
+    "type": "object",
+    "required": [
+     "classes",
+     "students",
+     "lecturers",
+     "closed_sessions",
+     "records",
+     "present",
+     "late",
+     "manual",
+     "absent",
+     "excused",
+     "attendance_rate",
+     "absent_rate",
+     "warned_students",
+     "faculty_id",
+     "faculty_code",
+     "faculty_name"
+    ],
+    "title": "OverviewFacultyRow"
+   },
+   "OverviewOut": {
+    "properties": {
+     "scope": {
+      "type": "string",
+      "title": "Scope"
+     },
+     "scope_name": {
+      "type": "string",
+      "title": "Scope Name"
+     },
+     "semester": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Semester"
+     },
+     "semesters": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Semesters"
+     },
+     "totals": {
+      "$ref": "#/components/schemas/OverviewStats"
+     },
+     "by_faculty": {
+      "items": {
+       "$ref": "#/components/schemas/OverviewFacultyRow"
+      },
+      "type": "array",
+      "title": "By Faculty"
+     }
+    },
+    "type": "object",
+    "required": [
+     "scope",
+     "scope_name",
+     "semester",
+     "semesters",
+     "totals",
+     "by_faculty"
+    ],
+    "title": "OverviewOut",
+    "description": "Thong ke chuyen can tong hop - CHI so lieu, khong ten/anh (dung cho Ban nganh)."
+   },
+   "OverviewStats": {
+    "properties": {
+     "classes": {
+      "type": "integer",
+      "title": "Classes"
+     },
+     "students": {
+      "type": "integer",
+      "title": "Students"
+     },
+     "lecturers": {
+      "type": "integer",
+      "title": "Lecturers"
+     },
+     "closed_sessions": {
+      "type": "integer",
+      "title": "Closed Sessions"
+     },
+     "records": {
+      "type": "integer",
+      "title": "Records"
+     },
+     "present": {
+      "type": "integer",
+      "title": "Present"
+     },
+     "late": {
+      "type": "integer",
+      "title": "Late"
+     },
+     "manual": {
+      "type": "integer",
+      "title": "Manual"
+     },
+     "absent": {
+      "type": "integer",
+      "title": "Absent"
+     },
+     "excused": {
+      "type": "integer",
+      "title": "Excused"
+     },
+     "attendance_rate": {
+      "type": "number",
+      "title": "Attendance Rate"
+     },
+     "absent_rate": {
+      "type": "number",
+      "title": "Absent Rate"
+     },
+     "warned_students": {
+      "type": "integer",
+      "title": "Warned Students"
+     }
+    },
+    "type": "object",
+    "required": [
+     "classes",
+     "students",
+     "lecturers",
+     "closed_sessions",
+     "records",
+     "present",
+     "late",
+     "manual",
+     "absent",
+     "excused",
+     "attendance_rate",
+     "absent_rate",
+     "warned_students"
+    ],
+    "title": "OverviewStats"
+   },
+   "ParentChildOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "student_code": {
+      "type": "string",
+      "title": "Student Code"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "major": {
+      "type": "string",
+      "title": "Major"
+     },
+     "cohort": {
+      "type": "integer",
+      "title": "Cohort"
+     },
+     "face_enrolled": {
+      "type": "boolean",
+      "title": "Face Enrolled",
+      "default": false
+     },
+     "face_status": {
+      "type": "string",
+      "title": "Face Status",
+      "default": "none"
+     },
+     "consent_given": {
+      "type": "boolean",
+      "title": "Consent Given",
+      "default": false
+     },
+     "consent_version": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Version"
+     },
+     "consent_method": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Method"
+     },
+     "consent_recorded_by": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Recorded By"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     },
+     "faculty_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Name"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "classes": {
+      "items": {
+       "$ref": "#/components/schemas/MeClassBrief"
+      },
+      "type": "array",
+      "title": "Classes",
+      "default": []
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "student_code",
+     "full_name",
+     "major",
+     "cohort"
+    ],
+    "title": "ParentChildOut",
+    "description": "StudentOut mo rong voi danh sach lop hoc phan - dung cho GET /parents/me/children\nde phu huynh co san danh sach hoc ky/lop ma khong phai goi them API khac."
+   },
+   "ParentCreate": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "title": "Password"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "phone": {
+      "type": "string",
+      "title": "Phone",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "password",
+     "full_name"
+    ],
+    "title": "ParentCreate"
+   },
+   "ParentLinkChild": {
+    "properties": {
+     "student_code": {
+      "type": "string",
+      "title": "Student Code"
+     }
+    },
+    "type": "object",
+    "required": [
+     "student_code"
+    ],
+    "title": "ParentLinkChild"
+   },
+   "ParentOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "phone": {
+      "type": "string",
+      "title": "Phone",
+      "default": ""
+     },
+     "child_count": {
+      "type": "integer",
+      "title": "Child Count",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "full_name",
+     "email"
+    ],
+    "title": "ParentOut"
+   },
+   "ParentPreferencesOut": {
+    "properties": {
+     "notify_email": {
+      "type": "boolean",
+      "title": "Notify Email"
+     },
+     "notify_present": {
+      "type": "boolean",
+      "title": "Notify Present"
+     },
+     "email_available": {
+      "type": "boolean",
+      "title": "Email Available"
+     }
+    },
+    "type": "object",
+    "required": [
+     "notify_email",
+     "notify_present",
+     "email_available"
+    ],
+    "title": "ParentPreferencesOut"
+   },
+   "ParentPreferencesUpdate": {
+    "properties": {
+     "notify_email": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notify Email"
+     },
+     "notify_present": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notify Present"
+     }
+    },
+    "type": "object",
+    "title": "ParentPreferencesUpdate"
+   },
+   "ParentUpdate": {
+    "properties": {
+     "full_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Full Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     }
+    },
+    "type": "object",
+    "title": "ParentUpdate"
+   },
+   "RecognizeResult": {
+    "properties": {
+     "student_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Student Id"
+     },
+     "student_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Student Code"
+     },
+     "full_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Full Name"
+     },
+     "confidence": {
+      "type": "number",
+      "title": "Confidence"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "evidence_image": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Evidence Image"
+     },
+     "liveness_score": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Liveness Score"
+     },
+     "bbox": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Bbox"
+     },
+     "confirm_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Confirm Count"
+     },
+     "confirm_needed": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Confirm Needed"
+     }
+    },
+    "type": "object",
+    "required": [
+     "student_id",
+     "student_code",
+     "full_name",
+     "confidence",
+     "status"
+    ],
+    "title": "RecognizeResult",
+    "description": "Ket qua nhan dien 1 khuon mat trong frame."
+   },
+   "RecordOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "student_id": {
+      "type": "integer",
+      "title": "Student Id"
+     },
+     "checked_at": {
+      "type": "string",
+      "title": "Checked At"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "confidence": {
+      "type": "number",
+      "title": "Confidence"
+     },
+     "evidence_image": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Evidence Image",
+      "default": ""
+     },
+     "source": {
+      "type": "string",
+      "title": "Source",
+      "default": "camera"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "location_accuracy": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Accuracy"
+     },
+     "distance_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Distance M"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "student_id",
+     "checked_at",
+     "status",
+     "confidence"
+    ],
+    "title": "RecordOut"
+   },
+   "RecordUpdate": {
+    "properties": {
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "status",
+     "reason"
+    ],
+    "title": "RecordUpdate",
+    "description": "Sua trang thai 1 record sau buoi hoc. Bat buoc co ly do de luu vao AttendanceAudit."
+   },
+   "RefreshRequest": {
+    "properties": {
+     "refresh_token": {
+      "type": "string",
+      "title": "Refresh Token"
+     }
+    },
+    "type": "object",
+    "required": [
+     "refresh_token"
+    ],
+    "title": "RefreshRequest"
+   },
+   "ResetPasswordRequest": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "otp": {
+      "type": "string",
+      "title": "Otp"
+     },
+     "new_password": {
+      "type": "string",
+      "title": "New Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "otp",
+     "new_password"
+    ],
+    "title": "ResetPasswordRequest"
+   },
+   "RoomCreate": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "maxLength": 30,
+      "minLength": 1,
+      "title": "Code"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 255,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "location_id": {
+      "type": "integer",
+      "title": "Location Id"
+     },
+     "building": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Building"
+     },
+     "floor": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Floor"
+     },
+     "capacity": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Capacity"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "radius_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Radius M"
+     },
+     "is_active": {
+      "type": "boolean",
+      "title": "Is Active",
+      "default": true
+     }
+    },
+    "type": "object",
+    "required": [
+     "code",
+     "name",
+     "location_id"
+    ],
+    "title": "RoomCreate"
+   },
+   "RoomOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "location_id": {
+      "type": "integer",
+      "title": "Location Id"
+     },
+     "location_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Name"
+     },
+     "building": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Building"
+     },
+     "floor": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Floor"
+     },
+     "capacity": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Capacity"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "radius_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Radius M"
+     },
+     "is_active": {
+      "type": "boolean",
+      "title": "Is Active"
+     },
+     "effective_radius_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Effective Radius M"
+     },
+     "schedule_count": {
+      "type": "integer",
+      "title": "Schedule Count",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "code",
+     "name",
+     "location_id",
+     "is_active"
+    ],
+    "title": "RoomOut"
+   },
+   "RoomUpdate": {
+    "properties": {
+     "code": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 30,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Code"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 255,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "location_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Id"
+     },
+     "building": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Building"
+     },
+     "floor": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Floor"
+     },
+     "capacity": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Capacity"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "radius_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Radius M"
+     },
+     "is_active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Active"
+     }
+    },
+    "type": "object",
+    "title": "RoomUpdate"
+   },
+   "RosterEntryOut": {
+    "properties": {
+     "student_id": {
+      "type": "integer",
+      "title": "Student Id"
+     },
+     "student_code": {
+      "type": "string",
+      "title": "Student Code"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "confidence": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Confidence"
+     },
+     "evidence_image": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Evidence Image"
+     },
+     "checked_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Checked At"
+     },
+     "record_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Record Id"
+     },
+     "source": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source"
+     },
+     "latitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latitude"
+     },
+     "longitude": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Longitude"
+     },
+     "location_accuracy": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Accuracy"
+     },
+     "distance_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Distance M"
+     }
+    },
+    "type": "object",
+    "required": [
+     "student_id",
+     "student_code",
+     "full_name"
+    ],
+    "title": "RosterEntryOut",
+    "description": "1 dong trong danh sach lop gop voi trang thai diem danh cua 1 phien cu the -\ntranh FE phai goi rieng danh sach lop + danh sach record roi tu ghep (N+1)."
+   },
+   "ScheduleCreate": {
+    "properties": {
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "weekday": {
+      "type": "integer",
+      "title": "Weekday"
+     },
+     "start_time": {
+      "type": "string",
+      "format": "time",
+      "title": "Start Time"
+     },
+     "end_time": {
+      "type": "string",
+      "format": "time",
+      "title": "End Time"
+     },
+     "room_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Room Id"
+     },
+     "room": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Room"
+     },
+     "location_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "class_id",
+     "weekday",
+     "start_time",
+     "end_time"
+    ],
+    "title": "ScheduleCreate"
+   },
+   "ScheduleOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "weekday": {
+      "type": "integer",
+      "title": "Weekday"
+     },
+     "start_time": {
+      "type": "string",
+      "format": "time",
+      "title": "Start Time"
+     },
+     "end_time": {
+      "type": "string",
+      "format": "time",
+      "title": "End Time"
+     },
+     "room": {
+      "type": "string",
+      "title": "Room"
+     },
+     "room_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Room Id"
+     },
+     "room_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Room Name"
+     },
+     "location_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "class_id",
+     "weekday",
+     "start_time",
+     "end_time",
+     "room"
+    ],
+    "title": "ScheduleOut"
+   },
+   "ScheduleUpdate": {
+    "properties": {
+     "weekday": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Weekday"
+     },
+     "start_time": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Time"
+     },
+     "end_time": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "End Time"
+     },
+     "room_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Room Id"
+     },
+     "room": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Room"
+     },
+     "location_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Id"
+     }
+    },
+    "type": "object",
+    "title": "ScheduleUpdate"
+   },
+   "ScheduleWithClassOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "weekday": {
+      "type": "integer",
+      "title": "Weekday"
+     },
+     "start_time": {
+      "type": "string",
+      "format": "time",
+      "title": "Start Time"
+     },
+     "end_time": {
+      "type": "string",
+      "format": "time",
+      "title": "End Time"
+     },
+     "room": {
+      "type": "string",
+      "title": "Room"
+     },
+     "room_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Room Id"
+     },
+     "location_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Id"
+     },
+     "location_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Name"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "class_id",
+     "class_code",
+     "subject_name",
+     "weekday",
+     "start_time",
+     "end_time",
+     "room"
+    ],
+    "title": "ScheduleWithClassOut",
+    "description": "1 lich hoc kem thong tin lop - dung cho trang quan tri lich hoc toan truong."
+   },
+   "SelfCheckinResult": {
+    "properties": {
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "confidence": {
+      "type": "number",
+      "title": "Confidence",
+      "default": 0.0
+     },
+     "liveness_score": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Liveness Score"
+     },
+     "evidence_image": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Evidence Image"
+     },
+     "record_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Record Id"
+     },
+     "record_status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Record Status"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message",
+      "default": ""
+     },
+     "distance_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Distance M"
+     },
+     "allowed_radius_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Allowed Radius M"
+     }
+    },
+    "type": "object",
+    "required": [
+     "status"
+    ],
+    "title": "SelfCheckinResult",
+    "description": "Ket qua khi SV tu chup selfie diem danh (chi so khop voi khuon mat cua\nCHINH SV do, khac voi RecognizeResult cua luong camera lop hoc quet nhieu mat)."
+   },
+   "SessionCreate": {
+    "properties": {
+     "schedule_id": {
+      "type": "integer",
+      "title": "Schedule Id"
+     },
+     "session_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Session Date"
+     },
+     "require_qr": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Require Qr"
+     }
+    },
+    "type": "object",
+    "required": [
+     "schedule_id",
+     "session_date"
+    ],
+    "title": "SessionCreate"
+   },
+   "SessionDetail": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "schedule_id": {
+      "type": "integer",
+      "title": "Schedule Id"
+     },
+     "session_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Session Date"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "opened_at": {
+      "type": "string",
+      "title": "Opened At"
+     },
+     "closed_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Closed At"
+     },
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "room": {
+      "type": "string",
+      "title": "Room"
+     },
+     "start_time": {
+      "type": "string",
+      "format": "time",
+      "title": "Start Time"
+     },
+     "end_time": {
+      "type": "string",
+      "format": "time",
+      "title": "End Time"
+     },
+     "lecturer_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lecturer Name"
+     },
+     "checkin_deadline": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Checkin Deadline"
+     },
+     "require_qr": {
+      "type": "boolean",
+      "title": "Require Qr",
+      "default": false
+     },
+     "location_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Name"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "schedule_id",
+     "session_date",
+     "status",
+     "opened_at",
+     "class_id",
+     "class_code",
+     "subject_name",
+     "room",
+     "start_time",
+     "end_time"
+    ],
+    "title": "SessionDetail",
+    "description": "Chi tiet 1 phien diem danh, kem thong tin lop/lich de frontend dung\n(vd lay class_id de goi GET /classes/{class_id}/students lam danh sach lop)."
+   },
+   "SessionOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "schedule_id": {
+      "type": "integer",
+      "title": "Schedule Id"
+     },
+     "session_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Session Date"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "schedule_id",
+     "session_date",
+     "status"
+    ],
+    "title": "SessionOut"
+   },
+   "SessionUpdate": {
+    "properties": {
+     "require_qr": {
+      "type": "boolean",
+      "title": "Require Qr"
+     }
+    },
+    "type": "object",
+    "required": [
+     "require_qr"
+    ],
+    "title": "SessionUpdate",
+    "description": "Giang vien bat/tat yeu cau quet ma QR ngay trong buoi, khong phai quyet dinh\ntu luc mo phien."
+   },
+   "StaffCreate": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "title": "Password"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "unit_id": {
+      "type": "integer",
+      "title": "Unit Id"
+     },
+     "position": {
+      "type": "string",
+      "title": "Position",
+      "default": ""
+     },
+     "faculty_leader": {
+      "type": "boolean",
+      "title": "Faculty Leader",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "password",
+     "full_name",
+     "unit_id"
+    ],
+    "title": "StaffCreate"
+   },
+   "StaffOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "user_id": {
+      "type": "integer",
+      "title": "User Id"
+     },
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "role": {
+      "type": "string",
+      "title": "Role"
+     },
+     "unit_id": {
+      "type": "integer",
+      "title": "Unit Id"
+     },
+     "unit_code": {
+      "type": "string",
+      "title": "Unit Code"
+     },
+     "unit_name": {
+      "type": "string",
+      "title": "Unit Name"
+     },
+     "unit_type": {
+      "type": "string",
+      "title": "Unit Type"
+     },
+     "position": {
+      "type": "string",
+      "title": "Position"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "user_id",
+     "email",
+     "full_name",
+     "role",
+     "unit_id",
+     "unit_code",
+     "unit_name",
+     "unit_type",
+     "position"
+    ],
+    "title": "StaffOut"
+   },
+   "StaffUpdate": {
+    "properties": {
+     "full_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Full Name"
+     },
+     "unit_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit Id"
+     },
+     "position": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Position"
+     },
+     "faculty_leader": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Leader"
+     }
+    },
+    "type": "object",
+    "title": "StaffUpdate"
+   },
+   "StudentCreate": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "title": "Password"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "student_code": {
+      "type": "string",
+      "title": "Student Code"
+     },
+     "major": {
+      "type": "string",
+      "title": "Major",
+      "default": ""
+     },
+     "cohort": {
+      "type": "integer",
+      "title": "Cohort",
+      "default": 0
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "password",
+     "full_name",
+     "student_code"
+    ],
+    "title": "StudentCreate"
+   },
+   "StudentOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "student_code": {
+      "type": "string",
+      "title": "Student Code"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "major": {
+      "type": "string",
+      "title": "Major"
+     },
+     "cohort": {
+      "type": "integer",
+      "title": "Cohort"
+     },
+     "face_enrolled": {
+      "type": "boolean",
+      "title": "Face Enrolled",
+      "default": false
+     },
+     "face_status": {
+      "type": "string",
+      "title": "Face Status",
+      "default": "none"
+     },
+     "consent_given": {
+      "type": "boolean",
+      "title": "Consent Given",
+      "default": false
+     },
+     "consent_version": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Version"
+     },
+     "consent_method": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Method"
+     },
+     "consent_recorded_by": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Consent Recorded By"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     },
+     "faculty_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Name"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "student_code",
+     "full_name",
+     "major",
+     "cohort"
+    ],
+    "title": "StudentOut"
+   },
+   "StudentUpdate": {
+    "properties": {
+     "full_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Full Name"
+     },
+     "major": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Major"
+     },
+     "cohort": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cohort"
+     },
+     "faculty_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Faculty Id"
+     }
+    },
+    "type": "object",
+    "title": "StudentUpdate"
+   },
+   "TodayScheduleOut": {
+    "properties": {
+     "schedule_id": {
+      "type": "integer",
+      "title": "Schedule Id"
+     },
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "weekday": {
+      "type": "integer",
+      "title": "Weekday"
+     },
+     "start_time": {
+      "type": "string",
+      "format": "time",
+      "title": "Start Time"
+     },
+     "end_time": {
+      "type": "string",
+      "format": "time",
+      "title": "End Time"
+     },
+     "room": {
+      "type": "string",
+      "title": "Room"
+     },
+     "open_from": {
+      "type": "string",
+      "format": "time",
+      "title": "Open From"
+     },
+     "session_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Session Id"
+     },
+     "session_status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Session Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "schedule_id",
+     "class_id",
+     "class_code",
+     "subject_name",
+     "weekday",
+     "start_time",
+     "end_time",
+     "room",
+     "open_from"
+    ],
+    "title": "TodayScheduleOut",
+    "description": "1 tiet hoc hom nay cua giang vien dang dang nhap."
+   },
+   "Token": {
+    "properties": {
+     "access_token": {
+      "type": "string",
+      "title": "Access Token"
+     },
+     "token_type": {
+      "type": "string",
+      "title": "Token Type",
+      "default": "bearer"
+     },
+     "role": {
+      "type": "string",
+      "title": "Role"
+     },
+     "refresh_token": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Refresh Token"
+     },
+     "expires_in": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expires In"
+     }
+    },
+    "type": "object",
+    "required": [
+     "access_token",
+     "role"
+    ],
+    "title": "Token"
+   },
+   "UnitCreate": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "code",
+     "name",
+     "type"
+    ],
+    "title": "UnitCreate"
+   },
+   "UnitOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "code",
+     "name",
+     "type"
+    ],
+    "title": "UnitOut"
+   },
+   "UnitUpdate": {
+    "properties": {
+     "code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Code"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     }
+    },
+    "type": "object",
+    "title": "UnitUpdate"
+   },
+   "UnreadCountOut": {
+    "properties": {
+     "count": {
+      "type": "integer",
+      "title": "Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "count"
+    ],
+    "title": "UnreadCountOut"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "WeekSlotOut": {
+    "properties": {
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "weekday": {
+      "type": "integer",
+      "title": "Weekday"
+     },
+     "schedule_id": {
+      "type": "integer",
+      "title": "Schedule Id"
+     },
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "room": {
+      "type": "string",
+      "title": "Room"
+     },
+     "start_time": {
+      "type": "string",
+      "format": "time",
+      "title": "Start Time"
+     },
+     "end_time": {
+      "type": "string",
+      "format": "time",
+      "title": "End Time"
+     },
+     "session_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Session Id"
+     },
+     "session_status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Session Status"
+     },
+     "open_from": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Open From"
+     },
+     "my_status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "My Status"
+     },
+     "present_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Present Count"
+     },
+     "total_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Count"
+     },
+     "location_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Name"
+     },
+     "location_radius_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Radius M"
+     }
+    },
+    "type": "object",
+    "required": [
+     "date",
+     "weekday",
+     "schedule_id",
+     "class_id",
+     "class_code",
+     "subject_name",
+     "room",
+     "start_time",
+     "end_time"
+    ],
+    "title": "WeekSlotOut",
+    "description": "1 o lich trong tuan (ngay cu the), gop san trang thai phien/diem danh cho\nSV hoac GV dang dang nhap - dung cho trang lich tuan, tranh FE goi N+1."
+   }
+  },
+  "securitySchemes": {
+   "OAuth2PasswordBearer": {
+    "type": "oauth2",
+    "flows": {
+     "password": {
+      "scopes": {},
+      "tokenUrl": "/api/v1/auth/login"
+     }
+    }
+   }
+  }
+ },
+ "tags": [
+  {
+   "name": "health",
+   "description": "Kiem tra suc khoe dich vu"
+  },
+  {
+   "name": "auth",
+   "description": "PH1 - Dang nhap, token, mat khau, thong tin tai khoan"
+  },
+  {
+   "name": "units",
+   "description": "PH2 - Don vi (Khoa, phong, ban)"
+  },
+  {
+   "name": "staff",
+   "description": "PH2 - Tai khoan can bo"
+  },
+  {
+   "name": "locations",
+   "description": "PH2 - Dia diem diem danh (toa do, ban kinh)"
+  },
+  {
+   "name": "rooms",
+   "description": "PH2 - Phong hoc"
+  },
+  {
+   "name": "lecturers",
+   "description": "PH3 - Giang vien, lich day hom nay"
+  },
+  {
+   "name": "classes",
+   "description": "PH3 - Lop hoc phan, ghi danh, lich hoc cua lop"
+  },
+  {
+   "name": "schedules",
+   "description": "PH3 - Tra cuu lich, lich tuan"
+  },
+  {
+   "name": "students",
+   "description": "PH4 - Sinh vien, dong y sinh trac, chuyen can 1 SV"
+  },
+  {
+   "name": "parents",
+   "description": "PH4/PH7/PH8 - Phu huynh, lien ket con, tuy chon thong bao"
+  },
+  {
+   "name": "faces",
+   "description": "PH5 - Dang ky, duyet du lieu khuon mat"
+  },
+  {
+   "name": "attendance",
+   "description": "PH6 - Phien diem danh, quet camera, tu diem danh, sua ket qua"
+  },
+  {
+   "name": "reports",
+   "description": "PH8 - Thong ke, canh bao vang, xuat Excel"
+  },
+  {
+   "name": "notifications",
+   "description": "PH7 - Hop thu thong bao"
+  },
+  {
+   "name": "audit",
+   "description": "PH9 - Nhat ky he thong"
+  },
+  {
+   "name": "media",
+   "description": "Anh bang chung qua URL co chu ky"
+  }
+ ]
+}

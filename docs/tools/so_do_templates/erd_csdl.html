@@ -1,0 +1,32 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>{{TITLE}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+*{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:#f4f6f8;color:#1f2937}
+nav.top{display:flex;gap:6px;flex-wrap:wrap;padding:10px 24px;background:#0f2a3d}
+nav.top a{color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px}
+nav.top a:hover{background:rgba(255,255,255,.1)} nav.top a.on{background:#0e9594;color:#fff}
+h1{margin:0;font-size:21px} .sbt{color:#64748b;font-size:13px;margin-top:4px}
+
+.wrap{padding:18px 24px} .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0}
+.bar button{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin-right:14px} .lg i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.canvas{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:auto;height:72vh}
+.canvas .in{transform-origin:0 0;display:inline-block} .canvas svg{display:block}
+table.map{border-collapse:collapse;background:#fff;font-size:13px;margin-top:10px} .map td,.map th{border:1px solid #e2e8f0;padding:7px 12px;text-align:left} .map th{background:#f1f5f9}
+.keys span{display:inline-block;padding:1px 8px;border-radius:5px;font-size:12px;margin-right:6px;font-weight:700}
+</style></head><body><nav class="top"><a href="workflow_tong_quan.html" class="">Sơ đồ quy trình</a><a href="erd_csdl.html" class="on">CSDL (ERD)</a><a href="csdl_chi_tiet.html" class="">Chi tiết từng bảng CSDL</a><a href="chuc_nang_cay.html">Sơ đồ chức năng cây</a></nav>
+<div class="wrap"><h1>{{H1}}</h1>
+<div class="sbt">{{SUBTITLE}}</div>
+<div class="bar"><button onclick="z(-.1)">−</button><button onclick="z(.1)">+</button><button onclick="fit()">Vừa khung</button><button onclick="reset()">100%</button><span id="pct" style="font-size:13px;color:#64748b"></span>
+<span style="flex:1"></span><span class="keys"><span style="background:#fde68a">PK khóa chính</span><span style="background:#bfdbfe">FK khóa ngoại</span><span style="background:#e9d5ff">UQ duy nhất</span></span></div>
+<div>{{LEGEND}}</div>
+<div class="canvas" id="cv"><div class="in" id="in">{{SVG}}
+</div></div>
+<h3>Đối chiếu kho dữ liệu trong sơ đồ DFD với các bảng CSDL</h3>
+<table class="map"><tr><th>Kho DFD</th><th>Tên kho</th><th>Các bảng CSDL</th></tr>{{MAP_ROWS}}</table></div>
+<script>
+let s=1;const el=document.getElementById('in'),cv=document.getElementById('cv'),pct=document.getElementById('pct');
+function ap(){el.style.transform='scale('+s+')';pct.textContent=Math.round(s*100)+'%';}
+function z(d){s=Math.min(2,Math.max(.15,s+d));ap();} function reset(){s=1;ap();}
+function fit(){const sv=el.querySelector('svg');s=Math.min(1,(cv.clientWidth-20)/sv.getBoundingClientRect().width*s);ap();}
+window.addEventListener('load',fit);
+</script></body></html>

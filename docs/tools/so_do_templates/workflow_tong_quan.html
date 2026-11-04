@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+*{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:#f4f6f8;color:#1f2937}
+nav.top{display:flex;gap:6px;flex-wrap:wrap;padding:10px 24px;background:#0f2a3d}
+nav.top a{color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px}
+nav.top a:hover{background:rgba(255,255,255,.1)} nav.top a.on{background:#0e9594;color:#fff}
+h1{margin:0;font-size:21px} .sbt{color:#64748b;font-size:13px;margin-top:4px}
+
+body{--fill:#f4b49a;--stroke:#e08e6b;--fill2:#f7c9b6;--fill3:#fde6dc;--text:#4a2412;--accent:#e08e6b}
+body[data-theme="blue"]{--fill:#a9cbf0;--stroke:#6fa3db;--fill2:#c4dcf5;--fill3:#e3effb;--text:#14304f;--accent:#6fa3db}
+body[data-theme="green"]{--fill:#a8ddb5;--stroke:#6dbb84;--fill2:#c3e8cc;--fill3:#e2f5e7;--text:#143d22;--accent:#6dbb84}
+.page{max-width:1500px;margin:0 auto;padding:18px 28px 40px}
+.head{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.badge{background:var(--fill);color:var(--text);font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;letter-spacing:.03em}
+.modes{display:flex;gap:10px;margin:18px 0 10px;flex-wrap:wrap}
+.mode{border:none;background:#e5e9ee;color:#475569;font-weight:800;font-size:13px;padding:11px 18px;border-radius:10px;cursor:pointer;letter-spacing:.01em}
+.mode.on{background:#17324a;color:#fff}
+.subtabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.sub{white-space:nowrap;border:1px solid #e2e8f0;background:#fff;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;color:#475569}
+.sub.on{background:var(--fill);border-color:var(--stroke);color:var(--text)}
+.tools{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px;color:#64748b;flex-wrap:wrap}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #cbd5e1;cursor:pointer;padding:0}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:22px 24px;margin-top:8px}
+.card h2{margin:0 0 4px;font-size:18px} .card p{margin:0 0 14px;color:#64748b;font-size:13.5px}
+.scroll{overflow-x:auto;padding-bottom:10px;border-top:1px dashed #e2e8f0;padding-top:10px}
+.lg{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:#475569;margin-top:12px}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:700;font-size:11.5px}
+.pr{background:#dbeafe;color:#1e40af}.pw{background:#ffedd5;color:#9a3412}
+.tbls{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tbls a{text-decoration:none;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:8px;border:1px solid #e2e8f0;color:#1f2937;background:#f8fafc}
+.tbls a:hover{border-color:var(--stroke)}
+svg text{font-family:"Segoe UI",system-ui,sans-serif}
+.n-step{fill:var(--fill);stroke:var(--stroke);stroke-width:1.5}
+.n-start,.n-end{fill:var(--fill2);stroke:var(--stroke);stroke-width:1.5}
+.n-dec{fill:var(--fill3);stroke:var(--stroke);stroke-width:1.5}
+.n-no{fill:#fff;stroke:var(--stroke);stroke-width:1.5;stroke-dasharray:5 3}
+.tt{fill:var(--text);font-weight:700;font-size:12.5px}.ts{fill:var(--text);opacity:.78;font-size:10.5px}
+.edge{stroke:#64748b;stroke-width:1.6;fill:none}.elab{fill:#475569;font-size:11px;font-weight:700}
+.c-r{fill:#dbeafe;stroke:#93c5fd}.c-w{fill:#ffedd5;stroke:#fdba74}.ct-r{fill:#1e40af;font-size:10.5px;font-weight:700}.ct-w{fill:#9a3412;font-size:10.5px;font-weight:700}
+a .c-r,a .c-w{cursor:pointer}
+</style>
+</head>
+<body data-theme="salmon">
+<nav class="top"><a href="workflow_tong_quan.html" class="on">Sơ đồ quy trình</a><a href="erd_csdl.html" class="">CSDL (ERD)</a><a href="csdl_chi_tiet.html" class="">Chi tiết từng bảng CSDL</a><a href="chuc_nang_cay.html">Sơ đồ chức năng cây</a></nav>
+<div class="page">
+  <div class="head">
+    <div>
+      <h1>Sơ đồ quy trình tinh gọn (đúng và đủ từng bước nghiệp vụ)</h1>
+      <div class="sbt">{{SUBTITLE}}</div>
+    </div>
+    <span class="badge">{{BADGE}}</span>
+  </div>
+  <div class="modes">
+    <button class="mode" id="m-func" onclick="setMode('func')">{{MODE_FUNC}}</button>
+    <button class="mode" id="m-role" onclick="setMode('role')">{{MODE_ROLE}}</button>
+  </div>
+  <div class="subtabs" id="subs"></div>
+  <div class="tools">Màu sắc:
+    <button class="dot" style="background:#f4b49a" onclick="theme('salmon')" title="Cam"></button>
+    <button class="dot" style="background:#a9cbf0" onclick="theme('blue')" title="Xanh dương"></button>
+    <button class="dot" style="background:#a8ddb5" onclick="theme('green')" title="Xanh lá"></button>
+    <span style="flex:1"></span><span>Kéo thanh cuộn ngang để xem hết sơ đồ • Bấm vào chip bảng để mở chi tiết bảng CSDL</span>
+  </div>
+  <div class="card">
+    <h2 id="ttl"></h2><p id="dsc"></p>
+    <div class="scroll" id="svgbox"></div>
+    <div class="lg"><span><span class="pill pr">đọc</span> bảng được đọc (R)</span><span><span class="pill pw">ghi</span> bảng được ghi / cập nhật (W)</span><span>Hình thoi: điểm quyết định • Khung nét đứt: nhánh “Không”</span></div>
+    <h3 style="margin:18px 0 0;font-size:14px">Bảng CSDL được dùng trong quy trình này</h3>
+    <div class="tbls" id="tbls"></div>
+  </div>
+</div>
+<script>
+const FLOWS = {{FLOWS_JSON}};
+let mode = 'func', key = 'master';
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function wrap(s, n, maxLines) {
+  if (!s) return [];
+  const words = String(s).split(' '); const lines = []; let cur = '';
+  for (const w of words) {
+    if ((cur ? cur + ' ' + w : w).length > n && cur) { lines.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w;
+  }
+  if (cur) lines.push(cur);
+  if (maxLines && lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] += '…'; }
+  return lines;
+}
+function chip(cx, y, item) {
+  const [rw, tb] = item.split(':');
+  const label = (rw === 'R' ? 'đọc ' : 'ghi ') + tb;
+  const w = label.length * 6.1 + 16, x = cx - w / 2;
+  const cls = rw === 'R' ? 'r' : 'w';
+  return `<a href="csdl_chi_tiet.html#${tb}" target="_blank"><rect class="c-${cls}" x="${x}" y="${y}" width="${w}" height="19" rx="9.5"/><text class="ct-${cls}" x="${cx}" y="${y + 13.2}" text-anchor="middle">${esc(label)}</text></a>`;
+}
+function textBlock(cx, cy, tl, sl) {
+  const lh1 = 15, lh2 = 13, total = tl.length * lh1 + sl.length * lh2 + (sl.length ? 3 : 0);
+  let y = cy - total / 2 + 11; let out = '';
+  tl.forEach(l => { out += `<text class="tt" x="${cx}" y="${y}" text-anchor="middle">${esc(l)}</text>`; y += lh1; });
+  if (sl.length) y += 3;
+  sl.forEach(l => { out += `<text class="ts" x="${cx}" y="${y - 2}" text-anchor="middle">${esc(l)}</text>`; y += lh2; });
+  return out;
+}
+function buildSvg(steps) {
+  const NW = 172, DW = 160, DH = 108, GAP = 52, PADX = 24, CH = 22;
+  const info = steps.map(s => {
+    if (s.k === 'dec') return {w: DW, h: DH, tl: wrap(s.t, 15, 4), sl: []};
+    const tl = wrap(s.t, 18, 3), sl = wrap(s.s, 27, 2);
+    return {w: NW, h: Math.max(66, tl.length * 15 + sl.length * 13 + 24), tl, sl};
+  });
+  const maxH = Math.max(...info.map(i => i.h));
+  const decChips = Math.max(0, ...steps.filter(s => s.k === 'dec').map(s => s.db.length));
+  const cy = 18 + decChips * CH + maxH / 2;
+  let x = PADX, svg = '', bottom = cy + maxH / 2;
+  const pos = [];
+  steps.forEach((s, i) => {
+    const n = info[i]; const cx = x + n.w / 2; pos.push({x, cx, w: n.w});
+    if (s.k === 'dec') {
+      svg += `<polygon class="n-dec" points="${cx},${cy - n.h / 2} ${x + n.w},${cy} ${cx},${cy + n.h / 2} ${x},${cy}"/>` + textBlock(cx, cy, n.tl, []);
+      s.db.forEach((it, j) => { svg += chip(cx, cy - n.h / 2 - (j + 1) * CH, it); });
+      const no = s.no, nl = wrap(no.t, 18, 3), ns = wrap(no.s, 27, 2), nh = Math.max(60, nl.length * 15 + ns.length * 13 + 22);
+      const top = cy + n.h / 2 + 40;
+      svg += `<line class="edge" x1="${cx}" y1="${cy + n.h / 2}" x2="${cx}" y2="${top - 2}" marker-end="url(#ar)"/><text class="elab" x="${cx + 8}" y="${cy + n.h / 2 + 22}">Không</text>`;
+      svg += `<rect class="n-no" x="${cx - NW / 2}" y="${top}" width="${NW}" height="${nh}" rx="10"/>` + textBlock(cx, top + nh / 2, nl, ns);
+      let yy = top + nh + 8;
+      no.db.forEach(it => { svg += chip(cx, yy, it); yy += CH; });
+      bottom = Math.max(bottom, yy);
+    } else {
+      const r = s.k === 'step' ? 10 : 33;
+      svg += `<rect class="n-${s.k}" x="${x}" y="${cy - n.h / 2}" width="${n.w}" height="${n.h}" rx="${r}"/>` + textBlock(cx, cy, n.tl, n.sl);
+      let yy = cy + n.h / 2 + 8;
+      s.db.forEach(it => { svg += chip(cx, yy, it); yy += CH; });
+      bottom = Math.max(bottom, yy);
+    }
+    if (i > 0) {
+      const p = pos[i - 1];
+      svg += `<line class="edge" x1="${p.x + p.w}" y1="${cy}" x2="${x - 2}" y2="${cy}" marker-end="url(#ar)"/>`;
+      if (steps[i - 1].k === 'dec') svg += `<text class="elab" x="${(p.x + p.w + x) / 2}" y="${cy - 7}" text-anchor="middle">Có</text>`;
+    }
+    x += n.w + GAP;
+  });
+  const W = x - GAP + PADX, H = bottom + 14;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>${svg}</svg>`;
+}
+function tablesOf(steps) {
+  const m = {};
+  steps.forEach(s => [...s.db, ...(s.k === 'dec' ? s.no.db : [])].forEach(it => { const [rw, tb] = it.split(':'); (m[tb] = m[tb] || new Set()).add(rw); }));
+  return m;
+}
+function render() {
+  document.getElementById('m-func').classList.toggle('on', mode === 'func');
+  document.getElementById('m-role').classList.toggle('on', mode === 'role');
+  const list = FLOWS.filter(f => f.func === (mode === 'func'));
+  document.getElementById('subs').innerHTML = list.map(f => `<button class="sub ${f.key === key ? 'on' : ''}" onclick="pick('${f.key}')">${esc(f.tab)}</button>`).join('');
+  const f = FLOWS.find(x => x.key === key);
+  document.getElementById('ttl').textContent = f.title;
+  document.getElementById('dsc').textContent = f.desc;
+  document.getElementById('svgbox').innerHTML = buildSvg(f.steps);
+  const m = tablesOf(f.steps);
+  document.getElementById('tbls').innerHTML = Object.keys(m).map(tb => `<a href="csdl_chi_tiet.html#${tb}" target="_blank">${tb} <span class="pill ${m[tb].has('W') ? 'pw' : 'pr'}">${[...m[tb]].sort().map(x => x === 'R' ? 'đọc' : 'ghi').join(' + ')}</span></a>`).join('');
+  history.replaceState(null, '', '#' + mode + ':' + key);
+}
+function setMode(m) { mode = m; key = FLOWS.find(f => f.func === (m === 'func')).key; render(); }
+function pick(k) { key = k; render(); }
+function theme(t) { document.body.dataset.theme = t; }
+const h = location.hash.slice(1).split(':');
+if (h.length === 2 && FLOWS.some(f => f.key === h[1])) { mode = h[0]; key = h[1]; }
+window.addEventListener('hashchange',()=>{const q=location.hash.slice(1).split(':');if(q.length===2&&FLOWS.some(f=>f.key===q[1])&&(q[0]!==mode||q[1]!==key)){mode=q[0];key=q[1];render();}});
+render();
+</script>
+</body>
+</html>

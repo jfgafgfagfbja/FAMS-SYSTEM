@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Chức năng con & Giao diện — FAMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F2A3D;
+    --navy-deep:#0A1E2C;
+    --teal:#0E9594;
+    --paper:#F7F7F5;
+    --ink:#16222B;
+    --sub:#5B6B74;
+    --line:#E3E1DB;
+
+    --kh:#059669;   --kh-tint:#E7F6EF;
+    --cn:#2563EB;   --cn-tint:#EAF1FE;
+    --ql:#D97706;   --ql-tint:#FDF2E3;
+    --nv:#7C3AED;   --nv-tint:#F1EBFD;
+    --qt:#DC2626;   --qt-tint:#FCEAEA;
+    --lt:#0891B2;   --lt-tint:#E0F4F8;
+    --ca:#475569;   --ca-tint:#EAEEF2;
+  }
+  :root:not([data-theme="light"]){ }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12191D; --ink:#EDEFEF; --sub:#9AA7AD; --line:#283136;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12191D; --ink:#EDEFEF; --sub:#9AA7AD; --line:#283136;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  h1,h2,h3,.display{ font-family:'Be Vietnam Pro',system-ui,sans-serif; }
+
+  .shell{ display:flex; min-height:100vh; min-height:100dvh; }
+
+  /* ---------------- SIDEBAR ---------------- */
+  .sidebar{
+    width:280px; flex:0 0 280px;
+    background:linear-gradient(180deg,var(--navy) 0%, var(--navy-deep) 100%);
+    color:#DCE8EC;
+    padding:28px 20px 24px;
+    position:sticky; top:0; align-self:flex-start;
+    height:100vh; height:100dvh; overflow-y:auto;
+  }
+  .brand{ padding-bottom:18px; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,.12); }
+  .brand .tag{ font-size:12.5px; letter-spacing:.02em; color:var(--teal); font-weight:600; }
+  .brand h1{ font-size:19px; line-height:1.35; margin:6px 0 0; color:#fff; font-weight:700; }
+
+  .navlabel{ font-size:11.5px; color:#7E99A3; margin:18px 4px 8px; font-weight:600; }
+  nav{ display:flex; flex-direction:column; gap:3px; }
+  .navitem{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px; border-radius:9px; cursor:pointer;
+    font-size:14.5px; font-weight:500; color:#C8D7DC;
+    border:1px solid transparent; background:none; text-align:left; width:100%;
+    font-family:inherit;
+  }
+  .navitem .dot{ width:9px; height:9px; border-radius:50%; flex:0 0 9px; background:#577078; }
+  .navitem:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .navitem.active{ background:rgba(14,149,148,.16); color:#fff; border-color:rgba(14,149,148,.4); }
+  .navitem .count{ margin-left:auto; font-size:11.5px; color:#7E99A3; font-weight:600; }
+  .navitem.active .count{ color:var(--teal); }
+
+  .sidebar-foot{ margin-top:22px; padding-top:16px; border-top:1px solid rgba(255,255,255,.1); font-size:12px; color:#7E99A3; line-height:1.6; }
+
+  /* ---------------- CONTENT ---------------- */
+  .content{ flex:1; min-width:0; padding:36px 44px 60px; max-width:1180px; }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+
+  .panel-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:6px; }
+  .role-badge{
+    width:46px; height:46px; border-radius:12px; flex:0 0 46px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Be Vietnam Pro',sans-serif; font-weight:800; font-size:17px; color:#fff;
+  }
+  .panel-head h2{ font-size:25px; margin:0 0 4px; font-weight:700; }
+  .panel-head p{ margin:0; color:var(--sub); font-size:14.5px; max-width:62ch; line-height:1.55; }
+
+  .stats{ display:flex; gap:22px; margin:18px 0 26px; flex-wrap:wrap; }
+  .stat{ font-size:13px; color:var(--sub); }
+  .stat b{ color:var(--ink); font-family:'Be Vietnam Pro',sans-serif; font-size:16px; display:block; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.8px; }
+  thead th{
+    text-align:left; font-weight:600; font-size:12.5px; color:#fff;
+    background:var(--navy); padding:11px 14px; position:sticky; top:0;
+  }
+  thead th:first-child{ border-top-left-radius:8px; }
+  thead th:last-child{ border-top-right-radius:8px; }
+  tbody td{ padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45; }
+  tbody tr:last-child td{ border-bottom:none; }
+  .ro-tag{ display:block; margin-top:6px; width:max-content; font-size:10.5px; font-weight:600; padding:1px 7px; border-radius:5px; background:#FEF3C7; color:#92400E; }
+  .col-menu{ font-weight:600; white-space:nowrap; }
+  .col-sub{ color:var(--ink); }
+  .col-io{ color:var(--sub); font-size:13.2px; }
+  .tbl-wrap{ border:1px solid var(--line); border-radius:10px; overflow:hidden; overflow-x:auto; }
+
+  .io-tag{ display:inline-block; font-size:10.5px; font-weight:600; padding:1px 6px; border-radius:5px; margin-right:6px; vertical-align:1px; }
+  .io-in{ background:#EAF1FE; color:#1D4ED8; }
+  .io-out{ background:#E7F6EF; color:#047857; }
+  :root[data-theme="dark"] .io-in, @media (prefers-color-scheme:dark){ .io-in{ background:#17304f; color:#9DC0FF; } }
+
+  footer.page{ margin-top:34px; font-size:12px; color:var(--sub); }
+
+  /* responsive */
+  @media (max-width: 880px){
+    .shell{ flex-direction:column; }
+    .sidebar{ width:100%; flex:none; position:relative; height:auto; max-height:none; }
+    .content{ padding:26px 18px 50px; }
+    nav{ flex-direction:row; flex-wrap:wrap; }
+    .navitem{ width:auto; }
+    thead th:nth-child(3), tbody td:nth-child(3){ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="tag">ĐỒ ÁN LẬP TRÌNH MẠNG</div>
+      <h1>Chức năng con &amp; Giao diện<br>FAMS – Trường Đại học Kiến trúc Đà Nẵng</h1>
+    </div>
+
+    <div class="navlabel">VAI TRÒ</div>
+    <nav id="nav"></nav>
+
+    <div class="sidebar-foot">Mỗi mục thể hiện: Nhóm Menu → Chức năng con → Dữ liệu đầu vào (Input) → Kết quả đầu ra (Output). Đăng nhập, đổi / quên mật khẩu dùng chung cho mọi vai trò (ghi ở mục Sinh viên).</div>
+  </aside>
+
+  <main class="content" id="content"></main>
+</div>
+
+<script>
+const DATA = [{"id": "qt", "name": "Quản trị viên", "role": "admin", "color": "#DC2626", "letter": "QT", "desc": "Quản trị đơn vị, tài khoản cán bộ và danh mục; toàn quyền thao tác điểm danh; xem nhật ký toàn trường.", "groups": [{"menu": "Quản lý\nđơn vị", "readonly": false, "rows": [["Xem danh sách đơn vị", "Loại đơn vị (tùy chọn)", "Danh sách: mã, tên, loại"], ["Thêm đơn vị", "Mã, tên, loại (Khoa, P.ĐT, P.CTSV, Ban ngành)", "Đơn vị mới; mã trùng thì báo lỗi"], ["Sửa đơn vị", "Mã, tên", "Đơn vị đã sửa (không đổi loại)"], ["Xóa đơn vị", "Mã đơn vị", "Đơn vị bị xóa; còn cán bộ / SV / GV / lớp thì từ chối"]]}, {"menu": "Tài khoản\ncán bộ", "readonly": false, "rows": [["Tra cứu cán bộ", "Từ khóa, đơn vị, phân trang", "Danh sách cán bộ: đơn vị, vai trò, chức vụ"], ["Tạo tài khoản cán bộ", "Email, mật khẩu, họ tên, đơn vị, chức vụ, Lãnh đạo Khoa?", "Tài khoản mới, vai trò suy ra từ loại đơn vị"], ["Sửa / chuyển đơn vị", "Họ tên, đơn vị, chức vụ", "Hồ sơ đã sửa, vai trò đổi theo đơn vị mới"], ["Xóa cán bộ", "Mã cán bộ", "Xóa; đã từng sửa điểm danh thì từ chối (giữ vết)"]]}, {"menu": "Điểm danh\n(mọi lớp)", "readonly": false, "rows": [["Mở phiên, quét camera, xác nhận tay", "Lịch học, khung hình, mã SV", "Phiên đang mở, bản ghi điểm danh"], ["Sửa kết quả điểm danh", "Mã bản ghi, trạng thái mới, lý do", "Bản ghi đã sửa + lịch sử sửa"]]}, {"menu": "Nhật ký\nhệ thống", "readonly": false, "rows": [["Tra cứu nhật ký", "Từ khóa, nhóm hành động, kết quả, khoảng ngày", "Danh sách nhật ký, mới nhất trước"]]}], "tint": "#FCE9E9"}, {"id": "dt", "name": "Phòng Đào tạo", "role": "training_office", "color": "#2563EB", "letter": "ĐT", "desc": "Quản lý giảng viên, lớp học phần, ghi danh, lịch học, phòng học và địa điểm toàn trường.", "groups": [{"menu": "Giảng viên", "readonly": false, "rows": [["Tra cứu giảng viên", "Từ khóa (mã, họ tên), Khoa, phân trang", "Danh sách giảng viên"], ["Thêm giảng viên", "Email, mật khẩu, họ tên, mã GV, bộ môn, Khoa", "Hồ sơ và tài khoản giảng viên"], ["Sửa giảng viên", "Họ tên, bộ môn, Khoa", "Hồ sơ đã sửa"], ["Xóa giảng viên", "Mã giảng viên", "Xóa; đang dạy lớp hoặc đã sửa điểm danh thì từ chối"]]}, {"menu": "Lớp học phần\n& ghi danh", "readonly": false, "rows": [["Tra cứu lớp", "Từ khóa, học kỳ, Khoa, phân trang", "Danh sách lớp: giảng viên, Khoa, sĩ số"], ["Thêm / sửa lớp, phân công GV", "Mã lớp, tên môn, giảng viên, học kỳ, Khoa", "Lớp mới / đã sửa; mã trùng thì báo lỗi"], ["Xóa lớp", "Mã lớp", "Xóa; đã có SV hoặc lịch thì từ chối"], ["Ghi danh / rút sinh viên", "Mã lớp, mã SV", "Danh sách SV của lớp cập nhật"]]}, {"menu": "Lịch học", "readonly": false, "rows": [["Tra cứu toàn bộ lịch", "Từ khóa (mã lớp, môn, phòng), phân trang", "Lịch kèm lớp, phòng, địa điểm"], ["Thêm / sửa lịch học", "Lớp, thứ, giờ bắt đầu, giờ kết thúc, phòng", "Lịch mới; trùng phòng cùng giờ thì từ chối"], ["Xóa lịch học", "Mã lịch", "Xóa; đã có phiên điểm danh thì từ chối"]]}, {"menu": "Địa điểm\n& phòng học", "readonly": false, "rows": [["Thêm / sửa địa điểm", "Mã, tên, vĩ độ, kinh độ, bán kính, mặc định", "Địa điểm (tối đa một mặc định)"], ["Lấy vị trí hiện tại", "GPS của thiết bị", "Vĩ độ, kinh độ điền sẵn"], ["Thêm / sửa / ngừng dùng phòng", "Mã, tên, khu vực, tòa, tầng, sức chứa, tọa độ", "Phòng mới / đã sửa"]]}, {"menu": "Theo dõi\nđiểm danh", "readonly": true, "rows": [["Xem phiên và kết quả điểm danh", "Lớp, phiên", "Danh sách SV kèm trạng thái, ảnh bằng chứng"], ["Cảnh báo vắng, xuất Excel", "Lớp, học kỳ", "SV vắng ≥ 20%, tệp .xlsx"], ["Thống kê tổng hợp", "Học kỳ", "Chỉ số toàn trường, theo Khoa"]]}], "tint": "#E9EFFD"}, {"id": "ctsv", "name": "Phòng Công tác SV", "role": "student_affairs", "color": "#0891B2", "letter": "CT", "desc": "Quản lý hồ sơ sinh viên, phụ huynh, đồng ý sinh trắc; duyệt dữ liệu khuôn mặt; duyệt vắng có phép toàn trường.", "groups": [{"menu": "Hồ sơ\nsinh viên", "readonly": false, "rows": [["Tra cứu sinh viên", "Từ khóa (MSSV, họ tên), Khoa, phân trang", "Danh sách SV kèm trạng thái khuôn mặt, đồng ý"], ["Thêm / sửa sinh viên", "Email, mật khẩu, họ tên, MSSV, ngành, khóa, Khoa", "Hồ sơ và tài khoản SV"], ["Xóa sinh viên", "Mã SV", "Xóa; đã ghi danh / có khuôn mặt / có điểm danh thì từ chối"]]}, {"menu": "Đồng ý\nsinh trắc", "readonly": false, "rows": [["Ghi nhận đồng ý bản giấy", "Mã SV, phiên bản nội dung, method = paper", "SV đã đồng ý, lưu người ghi nhận"], ["Rút đồng ý thay SV", "Mã SV (theo đơn)", "Xóa toàn bộ vector và ảnh khuôn mặt"]]}, {"menu": "Phụ huynh", "readonly": false, "rows": [["Thêm / sửa / xóa phụ huynh", "Email, mật khẩu, họ tên, số điện thoại", "Tài khoản phụ huynh"], ["Liên kết con", "Mã phụ huynh, MSSV", "Liên kết mới; đã có thì báo lỗi"], ["Gỡ liên kết", "Mã phụ huynh, mã SV", "Liên kết bị gỡ"]]}, {"menu": "Duyệt\nkhuôn mặt", "readonly": false, "rows": [["Danh sách chờ duyệt", "—", "Ảnh cắt, MSSV, cảnh báo giống SV khác (kèm độ giống)"], ["Duyệt", "Mã vector", "Trạng thái approved; ảnh tạm bị xóa"], ["Từ chối kèm lý do", "Mã vector, lý do", "Trạng thái rejected; ảnh tạm bị xóa"], ["Đăng ký khuôn mặt hộ SV", "Mã SV, ảnh", "Vector chờ duyệt"]]}, {"menu": "Duyệt\ncó phép", "readonly": false, "rows": [["Xem chuyên cần một SV", "Mã SV, học kỳ", "Chuyên cần theo lớp, chi tiết từng buổi"], ["Duyệt / hủy duyệt có phép", "Mã bản ghi, lý do", "Vắng → có phép (hoặc ngược lại) + lịch sử sửa"]]}], "tint": "#E6F4F7"}, {"id": "vpk", "name": "Văn phòng Khoa", "role": "faculty_office", "color": "#059669", "letter": "VK", "desc": "Giáo vụ Khoa: nhập lớp học phần, ghi danh, lịch học, phân công giảng viên trong Khoa mình.", "groups": [{"menu": "Lớp học phần\ncủa Khoa", "readonly": false, "rows": [["Tra cứu lớp của Khoa", "Từ khóa, học kỳ", "Danh sách lớp thuộc Khoa"], ["Thêm lớp", "Mã lớp, tên môn, giảng viên, học kỳ", "Lớp mới, luôn thuộc Khoa mình"], ["Sửa lớp, phân công GV", "Thông tin lớp, giảng viên", "Lớp đã sửa (không chuyển sang Khoa khác)"]]}, {"menu": "Ghi danh\n& lịch học", "readonly": false, "rows": [["Ghi danh / rút sinh viên", "Mã lớp, mã SV", "Danh sách SV của lớp cập nhật"], ["Xếp / sửa lịch học", "Thứ, giờ, phòng", "Lịch học; trùng phòng thì từ chối"]]}, {"menu": "Theo dõi\nKhoa", "readonly": true, "rows": [["Xem SV, GV của Khoa", "Từ khóa", "Danh sách trong phạm vi Khoa"], ["Xem điểm danh, báo cáo Khoa", "Lớp, học kỳ", "Kết quả, cảnh báo vắng, tệp Excel"], ["Thống kê tổng hợp Khoa", "Học kỳ", "Chỉ số của Khoa"]]}], "tint": "#E6F4F0"}, {"id": "ldk", "name": "Lãnh đạo Khoa", "role": "faculty_leader", "color": "#D97706", "letter": "LK", "desc": "Trưởng / Phó khoa: giám sát và phê duyệt trong Khoa mình, không nhập liệu.", "groups": [{"menu": "Giám sát\nđiểm danh", "readonly": true, "rows": [["Xem phiên và kết quả các lớp Khoa", "Lớp, phiên", "Danh sách SV, trạng thái, ảnh bằng chứng"], ["Cảnh báo vắng, xuất Excel", "Lớp, học kỳ", "SV vắng ≥ 20%, tệp .xlsx"]]}, {"menu": "Phê duyệt", "readonly": false, "rows": [["Duyệt có phép", "Mã bản ghi (SV hoặc lớp thuộc Khoa), lý do", "Vắng → có phép + lịch sử sửa"], ["Hủy duyệt có phép", "Mã bản ghi, lý do", "Có phép → vắng + lịch sử sửa"], ["Xem lịch sử sửa", "Mã bản ghi", "Trạng thái cũ / mới, người sửa, lý do, thời điểm"]]}, {"menu": "Thống kê\n& nhật ký", "readonly": true, "rows": [["Thống kê tổng hợp Khoa", "Học kỳ", "Chỉ số của Khoa"], ["Nhật ký thao tác của Khoa", "Bộ lọc nhật ký", "Nhật ký có faculty_id là Khoa mình"]]}], "tint": "#FBF1E6"}, {"id": "bn", "name": "Ban ngành", "role": "board", "color": "#475569", "letter": "BN", "desc": "Ban ngành khác trong trường (VD Thanh tra): chỉ xem số liệu tổng hợp, không có tên, ảnh sinh viên.", "groups": [{"menu": "Thống kê\ntổng hợp", "readonly": true, "rows": [["Chọn học kỳ", "Học kỳ (mặc định mới nhất)", "Danh sách học kỳ có lớp"], ["Xem chỉ số toàn trường", "Học kỳ", "Số lớp, SV, GV, phiên; tỉ lệ đi học, tỉ lệ vắng; số SV bị cảnh báo"], ["So sánh theo Khoa", "Học kỳ", "Bảng chỉ số từng Khoa"]]}], "tint": "#EDEEF0"}, {"id": "gv", "name": "Giảng viên", "role": "lecturer", "color": "#7C3AED", "letter": "GV", "desc": "Điểm danh lớp mình dạy: mở phiên, quét camera, chiếu mã QR, xác nhận tay, sửa kết quả, xem báo cáo lớp.", "groups": [{"menu": "Lịch dạy", "readonly": false, "rows": [["Lịch dạy hôm nay", "Tài khoản giảng viên", "Buổi dạy, giờ được mở phiên, phiên đang có"], ["Lịch tuần", "Tuần cần xem", "Các buổi kèm trạng thái phiên, số SV có mặt"], ["In lịch ra PDF", "Tuần đang xem", "Tệp PDF lịch dạy"]]}, {"menu": "Phiên\nđiểm danh", "readonly": false, "rows": [["Mở phiên", "Lịch học, ngày", "Phiên đang mở; ngoài khung giờ thì từ chối"], ["Bật / tắt yêu cầu QR", "Mã phiên", "Phiên đã cập nhật"], ["Chiếu mã QR", "Mã phiên", "Mã QR + 6 chữ số, đổi sau 30 giây"], ["Đóng phiên", "Mã phiên", "SV chưa có bản ghi bị ghi vắng; SV vừa vượt ngưỡng cảnh báo"]]}, {"menu": "Ghi nhận\nđiểm danh", "readonly": false, "rows": [["Quét camera cả lớp", "Mã phiên, khung hình", "Mỗi mặt: MSSV, độ tin cậy, khung bao, kết quả"], ["Xác nhận tay", "Mã phiên, mã SV", "Bản ghi trạng thái manual"], ["Danh sách lớp trong phiên", "Mã phiên", "Trạng thái, giờ, ảnh, nguồn, khoảng cách từng SV"]]}, {"menu": "Hiệu chỉnh\n& báo cáo", "readonly": false, "rows": [["Sửa trạng thái điểm danh", "Mã bản ghi, trạng thái mới, lý do", "Bản ghi đã sửa + lịch sử sửa"], ["Thống kê, cảnh báo vắng lớp", "Mã lớp", "Tỉ lệ vắng, cờ cảnh báo từng SV"], ["Xuất Excel", "Mã lớp, học kỳ", "Tệp .xlsx bảng điểm danh"], ["Đăng ký khuôn mặt hộ SV lớp mình", "Mã SV, ảnh", "Vector chờ duyệt"]]}], "tint": "#F2EBFD"}, {"id": "sv", "name": "Sinh viên", "role": "student", "color": "#0E9594", "letter": "SV", "desc": "Tự điểm danh bằng khuôn mặt, mã QR và GPS; quản lý dữ liệu khuôn mặt của mình; xem chuyên cần.", "groups": [{"menu": "Tài khoản\n(mọi vai trò)", "readonly": false, "rows": [["Đăng nhập", "Email, mật khẩu", "Access token, refresh token, vai trò"], ["Quên / đặt lại mật khẩu", "Email; OTP, mật khẩu mới", "OTP qua email; mật khẩu được đổi"], ["Đổi mật khẩu", "Mật khẩu hiện tại, mật khẩu mới", "Token mới cho phiên đang dùng"], ["Đăng xuất", "Access token, refresh token", "Hai token bị thu hồi"]]}, {"menu": "Lịch học", "readonly": false, "rows": [["Lịch tuần", "Tuần cần xem", "Buổi học: phòng, giờ, trạng thái phiên, điểm danh của mình"], ["In lịch ra PDF", "Tuần đang xem", "Tệp PDF"]]}, {"menu": "Dữ liệu\nkhuôn mặt", "readonly": false, "rows": [["Đọc và đồng ý sinh trắc", "Nội dung có phiên bản, xác nhận", "Trạng thái đã đồng ý"], ["Đăng ký khuôn mặt", "Một hoặc nhiều ảnh", "Kết quả từng ảnh, số vector chờ duyệt"], ["Xem trạng thái dữ liệu", "Tài khoản SV", "Danh sách vector: trạng thái, lý do từ chối"], ["Xóa dữ liệu / rút đồng ý", "Xác nhận", "Toàn bộ vector và ảnh bị xóa"]]}, {"menu": "Tự\nđiểm danh", "readonly": false, "rows": [["Xem yêu cầu buổi học", "Mã phiên", "Có cần quét QR không, tên phòng"], ["Quét mã QR / nhập 6 chữ số", "Mã chiếu trong phòng", "Mã hợp lệ hoặc hết hạn"], ["Chụp ảnh + gửi vị trí", "Ảnh, vĩ độ, kinh độ, sai số GPS, cờ giả lập", "present / late hoặc lý do từ chối, khoảng cách"]]}, {"menu": "Chuyên cần", "readonly": false, "rows": [["Xem chuyên cần theo học kỳ", "Học kỳ", "Theo lớp: số buổi từng trạng thái, tỉ lệ vắng, chi tiết từng buổi"], ["Nhận cảnh báo vắng", "—", "Cờ cảnh báo khi vắng ≥ 20%"]]}], "tint": "#E7F4F4"}, {"id": "ph", "name": "Phụ huynh", "role": "parent", "color": "#DB2777", "letter": "PH", "desc": "Theo dõi chuyên cần và nhận thông báo điểm danh của con đã được P. CTSV liên kết.", "groups": [{"menu": "Con của tôi", "readonly": false, "rows": [["Danh sách con", "Tài khoản phụ huynh", "Các con đã liên kết và lớp đang học"], ["Chuyên cần của con", "Mã SV, học kỳ", "Theo lớp, chi tiết từng buổi kèm ảnh, giờ, vị trí"]]}, {"menu": "Thông báo", "readonly": false, "rows": [["Hộp thư thông báo", "Chỉ chưa đọc (tùy chọn)", "Danh sách: tiêu đề, nội dung, thời điểm"], ["Số thông báo chưa đọc", "—", "Số trên chuông"], ["Đánh dấu đã đọc / đọc tất cả", "Mã thông báo", "Thông báo đã đọc"]]}, {"menu": "Tùy chọn", "readonly": false, "rows": [["Nhận email thông báo", "Bật / tắt", "Tùy chọn đã lưu"], ["Nhận tin &quot;có mặt&quot;", "Bật / tắt", "Tùy chọn đã lưu (muộn, vắng luôn được báo)"]]}], "tint": "#FBE9F1"}];
+
+function countFns(sub){ return sub.groups.reduce((s,g)=>s+g.rows.length,0); }
+
+const nav = document.getElementById('nav');
+const content = document.getElementById('content');
+
+DATA.forEach((sub,i)=>{
+  const btn = document.createElement('button');
+  btn.className = 'navitem' + (i===0?' active':'');
+  btn.dataset.id = sub.id;
+  btn.innerHTML = `<span class="dot" style="background:${sub.color}"></span>${sub.name}<span class="count">${countFns(sub)}</span>`;
+  btn.addEventListener('click', ()=>selectTab(sub.id));
+  nav.appendChild(btn);
+
+  const panel = document.createElement('section');
+  panel.className = 'panel' + (i===0?' active':'');
+  panel.id = 'panel-'+sub.id;
+
+  let rowsHtml = '';
+  sub.groups.forEach(g=>{
+    g.rows.forEach((r,ri)=>{
+      rowsHtml += `<tr>
+        ${ri===0 ? `<td class="col-menu" rowspan="${g.rows.length}" style="border-left:3px solid ${sub.color}">${g.menu.replace(/\n/g,'<br>')}${g.readonly ? '<span class="ro-tag">Chỉ xem</span>' : ''}</td>` : ''}
+        <td class="col-sub">${r[0]}</td>
+        <td class="col-io"><span class="io-tag io-in">IN</span>${r[1]}</td>
+        <td class="col-io"><span class="io-tag io-out">OUT</span>${r[2]}</td>
+      </tr>`;
+    });
+  });
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <div class="role-badge" style="background:${sub.color}">${sub.letter}</div>
+      <div>
+        <h2>${sub.name} <span style="color:var(--sub);font-weight:500;font-size:16px;">(${sub.role})</span></h2>
+        <p>${sub.desc}</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${sub.groups.length}</b>Nhóm Menu</div>
+      <div class="stat"><b>${countFns(sub)}</b>Chức năng con</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:16%">Menu</th>
+          <th style="width:30%">Chức năng con</th>
+          <th style="width:27%">Input</th>
+          <th style="width:27%">Output</th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>
+    <footer class="page">Hệ thống FAMS – Quản lý sinh viên và điểm danh bằng nhận diện khuôn mặt — Trường Đại học Kiến trúc Đà Nẵng.</footer>
+  `;
+  content.appendChild(panel);
+});
+
+function selectTab(id){
+  document.querySelectorAll('.navitem').forEach(b=>b.classList.toggle('active', b.dataset.id===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id==='panel-'+id));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>

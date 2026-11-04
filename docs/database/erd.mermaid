@@ -1,0 +1,220 @@
+erDiagram
+    USERS |o--o{ AUDIT_LOGS : "actor_id"
+    UNITS |o--o{ AUDIT_LOGS : "faculty_id"
+    USERS ||--o{ LECTURERS : "user_id"
+    UNITS |o--o{ LECTURERS : "faculty_id"
+    USERS ||--o{ PARENTS : "user_id"
+    USERS ||--o{ PASSWORD_RESETS : "user_id"
+    USERS ||--o{ REFRESH_TOKENS : "user_id"
+    LOCATIONS ||--o{ ROOMS : "location_id"
+    USERS ||--o| STAFF : "user_id"
+    UNITS ||--o{ STAFF : "unit_id"
+    USERS ||--o{ STUDENTS : "user_id"
+    UNITS |o--o{ STUDENTS : "faculty_id"
+    LECTURERS ||--o{ CLASSES : "lecturer_id"
+    UNITS |o--o{ CLASSES : "faculty_id"
+    STUDENTS ||--o{ FACE_EMBEDDINGS : "student_id"
+    PARENTS ||--o{ PARENT_STUDENTS : "parent_id"
+    STUDENTS ||--o{ PARENT_STUDENTS : "student_id"
+    STUDENTS ||--o{ ENROLLMENTS : "student_id"
+    CLASSES ||--o{ ENROLLMENTS : "class_id"
+    CLASSES ||--o{ SCHEDULES : "class_id"
+    ROOMS |o--o{ SCHEDULES : "room_id"
+    LOCATIONS |o--o{ SCHEDULES : "location_id"
+    SCHEDULES ||--o{ ATTENDANCE_SESSIONS : "schedule_id"
+    ATTENDANCE_SESSIONS ||--o{ ATTENDANCE_RECORDS : "session_id"
+    STUDENTS ||--o{ ATTENDANCE_RECORDS : "student_id"
+    ATTENDANCE_RECORDS ||--o{ ATTENDANCE_AUDITS : "record_id"
+    USERS ||--o{ ATTENDANCE_AUDITS : "changed_by"
+    USERS ||--o{ NOTIFICATIONS : "user_id"
+    ATTENDANCE_RECORDS |o--o{ NOTIFICATIONS : "record_id"
+
+    LOCATIONS {
+        int id PK
+        string code UK
+        string name
+        float latitude
+        float longitude
+        float radius_m
+        bool is_default
+    }
+    REVOKED_TOKENS {
+        int id PK
+        string jti UK
+        datetime expires_at
+    }
+    UNITS {
+        int id PK
+        string code UK
+        string name
+        string type
+    }
+    USERS {
+        int id PK
+        string email UK
+        string password_hash
+        string role
+        string full_name
+        datetime credentials_changed_at
+        int token_version
+    }
+    AUDIT_LOGS {
+        int id PK
+        datetime created_at
+        int actor_id FK
+        string actor_email
+        string actor_role
+        string action
+        string target_type
+        int target_id
+        string target_label
+        int faculty_id FK
+        string ip
+        bool success
+        text detail
+    }
+    LECTURERS {
+        int id PK
+        int user_id FK
+        string lecturer_code UK
+        string department
+        int faculty_id FK
+    }
+    PARENTS {
+        int id PK
+        int user_id FK
+        string phone
+        bool notify_email
+        bool notify_present
+    }
+    PASSWORD_RESETS {
+        int id PK
+        int user_id FK
+        string otp_hash
+        datetime expires_at
+        bool used
+        datetime created_at
+    }
+    REFRESH_TOKENS {
+        int id PK
+        int user_id FK
+        string token_hash UK
+        datetime expires_at
+        datetime revoked_at
+    }
+    ROOMS {
+        int id PK
+        string code UK
+        string name
+        string building
+        int floor
+        int capacity
+        float latitude
+        float longitude
+        float radius_m
+        int location_id FK
+        bool is_active
+    }
+    STAFF {
+        int id PK
+        int user_id FK,UK
+        int unit_id FK
+        string position
+    }
+    STUDENTS {
+        int id PK
+        int user_id FK
+        string student_code UK
+        string major
+        int cohort
+        int faculty_id FK
+        bool consent_given
+        datetime consent_given_at
+        string consent_version
+        string consent_method
+        string consent_recorded_by
+    }
+    CLASSES {
+        int id PK
+        string class_code UK
+        string subject_name
+        int lecturer_id FK
+        string semester
+        int faculty_id FK
+    }
+    FACE_EMBEDDINGS {
+        int id PK
+        int student_id FK
+        vector512 embedding
+        string source_image
+        string status
+        string reject_reason
+        datetime created_at
+    }
+    PARENT_STUDENTS {
+        int id PK
+        int parent_id FK
+        int student_id FK
+    }
+    ENROLLMENTS {
+        int id PK
+        int student_id FK
+        int class_id FK
+    }
+    SCHEDULES {
+        int id PK
+        int class_id FK
+        int weekday
+        time start_time
+        time end_time
+        string room
+        int room_id FK
+        int location_id FK
+    }
+    ATTENDANCE_SESSIONS {
+        int id PK
+        int schedule_id FK
+        date session_date
+        datetime opened_at
+        datetime closed_at
+        string status
+        bool require_qr
+    }
+    ATTENDANCE_RECORDS {
+        int id PK
+        int session_id FK
+        int student_id FK
+        datetime checked_at
+        string status
+        float confidence
+        string evidence_image
+        string source
+        float latitude
+        float longitude
+        float location_accuracy
+        float distance_m
+    }
+    ATTENDANCE_AUDITS {
+        int id PK
+        int record_id FK
+        int changed_by FK
+        string old_status
+        string new_status
+        string reason
+        datetime changed_at
+    }
+    NOTIFICATIONS {
+        int id PK
+        int user_id FK
+        string kind
+        string title
+        text body
+        string link
+        int record_id FK
+        datetime created_at
+        datetime read_at
+        string email_status
+        int email_attempts
+        string email_error
+        datetime emailed_at
+    }

@@ -1,0 +1,81 @@
+# FAMS-SYSTEM - moi truong chay thu/phat trien bang Docker Compose.
+#
+#   client (nginx :80 -> host 5273)  --/api/v1/...-->  server (FastAPI :8000 -> 127.0.0.1:8100)
+#                                                          |
+#                                                          v
+#                                                     db (PostgreSQL 16 + pgvector -> 127.0.0.1:5433)
+#
+# Ten project rieng: container/volume/mang deu mang tien to "fams-system", khong dung chung
+# voi stack FAMS goc (project "fams", container fams-db-1, volume fams_pgdata).
+# Production (HTTPS, khong mo cong db/server): deploy/docker-compose.prod.yml.
+name: fams-system
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      # Dong bo voi TZ cua server: checked_at (attendance_records) dung server_default=now()
+      # tinh phia Postgres; thieu TZ container se chay UTC va lech gio thuc te. Voi volume da
+      # khoi tao tu truoc, bien nay chi co hieu luc khi da chay migration a18f6c2b9e40.
+      TZ: ${TZ:-Asia/Ho_Chi_Minh}
+      POSTGRES_USER: ${POSTGRES_USER:-fams_system}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fams_system_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-fams_system}
+    ports:
+      # Chi mo tren may chu (khong lo database ra mang LAN). Chi server truy cap DB.
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fams_system}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build: ./server
+    environment:
+      # Container mac dinh chay UTC; datetime.now() (gio muon, lich hoc hom nay...) can gio
+      # Viet Nam. tzdata co san trong image python:3.11-slim nen chi can khai bao TZ.
+      TZ: ${TZ:-Asia/Ho_Chi_Minh}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-fams_system}:${POSTGRES_PASSWORD:-fams_system_dev}@db:5432/${POSTGRES_DB:-fams_system}
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-prod}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5274}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-no-reply@fams.edu.vn}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-}
+    ports:
+      # Chi mo tren may chu: nguoi dung (web/app) di qua nginx /api. Server tin
+      # X-Forwarded-For (--proxy-headers) nen khong duoc de may ngoai goi thang.
+      - "127.0.0.1:8100:8000"
+    volumes:
+      - evidence:/app/evidence
+      # Model nhan dien (~300MB) tai ve lan dau; giu lai de khoi tai lai moi lan dung lai.
+      - insightface:/root/.insightface
+    depends_on:
+      db:
+        condition: service_healthy
+
+  client:
+    # Giao dien Flutter web (client/) - cung ma nguon voi app Android/iOS. Ban web goi API
+    # cung origin (/api/v1/...), nginx chuyen tiep sang server (xem client/nginx.conf).
+    # Luu y: trinh duyet chi cho dung camera tren HTTPS hoac localhost - trien khai that
+    # can reverse proxy HTTPS phia truoc (deploy/docker-compose.prod.yml dung Caddy).
+    build:
+      context: ./client
+      args:
+        API_BASE_URL: ""
+    ports:
+      - "5273:80"
+    depends_on:
+      server:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  evidence:
+  insightface:

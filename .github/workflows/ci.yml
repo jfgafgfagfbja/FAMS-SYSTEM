@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: fams_system
+          POSTGRES_PASSWORD: fams_system_dev
+          POSTGRES_DB: fams_system
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fams_system"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install server dependencies
+        working-directory: server
+        run: pip install -r requirements.txt
+
+      - name: Run server tests (+ route coverage)
+        working-directory: server
+        env:
+          DATABASE_URL: postgresql://fams_system:fams_system_dev@localhost:5432/fams_system
+          PYTHONPATH: tools
+          ROUTE_COV_OUT: route_coverage.json
+        run: pytest -v -p route_coverage_plugin --junitxml=junit.xml
+
+  client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.4"
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        working-directory: client
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: client
+        run: flutter analyze
+
+      - name: Run Flutter tests
+        working-directory: client
+        run: flutter test
+
+      - name: Build Flutter web
+        working-directory: client
+        run: flutter build web --release --dart-define=API_BASE_URL=
+
+  stack-smoke:
+    runs-on: ubuntu-latest
+    needs: [server, client]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and start docker compose stack
+        run: docker compose build server client && docker compose up -d
+
+      - name: Wait for server and web to answer
+        run: |
+          for i in $(seq 1 90); do
+            if curl -sf http://localhost:8100/ >/dev/null && curl -sf http://localhost:5273/ >/dev/null; then
+              echo "Stack is up"; exit 0
+            fi
+            sleep 2
+          done
+          echo "Stack did not become ready in time"
+          docker compose logs
+          exit 1
+
+      - name: Seed data, health and login through nginx /api/v1 proxy
+        run: |
+          docker compose exec -T server python seed.py
+          curl -sf http://localhost:5273/ | grep -q "flutter_bootstrap.js"
+          curl -sf http://localhost:5273/api/v1/health | grep -q '"database":"ok"'
+          curl -sf -X POST http://localhost:5273/api/v1/auth/login             -d "username=admin@fams.edu.vn&password=admin123" | grep -q refresh_token
+          curl -sf -X POST http://localhost:5273/api/v1/auth/login             -d "username=ban01@fams.edu.vn&password=ban12345" | grep -q '"role":"board"'
+
+      - name: Dump docker compose logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Tear down docker compose stack
+        if: always()
+        run: docker compose down -v
