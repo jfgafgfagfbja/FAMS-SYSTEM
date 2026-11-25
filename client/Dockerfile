@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone --depth 1 --branch ${FLUTTER_VERSION} https://github.com/flutter/flutter.git /opt/flutter
+# Moi truong build co user namespace (vd Render): tar khong duoc giu chu so huu goc cua tep trong goi.
+ENV TAR_OPTIONS=--no-same-owner
 ENV PATH="/opt/flutter/bin:${PATH}"
 RUN flutter config --no-analytics && flutter precache --web
 

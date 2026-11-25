@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone --depth 1 --branch ${FLUTTER_VERSION} https://github.com/flutter/flutter.git /opt/flutter
+# Build cua Render chay trong user namespace: tar chay bang root mac dinh giu chu so huu goc cua tep
+# trong goi (vd uid 397546) va bao "Cannot change ownership ... Invalid argument" khi Flutter giai nen
+# artifact (gradle-wrapper.tgz). --no-same-owner: tep thuoc ve nguoi dang chay tar.
+ENV TAR_OPTIONS=--no-same-owner
 ENV PATH="/opt/flutter/bin:${PATH}"
 RUN flutter config --no-analytics && flutter precache --web
 
