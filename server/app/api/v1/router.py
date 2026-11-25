@@ -1,9 +1,13 @@
 """Gom moi controller cua API v1 (gan tien to settings.API_PREFIX trong main.py)."""
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import (audit_logs, auth, classes, faces, health, leave_requests, lecturers,
-                                  locations, media, notifications, parents, reports, rooms, schedules,
-                                  sessions, staff, students, units)
+from app.api.v1.endpoints import (audit_logs, classes, faces, leave_requests, lecturers, locations,
+                                  notifications, parents, reports, rooms, schedules, sessions, staff,
+                                  students, units)
+# Mo-dun da chuyen sang app/modules/ (MVC theo mo-dun)
+from app.modules.m01_auth import controller as auth
+from app.modules.m01_auth import health_controller as health
+from app.modules.m01_auth import media_controller as media
 
 api_router = APIRouter()
 

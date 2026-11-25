@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/auth_controller.dart';
-import '../../widgets/common.dart';
+import '../controllers/auth_controller.dart';
+import '../../../widgets/common.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});

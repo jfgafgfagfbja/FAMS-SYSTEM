@@ -18,11 +18,14 @@ FAMS-SYSTEM/
 ├── client/                    Flutter — chỉ giao diện
 │   ├── lib/api/               lớp gọi API theo module (mỗi endpoint khai báo một lần)
 │   ├── lib/core/              ApiClient (token, tự làm mới, lỗi), cấu hình máy chủ, quyền hiển thị
-│   ├── lib/features/          33 trang theo vai trò · lib/widgets/ · lib/models/ · lib/router.dart
+│   ├── lib/modules/           MVC theo mô-đun: mXX_<tên>/{models,controllers,views} (m01_auth, m10_shell đã chuyển)
+│   ├── lib/features/          các trang chưa chuyển sang modules/ · lib/widgets/ · lib/models/ · lib/router.dart
 │   ├── nginx.conf, Dockerfile bản web + proxy /api/ → server
 │   └── .env.example           API_BASE_URL (địa chỉ máy chủ)
 ├── server/                    FastAPI — toàn bộ nghiệp vụ
-│   ├── app/api/v1/endpoints/  18 controller
+│   ├── app/modules/           MVC theo mô-đun: mXX_<tên>/{models,repository,schemas,service,controller}.py + README
+│   │                          (m01_auth đã chuyển; MOD-02…09 do TV2–TV5 chuyển – docs/nhom/)
+│   ├── app/api/v1/endpoints/  controller của các mô-đun chưa chuyển
 │   ├── app/services/          nghiệp vụ theo module (+ nhận diện, GPS, đơn xin phép, nhật ký, thông báo)
 │   ├── app/repositories/      truy cập dữ liệu
 │   ├── app/schemas/ · app/db/ · app/core/ · app/jobs/
@@ -30,9 +33,10 @@ FAMS-SYSTEM/
 │   └── .env.example
 ├── docs/                      phân tích, kiến trúc, API, CSDL, triển khai, báo cáo kiểm thử
 ├── scripts/                   sao lưu, khôi phục, nhập dữ liệu gốc, kiểm tra hợp đồng API, xuất OpenAPI/ERD
-├── deploy/                    production: Caddy HTTPS (docker-compose.prod.yml)
+├── deploy/                    production: Caddy HTTPS (docker-compose.prod.yml) · render/Dockerfile (cloud)
+├── render.yaml                triển khai Render: PostgreSQL + 1 web service (web + API cùng link)
 ├── docker-compose.yml         db + server + client
-└── .github/workflows/ci.yml   test server, client, dựng thử stack
+└── .github/                   workflows/ci.yml (test mỗi lần push / PR) · CODEOWNERS · mẫu Pull Request
 ```
 
 ## Chạy nhanh
@@ -55,6 +59,19 @@ Chi tiết (Linux/macOS, production HTTPS, biến môi trường, log): [docs/de
 | | | | pdt01@ / ctsv01@ / khoa.cntt@ / ldk.cntt@ / ban01@fams.edu.vn | pdt12345 / ctsv1234 / khoa1234 / ldk12345 / ban12345 | P.ĐT / P.CTSV / VP Khoa / LĐ Khoa / Ban ngành |
 
 **Đổi mật khẩu mẫu và `SECRET_KEY` trước khi đưa lên mạng** (`server/tools/doi_mat_khau.py`).
+
+## Triển khai cloud (Render)
+
+Bản chạy trên cloud: **(cập nhật link sau khi deploy)**. `render.yaml` khai báo 1 PostgreSQL 16 (pgvector) + 1 web
+service Docker (`deploy/render/Dockerfile`: build Flutter web + server, chạy `server/single_port.py` ⇒ giao diện và
+`/api/v1` cùng một link). Mỗi lần push nhánh `main`, Render tự build và deploy lại; lần khởi động đầu tự nạp dữ liệu
+mẫu (`SEED_ON_START=1`). Cách làm + giới hạn gói miễn phí: [docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md](docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md).
+
+## Làm việc nhóm (5 thành viên, MVC theo mô-đun)
+
+Mỗi mô-đun một thư mục `server/app/modules/mXX_<tên>/` + `client/lib/modules/mXX_<tên>/`, người phụ trách ghi trong
+`README.md` của mô-đun và `.github/CODEOWNERS`. Mỗi người làm trên nhánh riêng, mở Pull Request bằng tài khoản GitHub của
+mình. Phân công và quy trình: [docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md](docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md).
 
 ## API
 

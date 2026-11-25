@@ -1,10 +1,10 @@
 import 'package:fams_app/core/api_client.dart';
-import 'package:fams_app/core/auth_controller.dart';
+import 'package:fams_app/modules/m01_auth/controllers/auth_controller.dart';
 import 'package:fams_app/core/roles.dart';
 import 'package:fams_app/core/theme.dart';
 import 'package:fams_app/core/token_storage.dart';
 import 'package:fams_app/features/admin/audit_logs_page.dart';
-import 'package:fams_app/features/auth/account_page.dart';
+import 'package:fams_app/modules/m01_auth/views/account_page.dart';
 import 'package:fams_app/models/models.dart';
 import 'package:fams_app/widgets/consent_form.dart';
 import 'package:flutter/material.dart';

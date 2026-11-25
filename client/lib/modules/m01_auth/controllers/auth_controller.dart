@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-import '../models/models.dart';
-import 'api_client.dart';
-import '../api/api.dart';
+import '../../../models/models.dart';
+import '../../../core/api_client.dart';
+import '../../../api/api.dart';
 
 enum AuthStatus { unknown, unauthenticated, authenticated }
 

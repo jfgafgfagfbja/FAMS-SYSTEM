@@ -1,7 +1,7 @@
 """Schema Pydantic - nhom parents (tach tu app/schemas.py cua ban goc)."""
 from pydantic import BaseModel, ConfigDict, EmailStr
 
-from app.schemas.auth import MeClassBrief
+from app.modules.m01_auth.schemas import MeClassBrief
 from app.schemas.students import StudentOut
 
 __all__ = ["ParentCreate", "ParentUpdate", "ParentOut", "ParentLinkChild", "ParentChildOut", "ParentPreferencesOut", "ParentPreferencesUpdate"]

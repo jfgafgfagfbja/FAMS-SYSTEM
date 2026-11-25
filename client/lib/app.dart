@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'core/api_client.dart';
-import 'core/auth_controller.dart';
+import 'modules/m01_auth/controllers/auth_controller.dart';
 import 'core/theme.dart';
 import 'core/token_storage.dart';
 import 'router.dart';

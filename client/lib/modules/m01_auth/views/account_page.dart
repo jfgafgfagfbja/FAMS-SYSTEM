@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/api_client.dart';
-import '../../core/auth_controller.dart';
-import '../../core/formatters.dart';
-import '../../core/roles.dart';
-import '../../core/theme.dart';
-import '../../models/models.dart';
-import '../../widgets/common.dart';
-import '../../api/api.dart';
+import '../../../core/api_client.dart';
+import '../controllers/auth_controller.dart';
+import '../../../core/formatters.dart';
+import '../../../core/roles.dart';
+import '../../../core/theme.dart';
+import '../../../models/models.dart';
+import '../../../widgets/common.dart';
+import '../../../api/api.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});

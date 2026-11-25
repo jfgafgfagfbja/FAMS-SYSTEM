@@ -17,8 +17,8 @@ from app.core.security import (create_access_token, create_refresh_token, hash_p
                                rotate_refresh_token, verify_password)
 from app.db import models
 from app.db.models import ROLE_LECTURER, ROLE_STUDENT, STAFF_ROLES
-from app.repositories import (class_repository, lecturer_repository, staff_repository,
-                              student_repository, user_repository)
+from app.modules.m01_auth import repository as user_repository
+from app.repositories import class_repository, lecturer_repository, staff_repository, student_repository
 from app.services import audit, email_service
 from app.services.mappers import face_status_of
 

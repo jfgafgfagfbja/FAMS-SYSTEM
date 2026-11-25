@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/api_client.dart';
-import '../../core/auth_controller.dart';
-import '../../core/config.dart';
-import '../../core/theme.dart';
-import '../../widgets/common.dart';
+import '../../../core/api_client.dart';
+import '../controllers/auth_controller.dart';
+import '../../../core/config.dart';
+import '../../../core/theme.dart';
+import '../../../widgets/common.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

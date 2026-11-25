@@ -1,6 +1,6 @@
 import 'package:fams_app/core/api_client.dart';
 import 'package:fams_app/core/token_storage.dart';
-import 'package:fams_app/features/auth/account_page.dart';
+import 'package:fams_app/modules/m01_auth/views/account_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';

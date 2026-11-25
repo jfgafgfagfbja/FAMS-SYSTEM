@@ -8,7 +8,8 @@ from app.db import models
 from app.db.models import ROLE_PARENT
 from app.repositories import parent_repository, student_repository
 from app.repositories.base import Page
-from app.services import account_service, email_service, report_service
+from app.modules.m01_auth import account_service
+from app.services import email_service, report_service
 from app.services.mappers import student_out
 
 

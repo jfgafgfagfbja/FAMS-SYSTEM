@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.exceptions import BadRequestError, ConflictError
 from app.core.security import hash_password
 from app.db import models
-from app.repositories import user_repository
+from app.modules.m01_auth import repository as user_repository
 
 
 def ensure_email_available(db: Session, email: str) -> None:

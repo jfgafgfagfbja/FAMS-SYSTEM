@@ -7,7 +7,7 @@ from app.db import models
 from app.db.models import ROLE_BY_UNIT_TYPE, ROLE_FACULTY, ROLE_FACULTY_LEADER, UNIT_FACULTY
 from app.repositories import staff_repository, unit_repository
 from app.repositories.base import Page
-from app.services import account_service
+from app.modules.m01_auth import account_service
 from app.services.mappers import staff_out
 
 

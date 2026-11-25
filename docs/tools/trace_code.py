@@ -51,12 +51,18 @@ FOLLOW_PREFIXES = ("app.services", "app.repositories", "app.core.authz", "app.co
 SKIP_FUNCS = {("app.core.security", "get_current_user")}
 
 
+def _module_part(mod: str) -> str:
+    """Ten tep trong thu muc mo-dun (MVC theo mo-dun): 'app.modules.m01_auth.service' -> 'service'."""
+    return mod.rsplit(".", 1)[-1] if mod.startswith("app.modules.") else ""
+
+
 def layer_of(mod: str) -> str:
-    if mod.startswith("app.api"):
+    part = _module_part(mod)
+    if mod.startswith("app.api") or part.endswith("controller"):
         return "controller"
-    if mod.startswith("app.repositories"):
+    if mod.startswith("app.repositories") or part.endswith("repository"):
         return "repository"
-    if mod.startswith("app.services"):
+    if mod.startswith("app.services") or part.endswith("service"):
         return "service"
     if mod.startswith("app.jobs"):
         return "job"
@@ -235,7 +241,11 @@ def analyze(mod: str, func: str) -> dict:
 
 
 def follow(mod: str) -> bool:
-    return mod.startswith(FOLLOW_PREFIXES)
+    return mod.startswith(FOLLOW_PREFIXES) or _module_part(mod).endswith(("service", "repository"))
+
+
+def is_controller(mod: str) -> bool:
+    return layer_of(mod) == "controller"
 
 
 def build_chain(mod: str, func: str, depth: int = 0, stack: tuple = ()) -> dict:
@@ -513,13 +523,13 @@ def main() -> None:
 
     functions = {}
     for (mod, func), info in INDEX.items():
-        if not follow(mod) and not mod.startswith("app.api"):
+        if not follow(mod) and not is_controller(mod):
             continue
         a = analyze(mod, func)
         functions[f"{mod}.{func}"] = {
             "layer": layer_of(mod), "file": rel(info["file"]), "line": info["line"],
             "doc": info["doc"].split("\n\n")[0][:400],
-            "calls": [f"{m}.{f}" for m, f, _ in a["calls"] if follow(m) or m.startswith("app.api")],
+            "calls": [f"{m}.{f}" for m, f, _ in a["calls"] if follow(m) or is_controller(m)],
             "errors": a["errors"], "models_new": a["models_new"], "models_ref": a["models_ref"],
         }
 

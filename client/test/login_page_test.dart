@@ -1,7 +1,7 @@
 import 'package:fams_app/core/api_client.dart';
-import 'package:fams_app/core/auth_controller.dart';
+import 'package:fams_app/modules/m01_auth/controllers/auth_controller.dart';
 import 'package:fams_app/core/token_storage.dart';
-import 'package:fams_app/features/auth/login_page.dart';
+import 'package:fams_app/modules/m01_auth/views/login_page.dart';
 import 'package:fams_app/widgets/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

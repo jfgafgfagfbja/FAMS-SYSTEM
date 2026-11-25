@@ -7,7 +7,7 @@ from app import schemas
 from app.api.deps import CurrentUser, DbSession
 from app.core.config import settings
 from app.core.rate_limit import limiter
-from app.services import auth_service
+from app.modules.m01_auth import service as auth_service
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

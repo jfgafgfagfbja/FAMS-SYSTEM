@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/api_client.dart';
-import '../../core/auth_controller.dart';
-import '../../core/formatters.dart';
-import '../../core/roles.dart';
-import '../../core/theme.dart';
-import '../../models/models.dart';
-import '../../widgets/common.dart';
-import '../office/overview_page.dart';
-import '../parent/children_page.dart';
-import '../schedule/week_schedule_page.dart' show selfCheckinTitle;
-import '../../api/api.dart';
+import '../../../core/api_client.dart';
+import '../../m01_auth/controllers/auth_controller.dart';
+import '../../../core/formatters.dart';
+import '../../../core/roles.dart';
+import '../../../core/theme.dart';
+import '../../../models/models.dart';
+import '../../../widgets/common.dart';
+import '../../../features/office/overview_page.dart';
+import '../../../features/parent/children_page.dart';
+import '../../../features/schedule/week_schedule_page.dart' show selfCheckinTitle;
+import '../../../api/api.dart';
 
 /// Trang chu theo vai tro.
 class HomePage extends StatelessWidget {

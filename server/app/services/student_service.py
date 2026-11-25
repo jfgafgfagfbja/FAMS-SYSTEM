@@ -9,7 +9,7 @@ from app.db import models
 from app.db.models import ROLE_STUDENT
 from app.repositories import student_repository
 from app.repositories.base import Page
-from app.services import account_service
+from app.modules.m01_auth import account_service
 from app.services.consent_service import record_consent, withdraw_consent
 from app.services.mappers import student_out
 

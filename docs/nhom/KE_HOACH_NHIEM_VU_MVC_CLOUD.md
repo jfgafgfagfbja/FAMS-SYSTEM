@@ -195,6 +195,16 @@ Students nếu cả nhóm có email sinh viên.
 - Đăng ký cloud, xác minh email / thẻ / sinh viên do **chính người đăng ký** thực hiện.
 - Commit, mở PR, review: do từng thành viên làm bằng tài khoản của mình.
 
+## 9. Tiến độ
+
+| Ngày | Việc | Người | Trạng thái |
+|---|---|---|---|
+| 25/11/2026 | Khung `server/app/modules/` + MOD-01 làm mẫu (models, repository, schemas, service, controller, README, test riêng `tests/m01_auth/`); client `lib/modules/m01_auth/{controllers,views}`, `m10_shell/views`; bộ truy vết tài liệu nhận thư mục mô-đun | TV1 | ✅ 277 test server, 43 test client đạt |
+| 25/11/2026 | `.github/CODEOWNERS`, mẫu Pull Request | TV1 | ✅ (các TV tự thêm dòng của mình) |
+| 25/11/2026 | `render.yaml`, `deploy/render/Dockerfile`, `.dockerignore`, `SEED_ON_START` trong `entrypoint.sh` | TV1 | ✅ |
+| — | Đăng ký Render, deploy, ghi link | TV1 | đang làm |
+| — | MOD-02 … MOD-09 | TV2 – TV5 | chưa |
+
 ## Nguồn tham khảo (tra ngày 25/11/2026)
 
 - Render: [Deploy for Free](https://render.com/docs/free), [Supported extensions (pgvector)](https://render.com/docs/postgresql-extensions), [Native runtimes](https://render.com/docs/native-runtimes), [Docker](https://render.com/docs/docker), [Blueprint YAML](https://render.com/docs/blueprint-spec), [Platforms with a real free tier 2026](https://render.com/articles/platforms-with-a-real-free-tier-for-developers-in-2026)

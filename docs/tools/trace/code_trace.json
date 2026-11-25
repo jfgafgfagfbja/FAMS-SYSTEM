@@ -2,28 +2,28 @@
  "github": "https://github.com/jfgafgfagfbja/FAMS-SYSTEM/blob/main/",
  "api_prefix": "/api/v1",
  "models": {
-  "Room": "rooms",
+  "Parent": "parents",
+  "AuditLog": "audit_logs",
+  "AttendanceSession": "attendance_sessions",
+  "AttendanceRecord": "attendance_records",
+  "Staff": "staff",
   "User": "users",
-  "Schedule": "schedules",
   "LeaveRequest": "leave_requests",
-  "RefreshToken": "refresh_tokens",
   "Unit": "units",
+  "Room": "rooms",
+  "Notification": "notifications",
+  "AttendanceAudit": "attendance_audits",
+  "Student": "students",
+  "Schedule": "schedules",
   "Location": "locations",
+  "RevokedToken": "revoked_tokens",
   "PasswordReset": "password_resets",
-  "FaceEmbedding": "face_embeddings",
   "Lecturer": "lecturers",
   "Class": "classes",
-  "AttendanceAudit": "attendance_audits",
-  "Parent": "parents",
-  "Student": "students",
-  "Staff": "staff",
-  "AttendanceSession": "attendance_sessions",
-  "Notification": "notifications",
   "Enrollment": "enrollments",
-  "AttendanceRecord": "attendance_records",
-  "ParentStudent": "parent_students",
-  "AuditLog": "audit_logs",
-  "RevokedToken": "revoked_tokens"
+  "RefreshToken": "refresh_tokens",
+  "FaceEmbedding": "face_embeddings",
+  "ParentStudent": "parent_students"
  },
  "routes": {
   "GET /": {
@@ -38,20 +38,20 @@
    "response": "application/json",
    "doc": "",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.health.root",
-    "file": "server/app/api/v1/endpoints/health.py",
+    "fn": "app.modules.m01_auth.health_controller.root",
+    "file": "server/app/modules/m01_auth/health_controller.py",
     "line": 23
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.health.root",
+    "fn": "app.modules.m01_auth.health_controller.root",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/health.py",
+    "file": "server/app/modules/m01_auth/health_controller.py",
     "line": 23,
     "children": []
    },
    "errors": [],
    "functions": [
-    "app.api.v1.endpoints.health.root"
+    "app.modules.m01_auth.health_controller.root"
    ],
    "models_new_static": []
   },
@@ -67,20 +67,20 @@
    "response": "application/json",
    "doc": "",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.health.health",
-    "file": "server/app/api/v1/endpoints/health.py",
+    "fn": "app.modules.m01_auth.health_controller.health",
+    "file": "server/app/modules/m01_auth/health_controller.py",
     "line": 28
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.health.health",
+    "fn": "app.modules.m01_auth.health_controller.health",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/health.py",
+    "file": "server/app/modules/m01_auth/health_controller.py",
     "line": 28,
     "children": []
    },
    "errors": [],
    "functions": [
-    "app.api.v1.endpoints.health.health"
+    "app.modules.m01_auth.health_controller.health"
    ],
    "models_new_static": []
   },
@@ -137,20 +137,20 @@
    "response": "Token",
    "doc": "Form `username` (email), `password`. Tra access token + refresh token + vai tro.",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.auth.login",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "fn": "app.modules.m01_auth.controller.login",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 17
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.auth.login",
+    "fn": "app.modules.m01_auth.controller.login",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 17,
     "children": [
      {
-      "fn": "app.services.auth_service.login",
+      "fn": "app.modules.m01_auth.service.login",
       "layer": "service",
-      "file": "server/app/services/auth_service.py",
+      "file": "server/app/modules/m01_auth/service.py",
       "line": 42,
       "children": [
        {
@@ -171,9 +171,9 @@
         "call_line": 46
        },
        {
-        "fn": "app.repositories.user_repository.get_by_email",
+        "fn": "app.modules.m01_auth.repository.get_by_email",
         "layer": "repository",
-        "file": "server/app/repositories/user_repository.py",
+        "file": "server/app/modules/m01_auth/repository.py",
         "line": 11,
         "children": [],
         "call_line": 51
@@ -212,9 +212,9 @@
         "call_line": 60
        },
        {
-        "fn": "app.services.auth_service._issue_tokens",
+        "fn": "app.modules.m01_auth.service._issue_tokens",
         "layer": "service",
-        "file": "server/app/services/auth_service.py",
+        "file": "server/app/modules/m01_auth/service.py",
         "line": 30,
         "children": [
          {
@@ -263,9 +263,9 @@
         "call_line": 53
        },
        {
-        "fn": "app.services.auth_service._locked_message",
+        "fn": "app.modules.m01_auth.service._locked_message",
         "layer": "service",
-        "file": "server/app/services/auth_service.py",
+        "file": "server/app/modules/m01_auth/service.py",
         "line": 38,
         "children": [],
         "call_line": 49
@@ -289,35 +289,35 @@
      "cls": "TooManyRequestsError",
      "msg": "…",
      "line": 49,
-     "at": "app.services.auth_service.login",
-     "file": "server/app/services/auth_service.py"
+     "at": "app.modules.m01_auth.service.login",
+     "file": "server/app/modules/m01_auth/service.py"
     },
     {
      "status": 401,
      "cls": "UnauthorizedError",
      "msg": "Sai email hoac mat khau",
      "line": 57,
-     "at": "app.services.auth_service.login",
-     "file": "server/app/services/auth_service.py"
+     "at": "app.modules.m01_auth.service.login",
+     "file": "server/app/modules/m01_auth/service.py"
     }
    ],
    "functions": [
-    "app.api.v1.endpoints.auth.login",
-    "app.services.auth_service.login",
+    "app.modules.m01_auth.controller.login",
+    "app.modules.m01_auth.service.login",
     "app.core.rate_limit.is_locked",
     "app.core.rate_limit.recent_failures",
-    "app.repositories.user_repository.get_by_email",
+    "app.modules.m01_auth.repository.get_by_email",
     "app.core.rate_limit.clear_failures",
     "app.services.audit.record_event",
     "app.services.audit._actor_faculty",
     "app.services.audit._client_ip",
-    "app.services.auth_service._issue_tokens",
+    "app.modules.m01_auth.service._issue_tokens",
     "app.core.security.create_access_token",
     "app.core.security.create_refresh_token",
     "app.core.security._hash_refresh_token",
     "app.core.rate_limit.record_failure",
     "app.core.rate_limit.recent_failures",
-    "app.services.auth_service._locked_message",
+    "app.modules.m01_auth.service._locked_message",
     "app.core.security.verify_password"
    ],
    "models_new_static": [
@@ -348,20 +348,20 @@
    "response": "Token",
    "doc": "Doi refresh token lay cap token moi (token cu bi thu hoi - xoay vong).",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.auth.refresh",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "fn": "app.modules.m01_auth.controller.refresh",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 24
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.auth.refresh",
+    "fn": "app.modules.m01_auth.controller.refresh",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 24,
     "children": [
      {
-      "fn": "app.services.auth_service.refresh",
+      "fn": "app.modules.m01_auth.service.refresh",
       "layer": "service",
-      "file": "server/app/services/auth_service.py",
+      "file": "server/app/modules/m01_auth/service.py",
       "line": 64,
       "children": [
        {
@@ -421,8 +421,8 @@
    },
    "errors": [],
    "functions": [
-    "app.api.v1.endpoints.auth.refresh",
-    "app.services.auth_service.refresh",
+    "app.modules.m01_auth.controller.refresh",
+    "app.modules.m01_auth.service.refresh",
     "app.core.security.rotate_refresh_token",
     "app.core.security.revoke_all_refresh_tokens",
     "app.core.security.create_refresh_token",
@@ -457,26 +457,26 @@
    "response": "application/json",
    "doc": "Gui ma OTP qua email; luon tra thong bao chung (khong lo email ton tai hay khong).",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.auth.forgot_password",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "fn": "app.modules.m01_auth.controller.forgot_password",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 31
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.auth.forgot_password",
+    "fn": "app.modules.m01_auth.controller.forgot_password",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 31,
     "children": [
      {
-      "fn": "app.services.auth_service.forgot_password",
+      "fn": "app.modules.m01_auth.service.forgot_password",
       "layer": "service",
-      "file": "server/app/services/auth_service.py",
+      "file": "server/app/modules/m01_auth/service.py",
       "line": 73,
       "children": [
        {
-        "fn": "app.repositories.user_repository.get_by_email",
+        "fn": "app.modules.m01_auth.repository.get_by_email",
         "layer": "repository",
-        "file": "server/app/repositories/user_repository.py",
+        "file": "server/app/modules/m01_auth/repository.py",
         "line": 11,
         "children": [],
         "call_line": 77
@@ -529,9 +529,9 @@
    },
    "errors": [],
    "functions": [
-    "app.api.v1.endpoints.auth.forgot_password",
-    "app.services.auth_service.forgot_password",
-    "app.repositories.user_repository.get_by_email",
+    "app.modules.m01_auth.controller.forgot_password",
+    "app.modules.m01_auth.service.forgot_password",
+    "app.modules.m01_auth.repository.get_by_email",
     "app.services.email_service.send_otp_email",
     "app.services.email_service.build_message",
     "app.services.email_service.is_configured",
@@ -577,42 +577,42 @@
    "response": "application/json",
    "doc": "Dat lai mat khau bang OTP; moi token cu mat hieu luc.",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.auth.reset_password",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "fn": "app.modules.m01_auth.controller.reset_password",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 38
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.auth.reset_password",
+    "fn": "app.modules.m01_auth.controller.reset_password",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 38,
     "children": [
      {
-      "fn": "app.services.auth_service.reset_password",
+      "fn": "app.modules.m01_auth.service.reset_password",
       "layer": "service",
-      "file": "server/app/services/auth_service.py",
+      "file": "server/app/modules/m01_auth/service.py",
       "line": 96,
       "children": [
        {
-        "fn": "app.repositories.user_repository.get_by_email",
+        "fn": "app.modules.m01_auth.repository.get_by_email",
         "layer": "repository",
-        "file": "server/app/repositories/user_repository.py",
+        "file": "server/app/modules/m01_auth/repository.py",
         "line": 11,
         "children": [],
         "call_line": 100
        },
        {
-        "fn": "app.repositories.user_repository.active_password_resets",
+        "fn": "app.modules.m01_auth.repository.active_password_resets",
         "layer": "repository",
-        "file": "server/app/repositories/user_repository.py",
+        "file": "server/app/modules/m01_auth/repository.py",
         "line": 30,
         "children": [],
         "call_line": 104
        },
        {
-        "fn": "app.services.auth_service._set_password",
+        "fn": "app.modules.m01_auth.service._set_password",
         "layer": "service",
-        "file": "server/app/services/auth_service.py",
+        "file": "server/app/modules/m01_auth/service.py",
         "line": 115,
         "children": [
          {
@@ -653,24 +653,24 @@
      "cls": "BadRequestError",
      "msg": "Thong tin dat lai mat khau khong hop le",
      "line": 102,
-     "at": "app.services.auth_service.reset_password",
-     "file": "server/app/services/auth_service.py"
+     "at": "app.modules.m01_auth.service.reset_password",
+     "file": "server/app/modules/m01_auth/service.py"
     },
     {
      "status": 400,
      "cls": "BadRequestError",
      "msg": "Ma OTP khong dung hoac da het han",
      "line": 107,
-     "at": "app.services.auth_service.reset_password",
-     "file": "server/app/services/auth_service.py"
+     "at": "app.modules.m01_auth.service.reset_password",
+     "file": "server/app/modules/m01_auth/service.py"
     }
    ],
    "functions": [
-    "app.api.v1.endpoints.auth.reset_password",
-    "app.services.auth_service.reset_password",
-    "app.repositories.user_repository.get_by_email",
-    "app.repositories.user_repository.active_password_resets",
-    "app.services.auth_service._set_password",
+    "app.modules.m01_auth.controller.reset_password",
+    "app.modules.m01_auth.service.reset_password",
+    "app.modules.m01_auth.repository.get_by_email",
+    "app.modules.m01_auth.repository.active_password_resets",
+    "app.modules.m01_auth.service._set_password",
     "app.core.security.hash_password",
     "app.core.security.revoke_all_refresh_tokens",
     "app.core.security.verify_password"
@@ -706,20 +706,20 @@
    "response": "Token",
    "doc": "Doi mat khau (phai dung mat khau hien tai); cap token moi cho phien hien tai.",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.auth.change_password",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "fn": "app.modules.m01_auth.controller.change_password",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 45
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.auth.change_password",
+    "fn": "app.modules.m01_auth.controller.change_password",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 45,
     "children": [
      {
-      "fn": "app.services.auth_service.change_password",
+      "fn": "app.modules.m01_auth.service.change_password",
       "layer": "service",
-      "file": "server/app/services/auth_service.py",
+      "file": "server/app/modules/m01_auth/service.py",
       "line": 123,
       "children": [
        {
@@ -756,9 +756,9 @@
         "call_line": 138
        },
        {
-        "fn": "app.services.auth_service._set_password",
+        "fn": "app.modules.m01_auth.service._set_password",
         "layer": "service",
-        "file": "server/app/services/auth_service.py",
+        "file": "server/app/modules/m01_auth/service.py",
         "line": 115,
         "children": [
          {
@@ -781,9 +781,9 @@
         "call_line": 139
        },
        {
-        "fn": "app.services.auth_service._issue_tokens",
+        "fn": "app.modules.m01_auth.service._issue_tokens",
         "layer": "service",
-        "file": "server/app/services/auth_service.py",
+        "file": "server/app/modules/m01_auth/service.py",
         "line": 30,
         "children": [
          {
@@ -832,9 +832,9 @@
         "call_line": 133
        },
        {
-        "fn": "app.services.auth_service._locked_message",
+        "fn": "app.modules.m01_auth.service._locked_message",
         "layer": "service",
-        "file": "server/app/services/auth_service.py",
+        "file": "server/app/modules/m01_auth/service.py",
         "line": 38,
         "children": [],
         "call_line": 130
@@ -858,43 +858,43 @@
      "cls": "TooManyRequestsError",
      "msg": "…",
      "line": 130,
-     "at": "app.services.auth_service.change_password",
-     "file": "server/app/services/auth_service.py"
+     "at": "app.modules.m01_auth.service.change_password",
+     "file": "server/app/modules/m01_auth/service.py"
     },
     {
      "status": 400,
      "cls": "BadRequestError",
      "msg": "Mat khau hien tai khong dung",
      "line": 134,
-     "at": "app.services.auth_service.change_password",
-     "file": "server/app/services/auth_service.py"
+     "at": "app.modules.m01_auth.service.change_password",
+     "file": "server/app/modules/m01_auth/service.py"
     },
     {
      "status": 400,
      "cls": "BadRequestError",
      "msg": "Mat khau moi phai khac mat khau hien tai",
      "line": 136,
-     "at": "app.services.auth_service.change_password",
-     "file": "server/app/services/auth_service.py"
+     "at": "app.modules.m01_auth.service.change_password",
+     "file": "server/app/modules/m01_auth/service.py"
     }
    ],
    "functions": [
-    "app.api.v1.endpoints.auth.change_password",
-    "app.services.auth_service.change_password",
+    "app.modules.m01_auth.controller.change_password",
+    "app.modules.m01_auth.service.change_password",
     "app.core.rate_limit.is_locked",
     "app.core.rate_limit.recent_failures",
     "app.core.security.verify_password",
     "app.core.rate_limit.clear_failures",
-    "app.services.auth_service._set_password",
+    "app.modules.m01_auth.service._set_password",
     "app.core.security.hash_password",
     "app.core.security.revoke_all_refresh_tokens",
-    "app.services.auth_service._issue_tokens",
+    "app.modules.m01_auth.service._issue_tokens",
     "app.core.security.create_access_token",
     "app.core.security.create_refresh_token",
     "app.core.security._hash_refresh_token",
     "app.core.rate_limit.record_failure",
     "app.core.rate_limit.recent_failures",
-    "app.services.auth_service._locked_message"
+    "app.modules.m01_auth.service._locked_message"
    ],
    "models_new_static": [
     "refresh_tokens"
@@ -916,20 +916,20 @@
    "response": "application/json",
    "doc": "",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.auth.logout",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "fn": "app.modules.m01_auth.controller.logout",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 52
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.auth.logout",
+    "fn": "app.modules.m01_auth.controller.logout",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 52,
     "children": [
      {
-      "fn": "app.services.auth_service.logout",
+      "fn": "app.modules.m01_auth.service.logout",
       "layer": "service",
-      "file": "server/app/services/auth_service.py",
+      "file": "server/app/modules/m01_auth/service.py",
       "line": 145,
       "children": [
        {
@@ -998,8 +998,8 @@
     }
    ],
    "functions": [
-    "app.api.v1.endpoints.auth.logout",
-    "app.services.auth_service.logout",
+    "app.modules.m01_auth.controller.logout",
+    "app.modules.m01_auth.service.logout",
     "app.services.audit.record_event",
     "app.services.audit._actor_faculty",
     "app.services.audit._client_ip",
@@ -1024,20 +1024,20 @@
    "response": "MeOut",
    "doc": "Thong tin tai khoan dang dang nhap kem ho so theo vai tro.",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.auth.get_me",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "fn": "app.modules.m01_auth.controller.get_me",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 58
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.auth.get_me",
+    "fn": "app.modules.m01_auth.controller.get_me",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/auth.py",
+    "file": "server/app/modules/m01_auth/controller.py",
     "line": 58,
     "children": [
      {
-      "fn": "app.services.auth_service.me",
+      "fn": "app.modules.m01_auth.service.me",
       "layer": "service",
-      "file": "server/app/services/auth_service.py",
+      "file": "server/app/modules/m01_auth/service.py",
       "line": 159,
       "children": [
        {
@@ -1073,9 +1073,9 @@
         "call_line": 172
        },
        {
-        "fn": "app.services.auth_service._class_brief",
+        "fn": "app.modules.m01_auth.service._class_brief",
         "layer": "service",
-        "file": "server/app/services/auth_service.py",
+        "file": "server/app/modules/m01_auth/service.py",
         "line": 154,
         "children": [],
         "call_line": 175
@@ -1104,13 +1104,13 @@
     }
    ],
    "functions": [
-    "app.api.v1.endpoints.auth.get_me",
-    "app.services.auth_service.me",
+    "app.modules.m01_auth.controller.get_me",
+    "app.modules.m01_auth.service.me",
     "app.repositories.student_repository.get_by_user",
     "app.repositories.lecturer_repository.get_by_user",
     "app.repositories.staff_repository.get_by_user",
     "app.services.mappers.face_status_of",
-    "app.services.auth_service._class_brief",
+    "app.modules.m01_auth.service._class_brief",
     "app.repositories.class_repository.of_lecturer"
    ],
    "models_new_static": []
@@ -1738,21 +1738,21 @@
       "line": 44,
       "children": [
        {
-        "fn": "app.services.account_service.ensure_email_available",
+        "fn": "app.modules.m01_auth.account_service.ensure_email_available",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 10,
         "children": [
          {
-          "fn": "app.repositories.user_repository.email_taken",
+          "fn": "app.modules.m01_auth.repository.email_taken",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 15,
           "children": [
            {
-            "fn": "app.repositories.user_repository.get_by_email",
+            "fn": "app.modules.m01_auth.repository.get_by_email",
             "layer": "repository",
-            "file": "server/app/repositories/user_repository.py",
+            "file": "server/app/modules/m01_auth/repository.py",
             "line": 11,
             "children": [],
             "call_line": 16
@@ -1781,9 +1781,9 @@
         "call_line": 48
        },
        {
-        "fn": "app.services.account_service.new_user",
+        "fn": "app.modules.m01_auth.account_service.new_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 15,
         "children": [
          {
@@ -1840,8 +1840,8 @@
      "cls": "BadRequestError",
      "msg": "Email da ton tai",
      "line": 12,
-     "at": "app.services.account_service.ensure_email_available",
-     "file": "server/app/services/account_service.py"
+     "at": "app.modules.m01_auth.account_service.ensure_email_available",
+     "file": "server/app/modules/m01_auth/account_service.py"
     },
     {
      "status": 400,
@@ -1863,12 +1863,12 @@
    "functions": [
     "app.api.v1.endpoints.staff.create_staff",
     "app.services.staff_service.create_staff",
-    "app.services.account_service.ensure_email_available",
-    "app.repositories.user_repository.email_taken",
-    "app.repositories.user_repository.get_by_email",
+    "app.modules.m01_auth.account_service.ensure_email_available",
+    "app.modules.m01_auth.repository.email_taken",
+    "app.modules.m01_auth.repository.get_by_email",
     "app.services.staff_service._get_unit",
     "app.repositories.unit_repository.get",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.new_user",
     "app.core.security.hash_password",
     "app.services.mappers.staff_out",
     "app.services.staff_service.role_for"
@@ -2108,15 +2108,15 @@
         "call_line": 80
        },
        {
-        "fn": "app.services.account_service.ensure_no_attendance_edits",
+        "fn": "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 24,
         "children": [
          {
-          "fn": "app.repositories.user_repository.has_attendance_edits",
+          "fn": "app.modules.m01_auth.repository.has_attendance_edits",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 19,
           "children": [],
           "call_line": 26
@@ -2125,15 +2125,15 @@
         "call_line": 82
        },
        {
-        "fn": "app.services.account_service.delete_profile_and_user",
+        "fn": "app.modules.m01_auth.account_service.delete_profile_and_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 31,
         "children": [
          {
-          "fn": "app.repositories.user_repository.delete_auth_rows",
+          "fn": "app.modules.m01_auth.repository.delete_auth_rows",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 24,
           "children": [],
           "call_line": 34
@@ -2176,8 +2176,8 @@
      "cls": "ConflictError",
      "msg": "Tai khoan da co lich su sua diem danh, khong the xoa (giu lai de doi chieu)",
      "line": 27,
-     "at": "app.services.account_service.ensure_no_attendance_edits",
-     "file": "server/app/services/account_service.py"
+     "at": "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
+     "file": "server/app/modules/m01_auth/account_service.py"
     }
    ],
    "functions": [
@@ -2185,10 +2185,10 @@
     "app.services.staff_service.delete_staff",
     "app.services.staff_service._get_or_404",
     "app.repositories.staff_repository.get",
-    "app.services.account_service.ensure_no_attendance_edits",
-    "app.repositories.user_repository.has_attendance_edits",
-    "app.services.account_service.delete_profile_and_user",
-    "app.repositories.user_repository.delete_auth_rows"
+    "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
+    "app.modules.m01_auth.repository.has_attendance_edits",
+    "app.modules.m01_auth.account_service.delete_profile_and_user",
+    "app.modules.m01_auth.repository.delete_auth_rows"
    ],
    "models_new_static": []
   },
@@ -3479,21 +3479,21 @@
       "line": 22,
       "children": [
        {
-        "fn": "app.services.account_service.ensure_email_available",
+        "fn": "app.modules.m01_auth.account_service.ensure_email_available",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 10,
         "children": [
          {
-          "fn": "app.repositories.user_repository.email_taken",
+          "fn": "app.modules.m01_auth.repository.email_taken",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 15,
           "children": [
            {
-            "fn": "app.repositories.user_repository.get_by_email",
+            "fn": "app.modules.m01_auth.repository.get_by_email",
             "layer": "repository",
-            "file": "server/app/repositories/user_repository.py",
+            "file": "server/app/modules/m01_auth/repository.py",
             "line": 11,
             "children": [],
             "call_line": 16
@@ -3521,9 +3521,9 @@
         "call_line": 26
        },
        {
-        "fn": "app.services.account_service.new_user",
+        "fn": "app.modules.m01_auth.account_service.new_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 15,
         "children": [
          {
@@ -3580,8 +3580,8 @@
      "cls": "BadRequestError",
      "msg": "Email da ton tai",
      "line": 12,
-     "at": "app.services.account_service.ensure_email_available",
-     "file": "server/app/services/account_service.py"
+     "at": "app.modules.m01_auth.account_service.ensure_email_available",
+     "file": "server/app/modules/m01_auth/account_service.py"
     },
     {
      "status": 400,
@@ -3595,12 +3595,12 @@
    "functions": [
     "app.api.v1.endpoints.lecturers.create_lecturer",
     "app.services.lecturer_service.create_lecturer",
-    "app.services.account_service.ensure_email_available",
-    "app.repositories.user_repository.email_taken",
-    "app.repositories.user_repository.get_by_email",
+    "app.modules.m01_auth.account_service.ensure_email_available",
+    "app.modules.m01_auth.repository.email_taken",
+    "app.modules.m01_auth.repository.get_by_email",
     "app.repositories.lecturer_repository.code_taken",
     "app.core.authz.validate_faculty_id",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.new_user",
     "app.core.security.hash_password",
     "app.services.mappers.lecturer_out"
    ],
@@ -3960,15 +3960,15 @@
         "call_line": 64
        },
        {
-        "fn": "app.services.account_service.ensure_no_attendance_edits",
+        "fn": "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 24,
         "children": [
          {
-          "fn": "app.repositories.user_repository.has_attendance_edits",
+          "fn": "app.modules.m01_auth.repository.has_attendance_edits",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 19,
           "children": [],
           "call_line": 26
@@ -3977,15 +3977,15 @@
         "call_line": 67
        },
        {
-        "fn": "app.services.account_service.delete_profile_and_user",
+        "fn": "app.modules.m01_auth.account_service.delete_profile_and_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 31,
         "children": [
          {
-          "fn": "app.repositories.user_repository.delete_auth_rows",
+          "fn": "app.modules.m01_auth.repository.delete_auth_rows",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 24,
           "children": [],
           "call_line": 34
@@ -4036,8 +4036,8 @@
      "cls": "ConflictError",
      "msg": "Tai khoan da co lich su sua diem danh, khong the xoa (giu lai de doi chieu)",
      "line": 27,
-     "at": "app.services.account_service.ensure_no_attendance_edits",
-     "file": "server/app/services/account_service.py"
+     "at": "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
+     "file": "server/app/modules/m01_auth/account_service.py"
     }
    ],
    "functions": [
@@ -4046,10 +4046,10 @@
     "app.services.lecturer_service._get_or_404",
     "app.repositories.lecturer_repository.get",
     "app.repositories.lecturer_repository.teaches_any_class",
-    "app.services.account_service.ensure_no_attendance_edits",
-    "app.repositories.user_repository.has_attendance_edits",
-    "app.services.account_service.delete_profile_and_user",
-    "app.repositories.user_repository.delete_auth_rows"
+    "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
+    "app.modules.m01_auth.repository.has_attendance_edits",
+    "app.modules.m01_auth.account_service.delete_profile_and_user",
+    "app.modules.m01_auth.repository.delete_auth_rows"
    ],
    "models_new_static": []
   },
@@ -7052,21 +7052,21 @@
       "line": 24,
       "children": [
        {
-        "fn": "app.services.account_service.ensure_email_available",
+        "fn": "app.modules.m01_auth.account_service.ensure_email_available",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 10,
         "children": [
          {
-          "fn": "app.repositories.user_repository.email_taken",
+          "fn": "app.modules.m01_auth.repository.email_taken",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 15,
           "children": [
            {
-            "fn": "app.repositories.user_repository.get_by_email",
+            "fn": "app.modules.m01_auth.repository.get_by_email",
             "layer": "repository",
-            "file": "server/app/repositories/user_repository.py",
+            "file": "server/app/modules/m01_auth/repository.py",
             "line": 11,
             "children": [],
             "call_line": 16
@@ -7094,9 +7094,9 @@
         "call_line": 28
        },
        {
-        "fn": "app.services.account_service.new_user",
+        "fn": "app.modules.m01_auth.account_service.new_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 15,
         "children": [
          {
@@ -7162,8 +7162,8 @@
      "cls": "BadRequestError",
      "msg": "Email da ton tai",
      "line": 12,
-     "at": "app.services.account_service.ensure_email_available",
-     "file": "server/app/services/account_service.py"
+     "at": "app.modules.m01_auth.account_service.ensure_email_available",
+     "file": "server/app/modules/m01_auth/account_service.py"
     },
     {
      "status": 400,
@@ -7177,12 +7177,12 @@
    "functions": [
     "app.api.v1.endpoints.students.create_student",
     "app.services.student_service.create_student",
-    "app.services.account_service.ensure_email_available",
-    "app.repositories.user_repository.email_taken",
-    "app.repositories.user_repository.get_by_email",
+    "app.modules.m01_auth.account_service.ensure_email_available",
+    "app.modules.m01_auth.repository.email_taken",
+    "app.modules.m01_auth.repository.get_by_email",
     "app.repositories.student_repository.get_by_code",
     "app.core.authz.validate_faculty_id",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.new_user",
     "app.core.security.hash_password",
     "app.services.mappers.student_out",
     "app.services.mappers.face_status_of"
@@ -8206,15 +8206,15 @@
         "call_line": 95
        },
        {
-        "fn": "app.services.account_service.delete_profile_and_user",
+        "fn": "app.modules.m01_auth.account_service.delete_profile_and_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 31,
         "children": [
          {
-          "fn": "app.repositories.user_repository.delete_auth_rows",
+          "fn": "app.modules.m01_auth.repository.delete_auth_rows",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 24,
           "children": [],
           "call_line": 34
@@ -8276,8 +8276,8 @@
     "app.repositories.student_repository.get",
     "app.repositories.student_repository.has_attendance_records",
     "app.repositories.student_repository.delete_parent_links",
-    "app.services.account_service.delete_profile_and_user",
-    "app.repositories.user_repository.delete_auth_rows"
+    "app.modules.m01_auth.account_service.delete_profile_and_user",
+    "app.modules.m01_auth.repository.delete_auth_rows"
    ],
    "models_new_static": []
   },
@@ -8596,24 +8596,24 @@
       "fn": "app.services.parent_service.create_parent",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 60,
+      "line": 61,
       "children": [
        {
-        "fn": "app.services.account_service.ensure_email_available",
+        "fn": "app.modules.m01_auth.account_service.ensure_email_available",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 10,
         "children": [
          {
-          "fn": "app.repositories.user_repository.email_taken",
+          "fn": "app.modules.m01_auth.repository.email_taken",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 15,
           "children": [
            {
-            "fn": "app.repositories.user_repository.get_by_email",
+            "fn": "app.modules.m01_auth.repository.get_by_email",
             "layer": "repository",
-            "file": "server/app/repositories/user_repository.py",
+            "file": "server/app/modules/m01_auth/repository.py",
             "line": 11,
             "children": [],
             "call_line": 16
@@ -8622,12 +8622,12 @@
           "call_line": 11
          }
         ],
-        "call_line": 61
+        "call_line": 62
        },
        {
-        "fn": "app.services.account_service.new_user",
+        "fn": "app.modules.m01_auth.account_service.new_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 15,
         "children": [
          {
@@ -8639,15 +8639,15 @@
           "call_line": 17
          }
         ],
-        "call_line": 62
+        "call_line": 63
        },
        {
         "fn": "app.services.parent_service._to_out",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 15,
+        "line": 16,
         "children": [],
-        "call_line": 68
+        "call_line": 69
        }
       ],
       "call_line": 24
@@ -8676,17 +8676,17 @@
      "cls": "BadRequestError",
      "msg": "Email da ton tai",
      "line": 12,
-     "at": "app.services.account_service.ensure_email_available",
-     "file": "server/app/services/account_service.py"
+     "at": "app.modules.m01_auth.account_service.ensure_email_available",
+     "file": "server/app/modules/m01_auth/account_service.py"
     }
    ],
    "functions": [
     "app.api.v1.endpoints.parents.create_parent",
     "app.services.parent_service.create_parent",
-    "app.services.account_service.ensure_email_available",
-    "app.repositories.user_repository.email_taken",
-    "app.repositories.user_repository.get_by_email",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.ensure_email_available",
+    "app.modules.m01_auth.repository.email_taken",
+    "app.modules.m01_auth.repository.get_by_email",
+    "app.modules.m01_auth.account_service.new_user",
     "app.core.security.hash_password",
     "app.services.parent_service._to_out"
    ],
@@ -8744,7 +8744,7 @@
       "fn": "app.services.parent_service.list_parents",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 71,
+      "line": 72,
       "children": [
        {
         "fn": "app.repositories.parent_repository.search",
@@ -8761,15 +8761,15 @@
           "call_line": 23
          }
         ],
-        "call_line": 73
+        "call_line": 74
        },
        {
         "fn": "app.services.parent_service._to_out",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 15,
+        "line": 16,
         "children": [],
-        "call_line": 74
+        "call_line": 75
        }
       ],
       "call_line": 31
@@ -8856,13 +8856,13 @@
       "fn": "app.services.parent_service.update_parent",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 77,
+      "line": 78,
       "children": [
        {
         "fn": "app.services.parent_service._get_or_404",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 31,
+        "line": 32,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get",
@@ -8870,18 +8870,18 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 9,
           "children": [],
-          "call_line": 32
+          "call_line": 33
          }
         ],
-        "call_line": 78
+        "call_line": 79
        },
        {
         "fn": "app.services.parent_service._to_out",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 15,
+        "line": 16,
         "children": [],
-        "call_line": 86
+        "call_line": 87
        }
       ],
       "call_line": 39
@@ -8909,7 +8909,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Phu huynh khong ton tai",
-     "line": 34,
+     "line": 35,
      "at": "app.services.parent_service._get_or_404",
      "file": "server/app/services/parent_service.py"
     }
@@ -8959,13 +8959,13 @@
       "fn": "app.services.parent_service.delete_parent",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 89,
+      "line": 90,
       "children": [
        {
         "fn": "app.services.parent_service._get_or_404",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 31,
+        "line": 32,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get",
@@ -8973,27 +8973,27 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 9,
           "children": [],
-          "call_line": 32
+          "call_line": 33
          }
         ],
-        "call_line": 91
+        "call_line": 92
        },
        {
-        "fn": "app.services.account_service.delete_profile_and_user",
+        "fn": "app.modules.m01_auth.account_service.delete_profile_and_user",
         "layer": "service",
-        "file": "server/app/services/account_service.py",
+        "file": "server/app/modules/m01_auth/account_service.py",
         "line": 31,
         "children": [
          {
-          "fn": "app.repositories.user_repository.delete_auth_rows",
+          "fn": "app.modules.m01_auth.repository.delete_auth_rows",
           "layer": "repository",
-          "file": "server/app/repositories/user_repository.py",
+          "file": "server/app/modules/m01_auth/repository.py",
           "line": 24,
           "children": [],
           "call_line": 34
          }
         ],
-        "call_line": 92
+        "call_line": 93
        }
       ],
       "call_line": 44
@@ -9021,7 +9021,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Phu huynh khong ton tai",
-     "line": 34,
+     "line": 35,
      "at": "app.services.parent_service._get_or_404",
      "file": "server/app/services/parent_service.py"
     }
@@ -9031,8 +9031,8 @@
     "app.services.parent_service.delete_parent",
     "app.services.parent_service._get_or_404",
     "app.repositories.parent_repository.get",
-    "app.services.account_service.delete_profile_and_user",
-    "app.repositories.user_repository.delete_auth_rows"
+    "app.modules.m01_auth.account_service.delete_profile_and_user",
+    "app.modules.m01_auth.repository.delete_auth_rows"
    ],
    "models_new_static": []
   },
@@ -9064,13 +9064,13 @@
       "fn": "app.services.parent_service.my_preferences",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 126,
+      "line": 127,
       "children": [
        {
         "fn": "app.services.parent_service._preferences_out",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 52,
+        "line": 53,
         "children": [
          {
           "fn": "app.services.email_service.is_configured",
@@ -9078,16 +9078,16 @@
           "file": "server/app/services/email_service.py",
           "line": 25,
           "children": [],
-          "call_line": 55
+          "call_line": 56
          }
         ],
-        "call_line": 127
+        "call_line": 128
        },
        {
         "fn": "app.services.parent_service._own_profile",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 38,
+        "line": 39,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get_by_user",
@@ -9095,10 +9095,10 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 13,
           "children": [],
-          "call_line": 39
+          "call_line": 40
          }
         ],
-        "call_line": 127
+        "call_line": 128
        }
       ],
       "call_line": 53
@@ -9126,7 +9126,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay ho so phu huynh",
-     "line": 41,
+     "line": 42,
      "at": "app.services.parent_service._own_profile",
      "file": "server/app/services/parent_service.py"
     }
@@ -9186,13 +9186,13 @@
       "fn": "app.services.parent_service.update_my_preferences",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 130,
+      "line": 131,
       "children": [
        {
         "fn": "app.services.parent_service._own_profile",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 38,
+        "line": 39,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get_by_user",
@@ -9200,16 +9200,16 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 13,
           "children": [],
-          "call_line": 39
+          "call_line": 40
          }
         ],
-        "call_line": 133
+        "call_line": 134
        },
        {
         "fn": "app.services.parent_service._preferences_out",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 52,
+        "line": 53,
         "children": [
          {
           "fn": "app.services.email_service.is_configured",
@@ -9217,10 +9217,10 @@
           "file": "server/app/services/email_service.py",
           "line": 25,
           "children": [],
-          "call_line": 55
+          "call_line": 56
          }
         ],
-        "call_line": 138
+        "call_line": 139
        }
       ],
       "call_line": 59
@@ -9248,7 +9248,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay ho so phu huynh",
-     "line": 41,
+     "line": 42,
      "at": "app.services.parent_service._own_profile",
      "file": "server/app/services/parent_service.py"
     }
@@ -9291,13 +9291,13 @@
       "fn": "app.services.parent_service.my_children",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 141,
+      "line": 142,
       "children": [
        {
         "fn": "app.services.parent_service._own_profile",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 38,
+        "line": 39,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get_by_user",
@@ -9305,16 +9305,16 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 13,
           "children": [],
-          "call_line": 39
+          "call_line": 40
          }
         ],
-        "call_line": 142
+        "call_line": 143
        },
        {
         "fn": "app.services.parent_service._child_to_out",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 22,
+        "line": 23,
         "children": [
          {
           "fn": "app.services.mappers.student_out",
@@ -9331,10 +9331,10 @@
             "call_line": 21
            }
           ],
-          "call_line": 28
+          "call_line": 29
          }
         ],
-        "call_line": 143
+        "call_line": 144
        }
       ],
       "call_line": 64
@@ -9362,7 +9362,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay ho so phu huynh",
-     "line": 41,
+     "line": 42,
      "at": "app.services.parent_service._own_profile",
      "file": "server/app/services/parent_service.py"
     }
@@ -9419,13 +9419,13 @@
       "fn": "app.services.parent_service.child_attendance",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 146,
+      "line": 147,
       "children": [
        {
         "fn": "app.services.parent_service._own_profile",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 38,
+        "line": 39,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get_by_user",
@@ -9433,16 +9433,16 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 13,
           "children": [],
-          "call_line": 39
+          "call_line": 40
          }
         ],
-        "call_line": 150
+        "call_line": 151
        },
        {
         "fn": "app.services.parent_service._ensure_own_child",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 45,
+        "line": 46,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get_link",
@@ -9450,10 +9450,10 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 26,
           "children": [],
-          "call_line": 46
+          "call_line": 47
          }
         ],
-        "call_line": 151
+        "call_line": 152
        },
        {
         "fn": "app.services.report_service.student_attendance",
@@ -9486,7 +9486,7 @@
           "call_line": 58
          }
         ],
-        "call_line": 152
+        "call_line": 153
        }
       ],
       "call_line": 71
@@ -9514,7 +9514,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay ho so phu huynh",
-     "line": 41,
+     "line": 42,
      "at": "app.services.parent_service._own_profile",
      "file": "server/app/services/parent_service.py"
     },
@@ -9522,7 +9522,7 @@
      "status": 403,
      "cls": "ForbiddenError",
      "msg": "Ban khong duoc lien ket voi sinh vien nay",
-     "line": 48,
+     "line": 49,
      "at": "app.services.parent_service._ensure_own_child",
      "file": "server/app/services/parent_service.py"
     }
@@ -9578,13 +9578,13 @@
       "fn": "app.services.parent_service.list_children_of",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 97,
+      "line": 98,
       "children": [
        {
         "fn": "app.services.parent_service._get_or_404",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 31,
+        "line": 32,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get",
@@ -9592,10 +9592,10 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 9,
           "children": [],
-          "call_line": 32
+          "call_line": 33
          }
         ],
-        "call_line": 98
+        "call_line": 99
        },
        {
         "fn": "app.services.mappers.student_out",
@@ -9612,7 +9612,7 @@
           "call_line": 21
          }
         ],
-        "call_line": 99
+        "call_line": 100
        }
       ],
       "call_line": 78
@@ -9640,7 +9640,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Phu huynh khong ton tai",
-     "line": 34,
+     "line": 35,
      "at": "app.services.parent_service._get_or_404",
      "file": "server/app/services/parent_service.py"
     }
@@ -9702,13 +9702,13 @@
       "fn": "app.services.parent_service.link_child",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 102,
+      "line": 103,
       "children": [
        {
         "fn": "app.services.parent_service._get_or_404",
         "layer": "service",
         "file": "server/app/services/parent_service.py",
-        "line": 31,
+        "line": 32,
         "children": [
          {
           "fn": "app.repositories.parent_repository.get",
@@ -9716,10 +9716,10 @@
           "file": "server/app/repositories/parent_repository.py",
           "line": 9,
           "children": [],
-          "call_line": 32
+          "call_line": 33
          }
         ],
-        "call_line": 104
+        "call_line": 105
        },
        {
         "fn": "app.repositories.student_repository.get_by_code",
@@ -9727,7 +9727,7 @@
         "file": "server/app/repositories/student_repository.py",
         "line": 21,
         "children": [],
-        "call_line": 105
+        "call_line": 106
        },
        {
         "fn": "app.repositories.parent_repository.get_link",
@@ -9735,7 +9735,7 @@
         "file": "server/app/repositories/parent_repository.py",
         "line": 26,
         "children": [],
-        "call_line": 108
+        "call_line": 109
        }
       ],
       "call_line": 84
@@ -9763,7 +9763,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay sinh vien voi MSSV {…}",
-     "line": 107,
+     "line": 108,
      "at": "app.services.parent_service.link_child",
      "file": "server/app/services/parent_service.py"
     },
@@ -9771,7 +9771,7 @@
      "status": 400,
      "cls": "BadRequestError",
      "msg": "Da lien ket voi sinh vien nay roi",
-     "line": 109,
+     "line": 110,
      "at": "app.services.parent_service.link_child",
      "file": "server/app/services/parent_service.py"
     },
@@ -9779,7 +9779,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Phu huynh khong ton tai",
-     "line": 34,
+     "line": 35,
      "at": "app.services.parent_service._get_or_404",
      "file": "server/app/services/parent_service.py"
     }
@@ -9838,7 +9838,7 @@
       "fn": "app.services.parent_service.unlink_child",
       "layer": "service",
       "file": "server/app/services/parent_service.py",
-      "line": 115,
+      "line": 116,
       "children": [
        {
         "fn": "app.repositories.parent_repository.get_link",
@@ -9846,7 +9846,7 @@
         "file": "server/app/repositories/parent_repository.py",
         "line": 26,
         "children": [],
-        "call_line": 116
+        "call_line": 117
        }
       ],
       "call_line": 89
@@ -9874,7 +9874,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Chua lien ket voi sinh vien nay",
-     "line": 118,
+     "line": 119,
      "at": "app.services.parent_service.unlink_child",
      "file": "server/app/services/parent_service.py"
     }
@@ -15827,20 +15827,20 @@
    "response": "",
    "doc": "Tra anh khi URL co chu ky hop le va con han.",
    "endpoint": {
-    "fn": "app.api.v1.endpoints.media.get_media",
-    "file": "server/app/api/v1/endpoints/media.py",
+    "fn": "app.modules.m01_auth.media_controller.get_media",
+    "file": "server/app/modules/m01_auth/media_controller.py",
     "line": 15
    },
    "chain": {
-    "fn": "app.api.v1.endpoints.media.get_media",
+    "fn": "app.modules.m01_auth.media_controller.get_media",
     "layer": "controller",
-    "file": "server/app/api/v1/endpoints/media.py",
+    "file": "server/app/modules/m01_auth/media_controller.py",
     "line": 15,
     "children": [
      {
-      "fn": "app.services.media_service.resolve_signed",
+      "fn": "app.modules.m01_auth.media_service.resolve_signed",
       "layer": "service",
-      "file": "server/app/services/media_service.py",
+      "file": "server/app/modules/m01_auth/media_service.py",
       "line": 8,
       "children": [],
       "call_line": 17
@@ -15853,21 +15853,21 @@
      "cls": "ForbiddenError",
      "msg": "Lien ket anh khong hop le hoac da het han",
      "line": 11,
-     "at": "app.services.media_service.resolve_signed",
-     "file": "server/app/services/media_service.py"
+     "at": "app.modules.m01_auth.media_service.resolve_signed",
+     "file": "server/app/modules/m01_auth/media_service.py"
     },
     {
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay anh",
      "line": 14,
-     "at": "app.services.media_service.resolve_signed",
-     "file": "server/app/services/media_service.py"
+     "at": "app.modules.m01_auth.media_service.resolve_signed",
+     "file": "server/app/modules/m01_auth/media_service.py"
     }
    ],
    "functions": [
-    "app.api.v1.endpoints.media.get_media",
-    "app.services.media_service.resolve_signed"
+    "app.modules.m01_auth.media_controller.get_media",
+    "app.modules.m01_auth.media_service.resolve_signed"
    ],
    "models_new_static": []
   }
@@ -16092,90 +16092,6 @@
    "doc": "",
    "calls": [
     "app.services.audit_log_service.list_audit_logs"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.auth.login": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/auth.py",
-   "line": 17,
-   "doc": "Form `username` (email), `password`. Tra access token + refresh token + vai tro.",
-   "calls": [
-    "app.services.auth_service.login"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.auth.refresh": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/auth.py",
-   "line": 24,
-   "doc": "Doi refresh token lay cap token moi (token cu bi thu hoi - xoay vong).",
-   "calls": [
-    "app.services.auth_service.refresh"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.auth.forgot_password": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/auth.py",
-   "line": 31,
-   "doc": "Gui ma OTP qua email; luon tra thong bao chung (khong lo email ton tai hay khong).",
-   "calls": [
-    "app.services.auth_service.forgot_password"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.auth.reset_password": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/auth.py",
-   "line": 38,
-   "doc": "Dat lai mat khau bang OTP; moi token cu mat hieu luc.",
-   "calls": [
-    "app.services.auth_service.reset_password"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.auth.change_password": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/auth.py",
-   "line": 45,
-   "doc": "Doi mat khau (phai dung mat khau hien tai); cap token moi cho phien hien tai.",
-   "calls": [
-    "app.services.auth_service.change_password"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.auth.logout": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/auth.py",
-   "line": 52,
-   "doc": "",
-   "calls": [
-    "app.services.auth_service.logout"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.auth.get_me": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/auth.py",
-   "line": 58,
-   "doc": "Thong tin tai khoan dang dang nhap kem ho so theo vai tro.",
-   "calls": [
-    "app.services.auth_service.me"
    ],
    "errors": [],
    "models_new": [],
@@ -16409,26 +16325,6 @@
    "models_new": [],
    "models_ref": []
   },
-  "app.api.v1.endpoints.health.root": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/health.py",
-   "line": 23,
-   "doc": "",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.health.health": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/health.py",
-   "line": 28,
-   "doc": "",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
   "app.api.v1.endpoints.leave_requests.create_leave_request": {
    "layer": "controller",
    "file": "server/app/api/v1/endpoints/leave_requests.py",
@@ -16593,18 +16489,6 @@
    "doc": "",
    "calls": [
     "app.services.location_service.delete_location"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.api.v1.endpoints.media.get_media": {
-   "layer": "controller",
-   "file": "server/app/api/v1/endpoints/media.py",
-   "line": 15,
-   "doc": "Tra anh khi URL co chu ky hop le va con han.",
-   "calls": [
-    "app.services.media_service.resolve_signed"
    ],
    "errors": [],
    "models_new": [],
@@ -17935,6 +17819,489 @@
    "models_new": [],
    "models_ref": []
   },
+  "app.modules.m01_auth.account_service.ensure_email_available": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/account_service.py",
+   "line": 10,
+   "doc": "",
+   "calls": [
+    "app.modules.m01_auth.repository.email_taken"
+   ],
+   "errors": [
+    {
+     "status": 400,
+     "cls": "BadRequestError",
+     "msg": "Email da ton tai",
+     "line": 12
+    }
+   ],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.account_service.new_user": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/account_service.py",
+   "line": 15,
+   "doc": "Them user (chua commit) va flush de co id gan vao ho so.",
+   "calls": [
+    "app.core.security.hash_password"
+   ],
+   "errors": [],
+   "models_new": [
+    "users"
+   ],
+   "models_ref": [
+    "users"
+   ]
+  },
+  "app.modules.m01_auth.account_service.ensure_no_attendance_edits": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/account_service.py",
+   "line": 24,
+   "doc": "Tai khoan da tung sua diem danh thi giu lai de doi chieu nhat ky.",
+   "calls": [
+    "app.modules.m01_auth.repository.has_attendance_edits"
+   ],
+   "errors": [
+    {
+     "status": 409,
+     "cls": "ConflictError",
+     "msg": "Tai khoan da co lich su sua diem danh, khong the xoa (giu lai de doi chieu)",
+     "line": 27
+    }
+   ],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.account_service.delete_profile_and_user": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/account_service.py",
+   "line": 31,
+   "doc": "Xoa du lieu xac thuc phu thuoc (OTP, refresh token), ho so (staff/lecturer/student/\nparent) roi den user - dung thu tu cua ban goc. Nguoi goi tu commit.",
+   "calls": [
+    "app.modules.m01_auth.repository.delete_auth_rows"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.controller.login": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/controller.py",
+   "line": 17,
+   "doc": "Form `username` (email), `password`. Tra access token + refresh token + vai tro.",
+   "calls": [
+    "app.modules.m01_auth.service.login"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.controller.refresh": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/controller.py",
+   "line": 24,
+   "doc": "Doi refresh token lay cap token moi (token cu bi thu hoi - xoay vong).",
+   "calls": [
+    "app.modules.m01_auth.service.refresh"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.controller.forgot_password": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/controller.py",
+   "line": 31,
+   "doc": "Gui ma OTP qua email; luon tra thong bao chung (khong lo email ton tai hay khong).",
+   "calls": [
+    "app.modules.m01_auth.service.forgot_password"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.controller.reset_password": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/controller.py",
+   "line": 38,
+   "doc": "Dat lai mat khau bang OTP; moi token cu mat hieu luc.",
+   "calls": [
+    "app.modules.m01_auth.service.reset_password"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.controller.change_password": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/controller.py",
+   "line": 45,
+   "doc": "Doi mat khau (phai dung mat khau hien tai); cap token moi cho phien hien tai.",
+   "calls": [
+    "app.modules.m01_auth.service.change_password"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.controller.logout": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/controller.py",
+   "line": 52,
+   "doc": "",
+   "calls": [
+    "app.modules.m01_auth.service.logout"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.controller.get_me": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/controller.py",
+   "line": 58,
+   "doc": "Thong tin tai khoan dang dang nhap kem ho so theo vai tro.",
+   "calls": [
+    "app.modules.m01_auth.service.me"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.health_controller.root": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/health_controller.py",
+   "line": 23,
+   "doc": "",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.health_controller.health": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/health_controller.py",
+   "line": 28,
+   "doc": "",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.media_controller.get_media": {
+   "layer": "controller",
+   "file": "server/app/modules/m01_auth/media_controller.py",
+   "line": 15,
+   "doc": "Tra anh khi URL co chu ky hop le va con han.",
+   "calls": [
+    "app.modules.m01_auth.media_service.resolve_signed"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.media_service.resolve_signed": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/media_service.py",
+   "line": 8,
+   "doc": "Duong dan file that neu chu ky hop le, con han va khong thoat khoi thu muc anh.",
+   "calls": [],
+   "errors": [
+    {
+     "status": 403,
+     "cls": "ForbiddenError",
+     "msg": "Lien ket anh khong hop le hoac da het han",
+     "line": 11
+    },
+    {
+     "status": 404,
+     "cls": "NotFoundError",
+     "msg": "Khong tim thay anh",
+     "line": 14
+    }
+   ],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.repository.get": {
+   "layer": "repository",
+   "file": "server/app/modules/m01_auth/repository.py",
+   "line": 7,
+   "doc": "",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": [
+    "users"
+   ]
+  },
+  "app.modules.m01_auth.repository.get_by_email": {
+   "layer": "repository",
+   "file": "server/app/modules/m01_auth/repository.py",
+   "line": 11,
+   "doc": "",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": [
+    "users"
+   ]
+  },
+  "app.modules.m01_auth.repository.email_taken": {
+   "layer": "repository",
+   "file": "server/app/modules/m01_auth/repository.py",
+   "line": 15,
+   "doc": "",
+   "calls": [
+    "app.modules.m01_auth.repository.get_by_email"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.repository.has_attendance_edits": {
+   "layer": "repository",
+   "file": "server/app/modules/m01_auth/repository.py",
+   "line": 19,
+   "doc": "Tai khoan da tung sua ket qua diem danh (attendance_audits.changed_by).",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": [
+    "attendance_audits"
+   ]
+  },
+  "app.modules.m01_auth.repository.delete_auth_rows": {
+   "layer": "repository",
+   "file": "server/app/modules/m01_auth/repository.py",
+   "line": 24,
+   "doc": "Xoa du lieu xac thuc phu thuoc user (OTP, refresh token) truoc khi xoa user.",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": [
+    "password_resets",
+    "refresh_tokens"
+   ]
+  },
+  "app.modules.m01_auth.repository.active_password_resets": {
+   "layer": "repository",
+   "file": "server/app/modules/m01_auth/repository.py",
+   "line": 30,
+   "doc": "Yeu cau dat lai mat khau chua dung va con han.",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": [
+    "password_resets"
+   ]
+  },
+  "app.modules.m01_auth.service._issue_tokens": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 30,
+   "doc": "",
+   "calls": [
+    "app.core.security.create_access_token",
+    "app.core.security.create_refresh_token"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service._locked_message": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 38,
+   "doc": "",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service.login": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 42,
+   "doc": "Dang nhap bang email + mat khau. Khoa tam theo tai khoan sau nhieu lan sai (bo sung\ncho gioi han theo IP o controller: nhieu SV dung chung IP wifi truong/4G).",
+   "calls": [
+    "app.core.rate_limit.is_locked",
+    "app.modules.m01_auth.repository.get_by_email",
+    "app.core.rate_limit.clear_failures",
+    "app.services.audit.record_event",
+    "app.modules.m01_auth.service._issue_tokens",
+    "app.core.rate_limit.record_failure",
+    "app.modules.m01_auth.service._locked_message",
+    "app.core.security.verify_password"
+   ],
+   "errors": [
+    {
+     "status": 429,
+     "cls": "TooManyRequestsError",
+     "msg": "…",
+     "line": 49
+    },
+    {
+     "status": 401,
+     "cls": "UnauthorizedError",
+     "msg": "Sai email hoac mat khau",
+     "line": 57
+    }
+   ],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service.refresh": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 64,
+   "doc": "Doi refresh token lay cap token moi (refresh token cu bi thu hoi - xoay vong).",
+   "calls": [
+    "app.core.security.rotate_refresh_token",
+    "app.core.security.create_access_token"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service.forgot_password": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 73,
+   "doc": "Gui OTP qua email. Luon tra thong bao chung du email co ton tai hay khong (chong do\nemail).",
+   "calls": [
+    "app.modules.m01_auth.repository.get_by_email",
+    "app.services.email_service.send_otp_email",
+    "app.core.security.hash_password"
+   ],
+   "errors": [],
+   "models_new": [
+    "password_resets"
+   ],
+   "models_ref": [
+    "password_resets"
+   ]
+  },
+  "app.modules.m01_auth.service.reset_password": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 96,
+   "doc": "Dat lai mat khau bang OTP: kiem OTP dung + con han + chua dung (so voi TAT CA yeu cau\ncon hieu luc, phong truong hop SV xin OTP nhieu lan). Doi xong thu hoi toan bo token dang\nhoat dong cua user qua token_version va refresh token.",
+   "calls": [
+    "app.modules.m01_auth.repository.get_by_email",
+    "app.modules.m01_auth.repository.active_password_resets",
+    "app.modules.m01_auth.service._set_password",
+    "app.core.security.verify_password"
+   ],
+   "errors": [
+    {
+     "status": 400,
+     "cls": "BadRequestError",
+     "msg": "Thong tin dat lai mat khau khong hop le",
+     "line": 102
+    },
+    {
+     "status": 400,
+     "cls": "BadRequestError",
+     "msg": "Ma OTP khong dung hoac da het han",
+     "line": 107
+    }
+   ],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service._set_password": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 115,
+   "doc": "Doi mat khau va thu hoi moi phien cu (token_version + refresh token). Chua commit.",
+   "calls": [
+    "app.core.security.hash_password",
+    "app.core.security.revoke_all_refresh_tokens"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service.change_password": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 123,
+   "doc": "Nguoi dang dang nhap tu doi mat khau: phai dung mat khau hien tai (nhap sai nhieu lan\nbi tam khoa giong dang nhap). Doi xong thu hoi moi phien khac va cap token moi cho chinh\nphien nay de nguoi dung khong bi dang xuat giua chung.",
+   "calls": [
+    "app.core.rate_limit.is_locked",
+    "app.core.security.verify_password",
+    "app.core.rate_limit.clear_failures",
+    "app.modules.m01_auth.service._set_password",
+    "app.modules.m01_auth.service._issue_tokens",
+    "app.core.rate_limit.record_failure",
+    "app.modules.m01_auth.service._locked_message"
+   ],
+   "errors": [
+    {
+     "status": 429,
+     "cls": "TooManyRequestsError",
+     "msg": "…",
+     "line": 130
+    },
+    {
+     "status": 400,
+     "cls": "BadRequestError",
+     "msg": "Mat khau hien tai khong dung",
+     "line": 134
+    },
+    {
+     "status": 400,
+     "cls": "BadRequestError",
+     "msg": "Mat khau moi phai khac mat khau hien tai",
+     "line": 136
+    }
+   ],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service.logout": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 145,
+   "doc": "",
+   "calls": [
+    "app.services.audit.record_event",
+    "app.core.security.revoke_token",
+    "app.core.security.revoke_refresh_token"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service._class_brief": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 154,
+   "doc": "",
+   "calls": [],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
+  "app.modules.m01_auth.service.me": {
+   "layer": "service",
+   "file": "server/app/modules/m01_auth/service.py",
+   "line": 159,
+   "doc": "Thong tin tai khoan dang dang nhap, kem ho so: SV (lop da ghi danh), GV (lop dang\nday), can bo phong ban (don vi) - client dung de dieu huong va hien the ca nhan.",
+   "calls": [
+    "app.repositories.student_repository.get_by_user",
+    "app.repositories.lecturer_repository.get_by_user",
+    "app.repositories.staff_repository.get_by_user",
+    "app.services.mappers.face_status_of",
+    "app.modules.m01_auth.service._class_brief",
+    "app.repositories.class_repository.of_lecturer"
+   ],
+   "errors": [],
+   "models_new": [],
+   "models_ref": []
+  },
   "app.repositories.audit_log_repository.search": {
    "layer": "repository",
    "file": "server/app/repositories/audit_log_repository.py",
@@ -19101,145 +19468,6 @@
     "students"
    ]
   },
-  "app.repositories.user_repository.get": {
-   "layer": "repository",
-   "file": "server/app/repositories/user_repository.py",
-   "line": 7,
-   "doc": "",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": [
-    "users"
-   ]
-  },
-  "app.repositories.user_repository.get_by_email": {
-   "layer": "repository",
-   "file": "server/app/repositories/user_repository.py",
-   "line": 11,
-   "doc": "",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": [
-    "users"
-   ]
-  },
-  "app.repositories.user_repository.email_taken": {
-   "layer": "repository",
-   "file": "server/app/repositories/user_repository.py",
-   "line": 15,
-   "doc": "",
-   "calls": [
-    "app.repositories.user_repository.get_by_email"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.repositories.user_repository.has_attendance_edits": {
-   "layer": "repository",
-   "file": "server/app/repositories/user_repository.py",
-   "line": 19,
-   "doc": "Tai khoan da tung sua ket qua diem danh (attendance_audits.changed_by).",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": [
-    "attendance_audits"
-   ]
-  },
-  "app.repositories.user_repository.delete_auth_rows": {
-   "layer": "repository",
-   "file": "server/app/repositories/user_repository.py",
-   "line": 24,
-   "doc": "Xoa du lieu xac thuc phu thuoc user (OTP, refresh token) truoc khi xoa user.",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": [
-    "password_resets",
-    "refresh_tokens"
-   ]
-  },
-  "app.repositories.user_repository.active_password_resets": {
-   "layer": "repository",
-   "file": "server/app/repositories/user_repository.py",
-   "line": 30,
-   "doc": "Yeu cau dat lai mat khau chua dung va con han.",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": [
-    "password_resets"
-   ]
-  },
-  "app.services.account_service.ensure_email_available": {
-   "layer": "service",
-   "file": "server/app/services/account_service.py",
-   "line": 10,
-   "doc": "",
-   "calls": [
-    "app.repositories.user_repository.email_taken"
-   ],
-   "errors": [
-    {
-     "status": 400,
-     "cls": "BadRequestError",
-     "msg": "Email da ton tai",
-     "line": 12
-    }
-   ],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.account_service.new_user": {
-   "layer": "service",
-   "file": "server/app/services/account_service.py",
-   "line": 15,
-   "doc": "Them user (chua commit) va flush de co id gan vao ho so.",
-   "calls": [
-    "app.core.security.hash_password"
-   ],
-   "errors": [],
-   "models_new": [
-    "users"
-   ],
-   "models_ref": [
-    "users"
-   ]
-  },
-  "app.services.account_service.ensure_no_attendance_edits": {
-   "layer": "service",
-   "file": "server/app/services/account_service.py",
-   "line": 24,
-   "doc": "Tai khoan da tung sua diem danh thi giu lai de doi chieu nhat ky.",
-   "calls": [
-    "app.repositories.user_repository.has_attendance_edits"
-   ],
-   "errors": [
-    {
-     "status": 409,
-     "cls": "ConflictError",
-     "msg": "Tai khoan da co lich su sua diem danh, khong the xoa (giu lai de doi chieu)",
-     "line": 27
-    }
-   ],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.account_service.delete_profile_and_user": {
-   "layer": "service",
-   "file": "server/app/services/account_service.py",
-   "line": 31,
-   "doc": "Xoa du lieu xac thuc phu thuoc (OTP, refresh token), ho so (staff/lecturer/student/\nparent) roi den user - dung thu tu cua ban goc. Nguoi goi tu commit.",
-   "calls": [
-    "app.repositories.user_repository.delete_auth_rows"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
   "app.services.antispoof_service._load_session": {
    "layer": "service",
    "file": "server/app/services/antispoof_service.py",
@@ -19716,211 +19944,6 @@
    "calls": [
     "app.repositories.audit_log_repository.search",
     "app.core.authz.staff_unit_id"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service._issue_tokens": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 30,
-   "doc": "",
-   "calls": [
-    "app.core.security.create_access_token",
-    "app.core.security.create_refresh_token"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service._locked_message": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 38,
-   "doc": "",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service.login": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 42,
-   "doc": "Dang nhap bang email + mat khau. Khoa tam theo tai khoan sau nhieu lan sai (bo sung\ncho gioi han theo IP o controller: nhieu SV dung chung IP wifi truong/4G).",
-   "calls": [
-    "app.core.rate_limit.is_locked",
-    "app.repositories.user_repository.get_by_email",
-    "app.core.rate_limit.clear_failures",
-    "app.services.audit.record_event",
-    "app.services.auth_service._issue_tokens",
-    "app.core.rate_limit.record_failure",
-    "app.services.auth_service._locked_message",
-    "app.core.security.verify_password"
-   ],
-   "errors": [
-    {
-     "status": 429,
-     "cls": "TooManyRequestsError",
-     "msg": "…",
-     "line": 49
-    },
-    {
-     "status": 401,
-     "cls": "UnauthorizedError",
-     "msg": "Sai email hoac mat khau",
-     "line": 57
-    }
-   ],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service.refresh": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 64,
-   "doc": "Doi refresh token lay cap token moi (refresh token cu bi thu hoi - xoay vong).",
-   "calls": [
-    "app.core.security.rotate_refresh_token",
-    "app.core.security.create_access_token"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service.forgot_password": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 73,
-   "doc": "Gui OTP qua email. Luon tra thong bao chung du email co ton tai hay khong (chong do\nemail).",
-   "calls": [
-    "app.repositories.user_repository.get_by_email",
-    "app.services.email_service.send_otp_email",
-    "app.core.security.hash_password"
-   ],
-   "errors": [],
-   "models_new": [
-    "password_resets"
-   ],
-   "models_ref": [
-    "password_resets"
-   ]
-  },
-  "app.services.auth_service.reset_password": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 96,
-   "doc": "Dat lai mat khau bang OTP: kiem OTP dung + con han + chua dung (so voi TAT CA yeu cau\ncon hieu luc, phong truong hop SV xin OTP nhieu lan). Doi xong thu hoi toan bo token dang\nhoat dong cua user qua token_version va refresh token.",
-   "calls": [
-    "app.repositories.user_repository.get_by_email",
-    "app.repositories.user_repository.active_password_resets",
-    "app.services.auth_service._set_password",
-    "app.core.security.verify_password"
-   ],
-   "errors": [
-    {
-     "status": 400,
-     "cls": "BadRequestError",
-     "msg": "Thong tin dat lai mat khau khong hop le",
-     "line": 102
-    },
-    {
-     "status": 400,
-     "cls": "BadRequestError",
-     "msg": "Ma OTP khong dung hoac da het han",
-     "line": 107
-    }
-   ],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service._set_password": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 115,
-   "doc": "Doi mat khau va thu hoi moi phien cu (token_version + refresh token). Chua commit.",
-   "calls": [
-    "app.core.security.hash_password",
-    "app.core.security.revoke_all_refresh_tokens"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service.change_password": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 123,
-   "doc": "Nguoi dang dang nhap tu doi mat khau: phai dung mat khau hien tai (nhap sai nhieu lan\nbi tam khoa giong dang nhap). Doi xong thu hoi moi phien khac va cap token moi cho chinh\nphien nay de nguoi dung khong bi dang xuat giua chung.",
-   "calls": [
-    "app.core.rate_limit.is_locked",
-    "app.core.security.verify_password",
-    "app.core.rate_limit.clear_failures",
-    "app.services.auth_service._set_password",
-    "app.services.auth_service._issue_tokens",
-    "app.core.rate_limit.record_failure",
-    "app.services.auth_service._locked_message"
-   ],
-   "errors": [
-    {
-     "status": 429,
-     "cls": "TooManyRequestsError",
-     "msg": "…",
-     "line": 130
-    },
-    {
-     "status": 400,
-     "cls": "BadRequestError",
-     "msg": "Mat khau hien tai khong dung",
-     "line": 134
-    },
-    {
-     "status": 400,
-     "cls": "BadRequestError",
-     "msg": "Mat khau moi phai khac mat khau hien tai",
-     "line": 136
-    }
-   ],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service.logout": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 145,
-   "doc": "",
-   "calls": [
-    "app.services.audit.record_event",
-    "app.core.security.revoke_token",
-    "app.core.security.revoke_refresh_token"
-   ],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service._class_brief": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 154,
-   "doc": "",
-   "calls": [],
-   "errors": [],
-   "models_new": [],
-   "models_ref": []
-  },
-  "app.services.auth_service.me": {
-   "layer": "service",
-   "file": "server/app/services/auth_service.py",
-   "line": 159,
-   "doc": "Thong tin tai khoan dang dang nhap, kem ho so: SV (lop da ghi danh), GV (lop dang\nday), can bo phong ban (don vi) - client dung de dieu huong va hien the ca nhan.",
-   "calls": [
-    "app.repositories.student_repository.get_by_user",
-    "app.repositories.lecturer_repository.get_by_user",
-    "app.repositories.staff_repository.get_by_user",
-    "app.services.mappers.face_status_of",
-    "app.services.auth_service._class_brief",
-    "app.repositories.class_repository.of_lecturer"
    ],
    "errors": [],
    "models_new": [],
@@ -20827,10 +20850,10 @@
    "line": 22,
    "doc": "",
    "calls": [
-    "app.services.account_service.ensure_email_available",
+    "app.modules.m01_auth.account_service.ensure_email_available",
     "app.repositories.lecturer_repository.code_taken",
     "app.core.authz.validate_faculty_id",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.new_user",
     "app.services.mappers.lecturer_out"
    ],
    "errors": [
@@ -20884,8 +20907,8 @@
    "calls": [
     "app.services.lecturer_service._get_or_404",
     "app.repositories.lecturer_repository.teaches_any_class",
-    "app.services.account_service.ensure_no_attendance_edits",
-    "app.services.account_service.delete_profile_and_user"
+    "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
+    "app.modules.m01_auth.account_service.delete_profile_and_user"
    ],
    "errors": [
     {
@@ -21118,29 +21141,6 @@
    "models_new": [],
    "models_ref": []
   },
-  "app.services.media_service.resolve_signed": {
-   "layer": "service",
-   "file": "server/app/services/media_service.py",
-   "line": 8,
-   "doc": "Duong dan file that neu chu ky hop le, con han va khong thoat khoi thu muc anh.",
-   "calls": [],
-   "errors": [
-    {
-     "status": 403,
-     "cls": "ForbiddenError",
-     "msg": "Lien ket anh khong hop le hoac da het han",
-     "line": 11
-    },
-    {
-     "status": 404,
-     "cls": "NotFoundError",
-     "msg": "Khong tim thay anh",
-     "line": 14
-    }
-   ],
-   "models_new": [],
-   "models_ref": []
-  },
   "app.services.notification_service.list_notifications": {
    "layer": "service",
    "file": "server/app/services/notification_service.py",
@@ -21281,7 +21281,7 @@
   "app.services.parent_service._to_out": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 15,
+   "line": 16,
    "doc": "",
    "calls": [],
    "errors": [],
@@ -21291,7 +21291,7 @@
   "app.services.parent_service._child_to_out": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 22,
+   "line": 23,
    "doc": "",
    "calls": [
     "app.services.mappers.student_out"
@@ -21303,7 +21303,7 @@
   "app.services.parent_service._get_or_404": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 31,
+   "line": 32,
    "doc": "",
    "calls": [
     "app.repositories.parent_repository.get"
@@ -21313,7 +21313,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Phu huynh khong ton tai",
-     "line": 34
+     "line": 35
     }
    ],
    "models_new": [],
@@ -21322,7 +21322,7 @@
   "app.services.parent_service._own_profile": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 38,
+   "line": 39,
    "doc": "",
    "calls": [
     "app.repositories.parent_repository.get_by_user"
@@ -21332,7 +21332,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay ho so phu huynh",
-     "line": 41
+     "line": 42
     }
    ],
    "models_new": [],
@@ -21341,7 +21341,7 @@
   "app.services.parent_service._ensure_own_child": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 45,
+   "line": 46,
    "doc": "",
    "calls": [
     "app.repositories.parent_repository.get_link"
@@ -21351,7 +21351,7 @@
      "status": 403,
      "cls": "ForbiddenError",
      "msg": "Ban khong duoc lien ket voi sinh vien nay",
-     "line": 48
+     "line": 49
     }
    ],
    "models_new": [],
@@ -21360,7 +21360,7 @@
   "app.services.parent_service._preferences_out": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 52,
+   "line": 53,
    "doc": "",
    "calls": [
     "app.services.email_service.is_configured"
@@ -21372,11 +21372,11 @@
   "app.services.parent_service.create_parent": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 60,
+   "line": 61,
    "doc": "",
    "calls": [
-    "app.services.account_service.ensure_email_available",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.ensure_email_available",
+    "app.modules.m01_auth.account_service.new_user",
     "app.services.parent_service._to_out"
    ],
    "errors": [],
@@ -21390,7 +21390,7 @@
   "app.services.parent_service.list_parents": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 71,
+   "line": 72,
    "doc": "",
    "calls": [
     "app.repositories.parent_repository.search",
@@ -21403,7 +21403,7 @@
   "app.services.parent_service.update_parent": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 77,
+   "line": 78,
    "doc": "",
    "calls": [
     "app.services.parent_service._get_or_404",
@@ -21416,11 +21416,11 @@
   "app.services.parent_service.delete_parent": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 89,
+   "line": 90,
    "doc": "Xoa tai khoan phu huynh kem cac lien ket voi con (khong xoa ho so SV).",
    "calls": [
     "app.services.parent_service._get_or_404",
-    "app.services.account_service.delete_profile_and_user"
+    "app.modules.m01_auth.account_service.delete_profile_and_user"
    ],
    "errors": [],
    "models_new": [],
@@ -21429,7 +21429,7 @@
   "app.services.parent_service.list_children_of": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 97,
+   "line": 98,
    "doc": "",
    "calls": [
     "app.services.parent_service._get_or_404",
@@ -21442,7 +21442,7 @@
   "app.services.parent_service.link_child": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 102,
+   "line": 103,
    "doc": "Lien ket phu huynh voi 1 SV bang MSSV (can bo khong phai tra cuu ID truoc).",
    "calls": [
     "app.services.parent_service._get_or_404",
@@ -21454,13 +21454,13 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Khong tim thay sinh vien voi MSSV {…}",
-     "line": 107
+     "line": 108
     },
     {
      "status": 400,
      "cls": "BadRequestError",
      "msg": "Da lien ket voi sinh vien nay roi",
-     "line": 109
+     "line": 110
     }
    ],
    "models_new": [
@@ -21473,7 +21473,7 @@
   "app.services.parent_service.unlink_child": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 115,
+   "line": 116,
    "doc": "",
    "calls": [
     "app.repositories.parent_repository.get_link"
@@ -21483,7 +21483,7 @@
      "status": 404,
      "cls": "NotFoundError",
      "msg": "Chua lien ket voi sinh vien nay",
-     "line": 118
+     "line": 119
     }
    ],
    "models_new": [],
@@ -21492,7 +21492,7 @@
   "app.services.parent_service.my_preferences": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 126,
+   "line": 127,
    "doc": "",
    "calls": [
     "app.services.parent_service._preferences_out",
@@ -21505,7 +21505,7 @@
   "app.services.parent_service.update_my_preferences": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 130,
+   "line": 131,
    "doc": "Phu huynh tu bat/tat email thong bao, va tin bao khi con co mat.",
    "calls": [
     "app.services.parent_service._own_profile",
@@ -21518,7 +21518,7 @@
   "app.services.parent_service.my_children": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 141,
+   "line": 142,
    "doc": "",
    "calls": [
     "app.services.parent_service._own_profile",
@@ -21531,7 +21531,7 @@
   "app.services.parent_service.child_attendance": {
    "layer": "service",
    "file": "server/app/services/parent_service.py",
-   "line": 146,
+   "line": 147,
    "doc": "Chuyen can cua con: dung lai chinh logic cua SV (report_service.student_attendance) de\ndu lieu nhat quan - gom anh bang chung, gio, vi tri GPS tung buoi.",
    "calls": [
     "app.services.parent_service._own_profile",
@@ -22405,9 +22405,9 @@
    "line": 44,
    "doc": "Tao tai khoan can bo phong ban. Vai tro suy ra tu loai don vi (Khoa -> Van phong\nKhoa, hoac Lanh dao Khoa neu faculty_leader; P.Dao tao, P.CTSV, Ban nganh).",
    "calls": [
-    "app.services.account_service.ensure_email_available",
+    "app.modules.m01_auth.account_service.ensure_email_available",
     "app.services.staff_service._get_unit",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.new_user",
     "app.services.mappers.staff_out",
     "app.services.staff_service.role_for"
    ],
@@ -22441,8 +22441,8 @@
    "doc": "",
    "calls": [
     "app.services.staff_service._get_or_404",
-    "app.services.account_service.ensure_no_attendance_edits",
-    "app.services.account_service.delete_profile_and_user"
+    "app.modules.m01_auth.account_service.ensure_no_attendance_edits",
+    "app.modules.m01_auth.account_service.delete_profile_and_user"
    ],
    "errors": [],
    "models_new": [],
@@ -22473,10 +22473,10 @@
    "line": 24,
    "doc": "",
    "calls": [
-    "app.services.account_service.ensure_email_available",
+    "app.modules.m01_auth.account_service.ensure_email_available",
     "app.repositories.student_repository.get_by_code",
     "app.core.authz.validate_faculty_id",
-    "app.services.account_service.new_user",
+    "app.modules.m01_auth.account_service.new_user",
     "app.services.mappers.student_out"
    ],
    "errors": [
@@ -22580,7 +22580,7 @@
     "app.services.student_service.get_or_404",
     "app.repositories.student_repository.has_attendance_records",
     "app.repositories.student_repository.delete_parent_links",
-    "app.services.account_service.delete_profile_and_user"
+    "app.modules.m01_auth.account_service.delete_profile_and_user"
    ],
    "errors": [
     {
@@ -23478,35 +23478,6 @@
    }
   },
   "usages": {
-   "GET /api/v1/auth/me": [
-    {
-     "call": "auth.me",
-     "file": "client/lib/core/auth_controller.dart",
-     "line": 73,
-     "screens": [
-      "/",
-      "/account",
-      "/audit-logs",
-      "/class-schedules",
-      "/classes",
-      "/classes/:classId",
-      "/enroll-face/:studentId",
-      "/face",
-      "/leave-requests",
-      "/lecturers",
-      "/login",
-      "/my-attendance",
-      "/overview",
-      "/parents",
-      "/schedule",
-      "/sessions",
-      "/sessions/:sessionId",
-      "/splash",
-      "/students",
-      "/students/:studentId"
-     ]
-    }
-   ],
    "GET /api/v1/audit-logs": [
     {
      "call": "auditLogs.page",
@@ -24109,146 +24080,6 @@
      ]
     }
    ],
-   "GET /api/v1/parents/me/preferences": [
-    {
-     "call": "parents.myPreferences",
-     "file": "client/lib/features/auth/account_page.dart",
-     "line": 250,
-     "screens": [
-      "/account"
-     ]
-    }
-   ],
-   "PATCH /api/v1/parents/me/preferences": [
-    {
-     "call": "parents.updateMyPreferences",
-     "file": "client/lib/features/auth/account_page.dart",
-     "line": 260,
-     "screens": [
-      "/account"
-     ]
-    }
-   ],
-   "POST /api/v1/auth/forgot-password": [
-    {
-     "call": "auth.forgotPassword",
-     "file": "client/lib/features/auth/forgot_password_page.dart",
-     "line": 33,
-     "screens": [
-      "/forgot-password"
-     ]
-    }
-   ],
-   "POST /api/v1/auth/reset-password": [
-    {
-     "call": "auth.resetPassword",
-     "file": "client/lib/features/auth/reset_password_page.dart",
-     "line": 40,
-     "screens": [
-      "/reset-password"
-     ]
-    }
-   ],
-   "GET /api/v1/schedules/week": [
-    {
-     "call": "schedules.week",
-     "file": "client/lib/features/home/home_page.dart",
-     "line": 51,
-     "screens": [
-      "/"
-     ]
-    },
-    {
-     "call": "schedules.week",
-     "file": "client/lib/features/leave/leave_requests_page.dart",
-     "line": 193,
-     "screens": [
-      "/leave-requests"
-     ]
-    },
-    {
-     "call": "schedules.week",
-     "file": "client/lib/features/schedule/week_schedule_page.dart",
-     "line": 29,
-     "screens": [
-      "/schedule"
-     ]
-    }
-   ],
-   "GET /api/v1/students/me/attendance": [
-    {
-     "call": "students.myAttendance",
-     "file": "client/lib/features/home/home_page.dart",
-     "line": 52,
-     "screens": [
-      "/"
-     ]
-    },
-    {
-     "call": "students.myAttendance",
-     "file": "client/lib/features/student/my_attendance_page.dart",
-     "line": 23,
-     "screens": [
-      "/my-attendance"
-     ]
-    }
-   ],
-   "GET /api/v1/lecturers/me/today-schedules": [
-    {
-     "call": "lecturers.todaySchedules",
-     "file": "client/lib/features/home/home_page.dart",
-     "line": 209,
-     "screens": [
-      "/"
-     ]
-    }
-   ],
-   "GET /api/v1/sessions": [
-    {
-     "call": "sessions.list",
-     "file": "client/lib/features/home/home_page.dart",
-     "line": 210,
-     "screens": [
-      "/"
-     ]
-    },
-    {
-     "call": "sessions.list",
-     "file": "client/lib/features/lecturer/sessions_page.dart",
-     "line": 28,
-     "screens": [
-      "/sessions"
-     ]
-    }
-   ],
-   "GET /api/v1/reports/attendance/warnings": [
-    {
-     "call": "reports.warnings",
-     "file": "client/lib/features/home/home_page.dart",
-     "line": 215,
-     "screens": [
-      "/"
-     ]
-    }
-   ],
-   "POST /api/v1/sessions": [
-    {
-     "call": "sessions.open",
-     "file": "client/lib/features/home/home_page.dart",
-     "line": 229,
-     "screens": [
-      "/"
-     ]
-    },
-    {
-     "call": "sessions.open",
-     "file": "client/lib/features/schedule/week_schedule_page.dart",
-     "line": 36,
-     "screens": [
-      "/schedule"
-     ]
-    }
-   ],
    "GET /api/v1/leave-requests": [
     {
      "call": "leaveRequests.list",
@@ -24292,6 +24123,32 @@
      "line": 159,
      "screens": [
       "/leave-requests"
+     ]
+    }
+   ],
+   "GET /api/v1/schedules/week": [
+    {
+     "call": "schedules.week",
+     "file": "client/lib/features/leave/leave_requests_page.dart",
+     "line": 193,
+     "screens": [
+      "/leave-requests"
+     ]
+    },
+    {
+     "call": "schedules.week",
+     "file": "client/lib/features/schedule/week_schedule_page.dart",
+     "line": 29,
+     "screens": [
+      "/schedule"
+     ]
+    },
+    {
+     "call": "schedules.week",
+     "file": "client/lib/modules/m10_shell/views/home_page.dart",
+     "line": 51,
+     "screens": [
+      "/"
      ]
     }
    ],
@@ -24407,6 +24264,24 @@
      ]
     }
    ],
+   "GET /api/v1/sessions": [
+    {
+     "call": "sessions.list",
+     "file": "client/lib/features/lecturer/sessions_page.dart",
+     "line": 28,
+     "screens": [
+      "/sessions"
+     ]
+    },
+    {
+     "call": "sessions.list",
+     "file": "client/lib/modules/m10_shell/views/home_page.dart",
+     "line": 210,
+     "screens": [
+      "/"
+     ]
+    }
+   ],
    "GET /api/v1/sessions/{session_id}/records/{record_id}/audits": [
     {
      "call": "sessions.recordAudits",
@@ -24491,6 +24366,24 @@
      ]
     }
    ],
+   "POST /api/v1/sessions": [
+    {
+     "call": "sessions.open",
+     "file": "client/lib/features/schedule/week_schedule_page.dart",
+     "line": 36,
+     "screens": [
+      "/schedule"
+     ]
+    },
+    {
+     "call": "sessions.open",
+     "file": "client/lib/modules/m10_shell/views/home_page.dart",
+     "line": 229,
+     "screens": [
+      "/"
+     ]
+    }
+   ],
    "GET /api/v1/faces/mine": [
     {
      "call": "faces.mine",
@@ -24529,6 +24422,24 @@
      ]
     }
    ],
+   "GET /api/v1/students/me/attendance": [
+    {
+     "call": "students.myAttendance",
+     "file": "client/lib/features/student/my_attendance_page.dart",
+     "line": 23,
+     "screens": [
+      "/my-attendance"
+     ]
+    },
+    {
+     "call": "students.myAttendance",
+     "file": "client/lib/modules/m10_shell/views/home_page.dart",
+     "line": 52,
+     "screens": [
+      "/"
+     ]
+    }
+   ],
    "GET /api/v1/sessions/{session_id}/checkin-info": [
     {
      "call": "sessions.checkinInfo",
@@ -24546,6 +24457,95 @@
      "line": 118,
      "screens": [
       "/self-checkin/:sessionId"
+     ]
+    }
+   ],
+   "GET /api/v1/auth/me": [
+    {
+     "call": "auth.me",
+     "file": "client/lib/modules/m01_auth/controllers/auth_controller.dart",
+     "line": 73,
+     "screens": [
+      "/",
+      "/account",
+      "/audit-logs",
+      "/class-schedules",
+      "/classes",
+      "/classes/:classId",
+      "/enroll-face/:studentId",
+      "/face",
+      "/leave-requests",
+      "/lecturers",
+      "/login",
+      "/my-attendance",
+      "/overview",
+      "/parents",
+      "/schedule",
+      "/sessions",
+      "/sessions/:sessionId",
+      "/splash",
+      "/students",
+      "/students/:studentId"
+     ]
+    }
+   ],
+   "GET /api/v1/parents/me/preferences": [
+    {
+     "call": "parents.myPreferences",
+     "file": "client/lib/modules/m01_auth/views/account_page.dart",
+     "line": 250,
+     "screens": [
+      "/account"
+     ]
+    }
+   ],
+   "PATCH /api/v1/parents/me/preferences": [
+    {
+     "call": "parents.updateMyPreferences",
+     "file": "client/lib/modules/m01_auth/views/account_page.dart",
+     "line": 260,
+     "screens": [
+      "/account"
+     ]
+    }
+   ],
+   "POST /api/v1/auth/forgot-password": [
+    {
+     "call": "auth.forgotPassword",
+     "file": "client/lib/modules/m01_auth/views/forgot_password_page.dart",
+     "line": 33,
+     "screens": [
+      "/forgot-password"
+     ]
+    }
+   ],
+   "POST /api/v1/auth/reset-password": [
+    {
+     "call": "auth.resetPassword",
+     "file": "client/lib/modules/m01_auth/views/reset_password_page.dart",
+     "line": 40,
+     "screens": [
+      "/reset-password"
+     ]
+    }
+   ],
+   "GET /api/v1/lecturers/me/today-schedules": [
+    {
+     "call": "lecturers.todaySchedules",
+     "file": "client/lib/modules/m10_shell/views/home_page.dart",
+     "line": 209,
+     "screens": [
+      "/"
+     ]
+    }
+   ],
+   "GET /api/v1/reports/attendance/warnings": [
+    {
+     "call": "reports.warnings",
+     "file": "client/lib/modules/m10_shell/views/home_page.dart",
+     "line": 215,
+     "screens": [
+      "/"
      ]
     }
    ],
@@ -24721,24 +24721,6 @@
    "client/lib/features/admin/units_page.dart": [
     "/units"
    ],
-   "client/lib/features/auth/account_page.dart": [
-    "/account"
-   ],
-   "client/lib/features/auth/forgot_password_page.dart": [
-    "/forgot-password"
-   ],
-   "client/lib/features/auth/login_page.dart": [
-    "/login"
-   ],
-   "client/lib/features/auth/reset_password_page.dart": [
-    "/reset-password"
-   ],
-   "client/lib/features/auth/splash_page.dart": [
-    "/splash"
-   ],
-   "client/lib/features/home/home_page.dart": [
-    "/"
-   ],
    "client/lib/features/leave/leave_requests_page.dart": [
     "/leave-requests"
    ],
@@ -24780,6 +24762,24 @@
    ],
    "client/lib/features/student/self_checkin_page.dart": [
     "/self-checkin/:sessionId"
+   ],
+   "client/lib/modules/m01_auth/views/account_page.dart": [
+    "/account"
+   ],
+   "client/lib/modules/m01_auth/views/forgot_password_page.dart": [
+    "/forgot-password"
+   ],
+   "client/lib/modules/m01_auth/views/login_page.dart": [
+    "/login"
+   ],
+   "client/lib/modules/m01_auth/views/reset_password_page.dart": [
+    "/reset-password"
+   ],
+   "client/lib/modules/m01_auth/views/splash_page.dart": [
+    "/splash"
+   ],
+   "client/lib/modules/m10_shell/views/home_page.dart": [
+    "/"
    ]
   }
  }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'core/auth_controller.dart';
+import 'modules/m01_auth/controllers/auth_controller.dart';
 import 'core/roles.dart';
 import 'features/admin/audit_logs_page.dart';
 import 'features/admin/class_detail_page.dart';
@@ -16,12 +16,12 @@ import 'features/admin/staff_page.dart';
 import 'features/admin/student_detail_page.dart';
 import 'features/admin/students_page.dart';
 import 'features/admin/units_page.dart';
-import 'features/auth/account_page.dart';
-import 'features/auth/forgot_password_page.dart';
-import 'features/auth/login_page.dart';
-import 'features/auth/reset_password_page.dart';
-import 'features/auth/splash_page.dart';
-import 'features/home/home_page.dart';
+import 'modules/m01_auth/views/account_page.dart';
+import 'modules/m01_auth/views/forgot_password_page.dart';
+import 'modules/m01_auth/views/login_page.dart';
+import 'modules/m01_auth/views/reset_password_page.dart';
+import 'modules/m01_auth/views/splash_page.dart';
+import 'modules/m10_shell/views/home_page.dart';
 import 'features/lecturer/attendance_scan_page.dart';
 import 'features/lecturer/reports_page.dart';
 import 'features/lecturer/session_records_page.dart';

@@ -6,7 +6,7 @@ ca voi <img src> tren web (khong gui duoc header Authorization) lan Image.networ
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from app.services import media_service
+from app.modules.m01_auth import media_service
 
 router = APIRouter(tags=["media"])
 

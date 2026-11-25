@@ -8,7 +8,7 @@ from app.db import models
 from app.db.models import ROLE_LECTURER
 from app.repositories import lecturer_repository
 from app.repositories.base import Page
-from app.services import account_service
+from app.modules.m01_auth import account_service
 from app.services.mappers import lecturer_out
 
 

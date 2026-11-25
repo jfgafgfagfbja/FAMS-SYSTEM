@@ -5,7 +5,7 @@ import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/api_client.dart';
-import '../../core/auth_controller.dart';
+import '../../modules/m01_auth/controllers/auth_controller.dart';
 import '../../core/formatters.dart';
 import '../../core/roles.dart';
 import '../../models/models.dart';

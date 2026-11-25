@@ -1,5 +1,5 @@
 """Schema Pydantic theo module. Giu `from app import schemas; schemas.X` nhu ban goc."""
-from app.schemas.auth import *  # noqa: F401,F403
+from app.modules.m01_auth.schemas import *  # noqa: F401,F403  (MOD-01)
 from app.schemas.organization import *  # noqa: F401,F403
 from app.schemas.locations import *  # noqa: F401,F403
 from app.schemas.lecturers import *  # noqa: F401,F403
