@@ -23,9 +23,9 @@
 # /client/lib/modules/m04_learners/      @YNCoder205
 # /client/lib/modules/m05_faces/         @YNCoder205
 
-# MOD-06 Điểm danh, đơn xin phép – TV4
-# /server/app/modules/m06_attendance/    @tv4-github
-# /client/lib/modules/m06_attendance/    @tv4-github
+# MOD-06 Điểm danh, đơn xin phép – TV4 (@vuong557): bỏ dấu # trong PR đầu tiên
+# /server/app/modules/m06_attendance/    @vuong557
+# /client/lib/modules/m06_attendance/    @vuong557
 
 # MOD-07 Thông báo, MOD-08 Báo cáo, MOD-09 Nhật ký – TV5
 # /server/app/modules/m07_notifications/ @tv5-github
