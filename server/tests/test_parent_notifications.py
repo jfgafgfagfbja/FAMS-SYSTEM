@@ -59,7 +59,10 @@ def _self_checkin(client, session_id):
 
 
 def _notifications_of(db, parent):
+    """Thong bao DIEM DANH cua phu huynh (bo qua canh bao chuyen can sau thong ke - test rieng
+    o test_absence_warning_after_statistics)."""
     return (db.query(models.Notification).filter_by(user_id=parent.user_id)
+            .filter(models.Notification.kind.like("attendance_%"))
             .order_by(models.Notification.id).all())
 
 

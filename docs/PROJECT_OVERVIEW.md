@@ -18,7 +18,8 @@
 ## 2. Mục tiêu nghiệp vụ
 
 1. Điểm danh sinh viên nhanh, chống gian lận: giảng viên quét camera cả lớp, hoặc sinh viên tự
-   điểm danh bằng ảnh tự chụp + GPS + mã QR luân phiên chiếu trong phòng.
+   điểm danh bằng ảnh tự chụp + GPS (★ 10/11/2026: bỏ hẳn mã QR luân phiên); vắng có lý do thì nộp đơn xin phép
+   để GV lớp / Lãnh đạo Khoa duyệt.
 2. Quản lý dữ liệu đào tạo phục vụ điểm danh: đơn vị, cán bộ, giảng viên, sinh viên, phụ huynh,
    lớp học phần, ghi danh, lịch học, phòng học, địa điểm.
 3. Theo dõi chuyên cần, cảnh báo vắng (≥ 20 % số buổi), xuất Excel, thống kê tổng hợp theo Khoa.

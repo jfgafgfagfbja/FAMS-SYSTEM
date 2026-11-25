@@ -54,15 +54,23 @@ def staff_out(st: models.Staff) -> schemas.StaffOut:
 
 
 def room_label(schedule: models.Schedule) -> str:
-    """Ten phong de hien thi: uu tien danh muc phong, con lai lay o chu cu cua lich."""
-    return schedule.classroom.name if schedule.classroom is not None else schedule.room
+    """Ten phong de hien thi: uu tien danh muc phong, con lai lay ten phong tu nhap cua lich."""
+    return schedule.classroom.name if schedule.classroom is not None else (schedule.room or "")
+
+
+def room_code(schedule: models.Schedule) -> str:
+    """Ma phong cho truong `room` cua API (giu nhu truoc khi chuan hoa): ten tu nhap, hoac ma
+    phong trong danh muc - CSDL khong con luu ban sao ma phong trong schedules.room."""
+    if schedule.room:
+        return schedule.room
+    return schedule.classroom.code if schedule.classroom is not None else ""
 
 
 def schedule_out(s: models.Schedule) -> schemas.ScheduleOut:
     return schemas.ScheduleOut(
         id=s.id, class_id=s.class_id, weekday=s.weekday,
         start_time=s.start_time, end_time=s.end_time,
-        room=s.room, room_id=s.room_id,
+        room=room_code(s), room_id=s.room_id,
         room_name=s.classroom.name if s.classroom else None,
         location_id=s.location_id,
     )

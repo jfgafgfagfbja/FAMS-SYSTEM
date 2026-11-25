@@ -40,6 +40,7 @@ _TRACKED: dict[type, str] = {
     models.FaceEmbedding: "face",
     models.AttendanceSession: "session",
     models.AttendanceRecord: "attendance",
+    models.LeaveRequest: "leave_request",
 }
 
 # Tao ban ghi diem danh la luong binh thuong (moi lan SV duoc nhan dien) - qua nhieu va
@@ -195,6 +196,8 @@ def _label(obj) -> str:
             return f"SV #{obj.student_id} - phiên #{obj.session_id}"
         case models.ParentStudent():
             return f"PH #{obj.parent_id} ↔ SV #{obj.student_id}"
+        case models.LeaveRequest():
+            return f"đơn xin phép của SV #{obj.student_id} ngày {obj.absence_date}"
         case models.Staff() | models.Parent():
             return f"tài khoản #{obj.user_id}"
     return f"#{getattr(obj, 'id', '?')}"
@@ -221,7 +224,7 @@ def _target_faculty(session: Session, obj) -> int | None:
     if isinstance(obj, models.AttendanceRecord):
         student = session.get(models.Student, obj.student_id)
         return student.faculty_id if student else None
-    if isinstance(obj, models.FaceEmbedding):
+    if isinstance(obj, (models.FaceEmbedding, models.LeaveRequest)):
         student = session.get(models.Student, obj.student_id)
         return student.faculty_id if student else None
     return None

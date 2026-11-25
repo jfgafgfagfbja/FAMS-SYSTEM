@@ -170,9 +170,31 @@ class _EnrollFacePageState extends State<EnrollFacePage> {
                         contentPadding: EdgeInsets.zero,
                         leading: const Icon(Icons.face_outlined),
                         title: Text('Đăng ký lúc ${fmtDateTime(face.createdAt)}'),
-                        subtitle: face.rejectReason.isEmpty ? null : Text('Lý do từ chối: ${face.rejectReason}'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (face.rejectReason.isNotEmpty) Text('Lý do không hợp lệ: ${face.rejectReason}'),
+                            if (face.reviewedAt != null) Text('Phòng CTSV xử lý lúc ${fmtDateTime(face.reviewedAt)}'),
+                            if (face.studentAckAt != null)
+                              Text('Bạn đã xác nhận kết quả lúc ${fmtDateTime(face.studentAckAt)}')
+                            else if (face.needsAck)
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextButton.icon(
+                                  onPressed: () async {
+                                    if (await runAction(context, () => context.read<ApiClient>().faces.acknowledge(face.id),
+                                        success: 'Đã xác nhận nhận kết quả')) {
+                                      _load();
+                                    }
+                                  },
+                                  icon: const Icon(Icons.mark_email_read_outlined),
+                                  label: const Text('Xác nhận đã nhận kết quả'),
+                                ),
+                              ),
+                          ],
+                        ),
                         trailing: StatusChip(
-                          label: switch (face.status) { 'approved' => 'Đã duyệt', 'rejected' => 'Từ chối', _ => 'Chờ duyệt' },
+                          label: switch (face.status) { 'approved' => 'Đã duyệt', 'rejected' => 'Không hợp lệ', _ => 'Chờ P.CTSV duyệt' },
                           color: statusColor(face.status),
                         ),
                       ),

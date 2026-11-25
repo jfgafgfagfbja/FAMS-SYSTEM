@@ -83,7 +83,7 @@ bộ Docker. **Bắt buộc** đổi `SECRET_KEY` và mật khẩu tài khoản 
 | Biến | Thành phần | Mặc định | Ý nghĩa |
 |---|---|---|---|
 | `DATABASE_URL` | server | `postgresql://fams_system:fams_system_dev@localhost:5433/fams_system` | Chuỗi kết nối (chỉ server có) |
-| `SECRET_KEY` | server | `change-me` | Ký JWT, URL ảnh, mã QR — **đổi khi triển khai** |
+| `SECRET_KEY` | server | `change-me` | Ký JWT, URL ảnh — **đổi khi triển khai** |
 | `API_PREFIX` | server | `/api/v1` | Tiền tố API |
 | `CORS_ORIGINS` | server | `http://localhost:5273` | Danh sách origin, cách nhau dấu phẩy |
 | `LOG_LEVEL` | server | `INFO` | `DEBUG`/`INFO`/`WARNING`/`ERROR` |

@@ -32,7 +32,7 @@ Quyền được kiểm **ở server** theo vai trò + phạm vi dữ liệu (Kh
 
 - Thân request JSON (`application/json`), trừ đăng nhập (form) và tải ảnh (`multipart/form-data`:
   `POST /faces/enroll/{id}` trường `images`; `POST /sessions/{id}/recognize` trường `frame`;
-  `POST /sessions/{id}/self-checkin` trường `frame` + `latitude`, `longitude`, `accuracy`, `is_mocked`, `checkin_code`).
+  `POST /sessions/{id}/self-checkin` trường `frame` + `latitude`, `longitude`, `accuracy`, `is_mocked`; ★ trường `checkin_code` đã bỏ cùng mã QR).
 - Thời gian trả về ISO 8601 **kèm múi giờ** (`2026-11-03T08:00:00+07:00`); ngày dạng `YYYY-MM-DD`; giờ `HH:MM:SS`.
 - Ảnh trả về là đường dẫn tương đối đã ký: `/evidence/<...>.jpg?exp=<unix>&sig=<hmac>` — ghép với địa chỉ API
   (`/api/v1`) để tải, hết hạn sau 60 phút.

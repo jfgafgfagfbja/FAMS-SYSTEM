@@ -3556,6 +3556,54 @@
     ]
    }
   },
+  "/api/v1/faces/mine/{embedding_id}/acknowledge": {
+   "post": {
+    "tags": [
+     "faces"
+    ],
+    "summary": "Acknowledge Face Result",
+    "description": "SV xac nhan da nhan ket qua duyet (duyet / tu choi kem ly do) cua anh khuon mat.",
+    "operationId": "acknowledge_face_result_api_v1_faces_mine__embedding_id__acknowledge_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "embedding_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Embedding Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/FaceMineOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
   "/api/v1/faces/pending": {
    "get": {
     "tags": [
@@ -3592,6 +3640,7 @@
      "faces"
     ],
     "summary": "Approve Face",
+    "description": "P.CTSV duyet anh dang cho -> gui ket qua cho SV.",
     "operationId": "approve_face_api_v1_faces__embedding_id__approve_patch",
     "security": [
      {
@@ -3637,6 +3686,7 @@
      "faces"
     ],
     "summary": "Reject Face",
+    "description": "P.CTSV tu choi kem ly do khong hop le (bat buoc) -> gui ket qua cho SV.",
     "operationId": "reject_face_api_v1_faces__embedding_id__reject_patch",
     "security": [
      {
@@ -3877,62 +3927,6 @@
       }
      }
     }
-   },
-   "patch": {
-    "tags": [
-     "attendance"
-    ],
-    "summary": "Update Session",
-    "description": "Bat/tat yeu cau quet ma QR cho buoi dang dien ra.",
-    "operationId": "update_session_api_v1_sessions__session_id__patch",
-    "security": [
-     {
-      "OAuth2PasswordBearer": []
-     }
-    ],
-    "parameters": [
-     {
-      "name": "session_id",
-      "in": "path",
-      "required": true,
-      "schema": {
-       "type": "integer",
-       "title": "Session Id"
-      }
-     }
-    ],
-    "requestBody": {
-     "required": true,
-     "content": {
-      "application/json": {
-       "schema": {
-        "$ref": "#/components/schemas/SessionUpdate"
-       }
-      }
-     }
-    },
-    "responses": {
-     "200": {
-      "description": "Successful Response",
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/SessionDetail"
-        }
-       }
-      }
-     },
-     "422": {
-      "description": "Validation Error",
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/HTTPValidationError"
-        }
-       }
-      }
-     }
-    }
    }
   },
   "/api/v1/sessions/{session_id}/checkin-info": {
@@ -3941,6 +3935,7 @@
      "attendance"
     ],
     "summary": "Checkin Info",
+    "description": "SV xem phong hoc cua buoi truoc khi tu diem danh (anh khuon mat + GPS).",
     "operationId": "checkin_info_api_v1_sessions__session_id__checkin_info_get",
     "security": [
      {
@@ -3965,54 +3960,6 @@
        "application/json": {
         "schema": {
          "$ref": "#/components/schemas/CheckinInfoOut"
-        }
-       }
-      }
-     },
-     "422": {
-      "description": "Validation Error",
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/HTTPValidationError"
-        }
-       }
-      }
-     }
-    }
-   }
-  },
-  "/api/v1/sessions/{session_id}/checkin-code": {
-   "get": {
-    "tags": [
-     "attendance"
-    ],
-    "summary": "Session Checkin Code",
-    "description": "Ma QR dang hieu luc de giang vien chieu trong phong (chi nguoi day/quan ly lop).",
-    "operationId": "session_checkin_code_api_v1_sessions__session_id__checkin_code_get",
-    "security": [
-     {
-      "OAuth2PasswordBearer": []
-     }
-    ],
-    "parameters": [
-     {
-      "name": "session_id",
-      "in": "path",
-      "required": true,
-      "schema": {
-       "type": "integer",
-       "title": "Session Id"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "description": "Successful Response",
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/CheckinCodeOut"
         }
        }
       }
@@ -4253,7 +4200,7 @@
      "attendance"
     ],
     "summary": "Self Checkin",
-    "description": "SV tu diem danh: anh tu chup + GPS (+ ma QR neu buoi hoc yeu cau).",
+    "description": "SV tu diem danh: anh tu chup + GPS.",
     "operationId": "self_checkin_api_v1_sessions__session_id__self_checkin_post",
     "security": [
      {
@@ -4467,6 +4414,302 @@
           "$ref": "#/components/schemas/AttendanceAuditOut"
          },
          "title": "Response List Record Audits Api V1 Sessions  Session Id  Records  Record Id  Audits Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/leave-requests": {
+   "post": {
+    "tags": [
+     "leave"
+    ],
+    "summary": "Create Leave Request",
+    "description": "SV nop don xin phep vang mot buoi hoc (lich hoc + ngay); giang vien lop nhan thong bao.",
+    "operationId": "create_leave_request_api_v1_leave_requests_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LeaveRequestCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LeaveRequestOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "leave"
+    ],
+    "summary": "List Leave Requests",
+    "description": "SV: don cua minh; GV: lop minh day; Lanh dao Khoa: SV/lop thuoc Khoa; admin, P.CTSV: toan truong.",
+    "operationId": "list_leave_requests_api_v1_leave_requests_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "name": "class_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Class Id"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 500,
+       "minimum": 1,
+       "default": 100,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/LeaveRequestOut"
+         },
+         "title": "Response List Leave Requests Api V1 Leave Requests Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/leave-requests/{leave_id}/approve": {
+   "patch": {
+    "tags": [
+     "leave"
+    ],
+    "summary": "Approve Leave Request",
+    "description": "Duyet don => buoi do tinh vang co phep; gui ket qua cho SV.",
+    "operationId": "approve_leave_request_api_v1_leave_requests__leave_id__approve_patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "leave_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Leave Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LeaveApprove"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LeaveRequestOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/leave-requests/{leave_id}/reject": {
+   "patch": {
+    "tags": [
+     "leave"
+    ],
+    "summary": "Reject Leave Request",
+    "description": "Tu choi don kem ly do khong hop le (bat buoc); gui ket qua cho SV.",
+    "operationId": "reject_leave_request_api_v1_leave_requests__leave_id__reject_patch",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "leave_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Leave Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LeaveReject"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LeaveRequestOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/leave-requests/{leave_id}/acknowledge": {
+   "post": {
+    "tags": [
+     "leave"
+    ],
+    "summary": "Acknowledge Leave Result",
+    "description": "SV xac nhan da nhan ket qua duyet don.",
+    "operationId": "acknowledge_leave_result_api_v1_leave_requests__leave_id__acknowledge_post",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "leave_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Leave Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LeaveRequestOut"
         }
        }
       }
@@ -5381,17 +5624,6 @@
       "type": "boolean",
       "title": "Is Mocked",
       "default": false
-     },
-     "checkin_code": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Checkin Code"
      }
     },
     "type": "object",
@@ -5419,49 +5651,11 @@
     "title": "ChangePasswordRequest",
     "description": "Nguoi dang dang nhap tu doi mat khau - bat buoc nhap dung mat khau hien tai."
    },
-   "CheckinCodeOut": {
-    "properties": {
-     "session_id": {
-      "type": "integer",
-      "title": "Session Id"
-     },
-     "qr_payload": {
-      "type": "string",
-      "title": "Qr Payload"
-     },
-     "digits": {
-      "type": "string",
-      "title": "Digits"
-     },
-     "rotate_seconds": {
-      "type": "integer",
-      "title": "Rotate Seconds"
-     },
-     "expires_in_seconds": {
-      "type": "integer",
-      "title": "Expires In Seconds"
-     }
-    },
-    "type": "object",
-    "required": [
-     "session_id",
-     "qr_payload",
-     "digits",
-     "rotate_seconds",
-     "expires_in_seconds"
-    ],
-    "title": "CheckinCodeOut",
-    "description": "Ma diem danh dang hieu luc cua mot phien - giang vien chieu len man hinh."
-   },
    "CheckinInfoOut": {
     "properties": {
      "session_id": {
       "type": "integer",
       "title": "Session Id"
-     },
-     "require_qr": {
-      "type": "boolean",
-      "title": "Require Qr"
      },
      "room": {
       "type": "string",
@@ -5471,7 +5665,6 @@
     "type": "object",
     "required": [
      "session_id",
-     "require_qr",
      "room"
     ],
     "title": "CheckinInfoOut",
@@ -5749,6 +5942,28 @@
      "created_at": {
       "type": "string",
       "title": "Created At"
+     },
+     "reviewed_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reviewed At"
+     },
+     "student_ack_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Student Ack At"
      }
     },
     "type": "object",
@@ -5872,6 +6087,190 @@
     },
     "type": "object",
     "title": "HTTPValidationError"
+   },
+   "LeaveApprove": {
+    "properties": {
+     "note": {
+      "type": "string",
+      "title": "Note",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "title": "LeaveApprove"
+   },
+   "LeaveReject": {
+    "properties": {
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "reason"
+    ],
+    "title": "LeaveReject"
+   },
+   "LeaveRequestCreate": {
+    "properties": {
+     "schedule_id": {
+      "type": "integer",
+      "title": "Schedule Id"
+     },
+     "absence_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Absence Date"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "schedule_id",
+     "absence_date",
+     "reason"
+    ],
+    "title": "LeaveRequestCreate",
+    "description": "SV xin phep vang mot buoi hoc: lich hoc (lop + thu + gio) va ngay cu the."
+   },
+   "LeaveRequestOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "student_id": {
+      "type": "integer",
+      "title": "Student Id"
+     },
+     "student_code": {
+      "type": "string",
+      "title": "Student Code"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "schedule_id": {
+      "type": "integer",
+      "title": "Schedule Id"
+     },
+     "class_id": {
+      "type": "integer",
+      "title": "Class Id"
+     },
+     "class_code": {
+      "type": "string",
+      "title": "Class Code"
+     },
+     "subject_name": {
+      "type": "string",
+      "title": "Subject Name"
+     },
+     "absence_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Absence Date"
+     },
+     "start_time": {
+      "type": "string",
+      "format": "time",
+      "title": "Start Time"
+     },
+     "end_time": {
+      "type": "string",
+      "format": "time",
+      "title": "End Time"
+     },
+     "room": {
+      "type": "string",
+      "title": "Room"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "title": "Created At"
+     },
+     "reviewed_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reviewed At"
+     },
+     "reviewer_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reviewer Name"
+     },
+     "review_note": {
+      "type": "string",
+      "title": "Review Note",
+      "default": ""
+     },
+     "student_ack_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Student Ack At"
+     },
+     "attendance_status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Attendance Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "student_id",
+     "student_code",
+     "full_name",
+     "schedule_id",
+     "class_id",
+     "class_code",
+     "subject_name",
+     "absence_date",
+     "start_time",
+     "end_time",
+     "room",
+     "reason",
+     "status",
+     "created_at"
+    ],
+    "title": "LeaveRequestOut"
    },
    "LecturerCreate": {
     "properties": {
@@ -8368,17 +8767,6 @@
       "type": "string",
       "format": "date",
       "title": "Session Date"
-     },
-     "require_qr": {
-      "anyOf": [
-       {
-        "type": "boolean"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Require Qr"
      }
     },
     "type": "object",
@@ -8470,11 +8858,6 @@
       ],
       "title": "Checkin Deadline"
      },
-     "require_qr": {
-      "type": "boolean",
-      "title": "Require Qr",
-      "default": false
-     },
      "location_name": {
       "anyOf": [
        {
@@ -8532,20 +8915,6 @@
      "status"
     ],
     "title": "SessionOut"
-   },
-   "SessionUpdate": {
-    "properties": {
-     "require_qr": {
-      "type": "boolean",
-      "title": "Require Qr"
-     }
-    },
-    "type": "object",
-    "required": [
-     "require_qr"
-    ],
-    "title": "SessionUpdate",
-    "description": "Giang vien bat/tat yeu cau quet ma QR ngay trong buoi, khong phai quyet dinh\ntu luc mo phien."
    },
    "StaffCreate": {
     "properties": {
@@ -9363,11 +9732,15 @@
   },
   {
    "name": "faces",
-   "description": "PH5 - Dang ky, duyet du lieu khuon mat"
+   "description": "PH5 - Dang ky khuon mat, P.CTSV duyet, SV xac nhan ket qua"
   },
   {
    "name": "attendance",
    "description": "PH6 - Phien diem danh, quet camera, tu diem danh, sua ket qua"
+  },
+  {
+   "name": "leave",
+   "description": "PH6 - Don xin phep vang: SV nop, GV lop / Lanh dao Khoa duyet, SV xac nhan ket qua"
   },
   {
    "name": "reports",
@@ -9375,7 +9748,7 @@
   },
   {
    "name": "notifications",
-   "description": "PH7 - Hop thu thong bao"
+   "description": "PH7 - Hop thu thong bao (phu huynh, sinh vien, giang vien)"
   },
   {
    "name": "audit",

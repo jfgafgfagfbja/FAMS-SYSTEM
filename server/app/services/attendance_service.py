@@ -1,4 +1,4 @@
-"""Ghi nhan diem danh (PH6): quet camera ca lop, SV tu diem danh (anh + GPS + QR), xac nhan
+"""Ghi nhan diem danh (PH6): quet camera ca lop, SV tu diem danh (anh + GPS), xac nhan
 tay, danh sach ket qua, sua ket qua co ly do va lich su sua.
 
 Nhan dien goi qua ten module face_service.* (test thay the bang monkeypatch).
@@ -18,7 +18,7 @@ from app.core.exceptions import BadRequestError, ForbiddenError, NotFoundError
 from app.db import models
 from app.db.models import ROLE_AFFAIRS, ROLE_FACULTY_LEADER
 from app.repositories import class_repository, session_repository, student_repository
-from app.services import checkin_code_service, face_service
+from app.services import face_service
 from app.services.geo_service import check_checkin_location, resolve_geofence
 from app.services.session_service import _confirm_counts, ensure_accepting_checkins, get_or_404
 
@@ -200,7 +200,7 @@ def manual_check(db: Session, user: models.User, session_id: int,
 
 async def self_checkin(db: Session, user: models.User, session_id: int, *, frame: UploadFile,
                        latitude: float | None, longitude: float | None, accuracy: float | None,
-                       is_mocked: bool, checkin_code: str | None) -> schemas.SelfCheckinResult:
+                       is_mocked: bool) -> schemas.SelfCheckinResult:
     """SV tu chup selfie de diem danh: chi nhan dien so voi khuon mat cua CHINH SV dang dang
     nhap (recognize_self). Toa do GPS phai nam trong ban kinh dia diem cua lich hoc (hoac dia
     diem mac dinh) - doi chieu TRUOC khi nhan dien de khong ton tai nguyen. Chi nhan truoc
@@ -226,13 +226,6 @@ async def self_checkin(db: Session, user: models.User, session_id: int, *, frame
             status="already_checked", record_id=existed.id, record_status=existed.status,
             evidence_image=existed.evidence_image or None, confidence=existed.confidence,
             message="Ban da diem danh phien nay roi")
-
-    if session.require_qr and not checkin_code_service.verify(session.id, checkin_code):
-        return schemas.SelfCheckinResult(
-            status="qr_required" if not checkin_code else "qr_invalid",
-            message=("Buoi nay yeu cau quet ma QR dang chieu trong phong"
-                     if not checkin_code
-                     else "Ma QR da het han hoac khong dung buoi nay, hay quet lai ma moi nhat"))
 
     location_check = check_checkin_location(
         resolve_geofence(db, session.schedule), latitude, longitude, accuracy, is_mocked)

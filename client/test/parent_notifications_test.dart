@@ -42,11 +42,14 @@ void main() {
     expect(prefs.emailAvailable, isFalse);
   });
 
-  test('chuong cua phu huynh mo hop thu, va chi phu huynh vao duoc hop thu', () {
+  test('chuong cua phu huynh va sinh vien mo hop thu; vai tro nhan thong bao moi vao duoc hop thu', () {
     expect(alertTargetFor(Roles.parent), '/notifications');
     expect(alertLabelFor(Roles.parent), 'thông báo mới');
+    // SV nhan ket qua duyet khuon mat / don xin phep va canh bao chuyen can.
+    expect(alertTargetFor(Roles.student), '/notifications');
     expect(canAccess(Roles.parent, '/notifications'), isTrue);
-    expect(canAccess(Roles.student, '/notifications'), isFalse);
+    expect(canAccess(Roles.student, '/notifications'), isTrue);
+    expect(canAccess(Roles.lecturer, '/notifications'), isTrue);
     expect(canAccess(Roles.admin, '/notifications'), isFalse);
   });
 }

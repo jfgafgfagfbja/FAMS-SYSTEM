@@ -35,6 +35,9 @@ class FaceMineOut(BaseModel):
     status: str
     reject_reason: str
     created_at: LocalDateTime
+    reviewed_at: LocalDateTime | None = None
+    # SV da xac nhan nhan ket qua duyet chua (None: chua xac nhan / chua co ket qua).
+    student_ack_at: LocalDateTime | None = None
 
 
 class FaceRejectBody(BaseModel):

@@ -6,7 +6,7 @@
 > kết quả `flutter test` và kiểm thử tích hợp ghi trong `docs/TEST_REPORT.md`.
 
 - Tiền tố API của phiên bản này: `/api/v1` — đường dẫn tài nguyên giữ nguyên như bản gốc.
-- Tổng: **126** chức năng — ✅ hoạt động bình thường: **126**, đã chuyển đổi nhưng chưa kiểm thử: **0**, chưa hoàn thành/chưa đánh giá: **0**.
+- Tổng: **134** chức năng — ✅ hoạt động bình thường: **134**, đã chuyển đổi nhưng chưa kiểm thử: **0**, chưa hoàn thành/chưa đánh giá: **0**.
 - Cột *Kiểm thử* với API: các mã HTTP mà bộ test đã thực sự nhận được từ endpoint (cả nhánh thành công
   lẫn nhánh bị từ chối). Với chức năng nội bộ/client: tên test làm bằng chứng.
 
@@ -66,13 +66,13 @@
 | 3.08 | Sửa lớp | QTV, P.ĐT, VP Khoa | `PATCH /api/v1/classes/{class_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
 | 3.09 | Xóa lớp (chặn khi có SV/lịch) | QTV, P.ĐT, VP Khoa | `DELETE /api/v1/classes/{class_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 403, 409 | Hoạt động bình thường |
 | 3.10 | Danh sách SV của lớp | Cán bộ, GV | `GET /api/v1/classes/{class_id}/students` | Chi tiết lớp | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 3.11 | Ghi danh sinh viên | QTV, P.ĐT, VP Khoa | `POST /api/v1/classes/{class_id}/enroll/{student_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 404 | Hoạt động bình thường |
-| 3.12 | Rút sinh viên khỏi lớp | QTV, P.ĐT, VP Khoa | `DELETE /api/v1/classes/{class_id}/enroll/{student_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
+| 3.11 | Ghi danh sinh viên | QTV, P.ĐT | `POST /api/v1/classes/{class_id}/enroll/{student_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 403, 404 | Hoạt động bình thường |
+| 3.12 | Rút sinh viên khỏi lớp | QTV, P.ĐT | `DELETE /api/v1/classes/{class_id}/enroll/{student_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
 | 3.13 | Lịch của một lớp | Cán bộ, GV, SV | `GET /api/v1/classes/{class_id}/schedules` | Chi tiết lớp | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
 | 3.14 | Tra cứu toàn bộ lịch | Cán bộ | `GET /api/v1/schedules` | Lịch học | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 3.15 | Thêm lịch (chống trùng phòng) | QTV, P.ĐT, VP Khoa | `POST /api/v1/classes/schedules` | Chi tiết lớp | ✅ | ✅ HTTP 200, 400, 403, 422 | Hoạt động bình thường |
-| 3.16 | Sửa lịch (chống trùng phòng) | QTV, P.ĐT, VP Khoa | `PATCH /api/v1/classes/schedules/{schedule_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường |
-| 3.17 | Xóa lịch (chặn khi đã có phiên) | QTV, P.ĐT, VP Khoa | `DELETE /api/v1/classes/schedules/{schedule_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 409 | Hoạt động bình thường |
+| 3.15 | Thêm lịch (chống trùng phòng) | QTV, P.ĐT | `POST /api/v1/classes/schedules` | Chi tiết lớp | ✅ | ✅ HTTP 200, 400, 403, 422 | Hoạt động bình thường |
+| 3.16 | Sửa lịch (chống trùng phòng) | QTV, P.ĐT | `PATCH /api/v1/classes/schedules/{schedule_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường |
+| 3.17 | Xóa lịch (chặn khi đã có phiên) | QTV, P.ĐT | `DELETE /api/v1/classes/schedules/{schedule_id}` | Chi tiết lớp | ✅ | ✅ HTTP 200, 403, 409 | Hoạt động bình thường · Thay đổi: Góp ý 11/2026: Văn phòng Khoa không còn ghi danh, xếp lịch |
 | 3.18 | Lịch theo tuần (kèm trạng thái phiên, điểm danh) | SV, GV, cán bộ | `GET /api/v1/schedules/week` | Lịch tuần | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
 | 3.19 | Lịch dạy hôm nay | GV | `GET /api/v1/lecturers/me/today-schedules` | Trang chủ GV | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
 | 3.20 | In lịch tuần ra PDF | SV, GV | client `schedule_pdf` | Lịch tuần | ✅ | ✅ `flutter:schedule_pdf_test.dart` | Hoạt động bình thường |
@@ -103,11 +103,13 @@
 | Mã | Chức năng | Tác nhân | API / nơi xử lý | Màn hình | Chuyển đổi | Kiểm thử | Trạng thái |
 |---|---|---|---|---|---|---|---|
 | 5.01 | Đăng ký khuôn mặt (quyền, đồng ý, chất lượng, chống giả mạo, trùng) | SV, P.CTSV, QTV, GV | `POST /api/v1/faces/enroll/{student_id}` | Khuôn mặt, Đăng ký hộ | ✅ | ✅ HTTP 200, 400, 403 | Hoạt động bình thường |
-| 5.02 | Danh sách chờ duyệt kèm cảnh báo trùng | QTV, P.CTSV | `GET /api/v1/faces/pending` | Duyệt khuôn mặt | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 5.03 | Duyệt khuôn mặt (xóa ảnh tạm) | QTV, P.CTSV | `PATCH /api/v1/faces/{embedding_id}/approve` | Duyệt khuôn mặt | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 5.04 | Từ chối khuôn mặt có lý do (xóa ảnh tạm) | QTV, P.CTSV | `PATCH /api/v1/faces/{embedding_id}/reject` | Duyệt khuôn mặt | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường |
+| 5.02 | Danh sách chờ duyệt kèm cảnh báo trùng | P.CTSV | `GET /api/v1/faces/pending` | Duyệt khuôn mặt | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
+| 5.03 | Duyệt khuôn mặt (chỉ ảnh đang chờ, xóa ảnh tạm) | P.CTSV | `PATCH /api/v1/faces/{embedding_id}/approve` | Duyệt khuôn mặt | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường · Thay đổi: Góp ý 11/2026: bỏ quản trị viên khỏi xét duyệt; ghi người duyệt, thời điểm |
+| 5.04 | Từ chối khuôn mặt kèm lý do không hợp lệ (xóa ảnh tạm) | P.CTSV | `PATCH /api/v1/faces/{embedding_id}/reject` | Duyệt khuôn mặt | ✅ | ✅ HTTP 200, 400, 403 | Hoạt động bình thường · Thay đổi: Góp ý 11/2026: chỉ P.CTSV |
 | 5.05 | SV xem dữ liệu khuôn mặt của mình | SV | `GET /api/v1/faces/mine` | Khuôn mặt | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
 | 5.06 | SV xóa dữ liệu khuôn mặt | SV | `DELETE /api/v1/faces/mine` | Khuôn mặt | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
+| 5.09 | Phản hồi kết quả duyệt khuôn mặt cho SV (thông báo) | Hệ thống | nội bộ: face_data_service._decide | Thông báo | ✅ | ✅ `test_face_approval.py::test_result_is_sent_to_student_and_student_confirms` | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
+| 5.10 | SV xác nhận đã nhận kết quả duyệt khuôn mặt | SV | `POST /api/v1/faces/mine/{embedding_id}/acknowledge` | Khuôn mặt | ✅ | ✅ HTTP 200, 400, 404 | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
 | 5.07 | Chụp ảnh bằng camera (web/di động) | SV, GV, cán bộ | client `camera_capture` | Khuôn mặt, Quét lớp, Tự điểm danh | ✅ | ✅ `flutter:camera_lifecycle_test.dart` | Hoạt động bình thường |
 | 5.08 | Chống giả mạo MiniFASNet (tự tắt khi thiếu model) | Hệ thống | nội bộ: antispoof_service | — | ✅ | ✅ `test_antispoof.py` | Hoạt động bình thường |
 
@@ -118,34 +120,39 @@
 | 6.01 | Mở phiên (khung giờ, mỗi lịch 1 phiên/ngày) | GV, QTV | `POST /api/v1/sessions` | Lịch dạy, Phiên | ✅ | ✅ HTTP 200, 400, 403 | Hoạt động bình thường |
 | 6.02 | Tra cứu phiên | Cán bộ, GV | `GET /api/v1/sessions` | Phiên điểm danh | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
 | 6.03 | Xem chi tiết phiên | Cán bộ, GV | `GET /api/v1/sessions/{session_id}` | Kết quả phiên | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 6.04 | Bật/tắt yêu cầu quét QR | GV, QTV | `PATCH /api/v1/sessions/{session_id}` | Kết quả phiên | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 6.05 | Đóng phiên, sinh vắng, báo SV vừa vượt ngưỡng | GV, QTV | `PATCH /api/v1/sessions/{session_id}/close` | Kết quả phiên | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường |
+| 6.05 | Đóng phiên: sinh vắng / vắng có phép theo đơn, thống kê lại, cảnh báo SV vừa vượt ngưỡng | GV, QTV | `PATCH /api/v1/sessions/{session_id}/close` | Kết quả phiên | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường · Thay đổi: Góp ý 11/2026: cảnh báo sau thống kê, đơn xin phép |
 | 6.06 | Tự đóng phiên quá hạn (60 s/lần) | Hệ thống | nền: run_auto_close_loop | — | ✅ | ✅ `test_flow_fixes.py::test_auto_close_expired_sessions_marks_absent`, `test_flow_fixes.py::test_auto_close_keeps_sessions_within_deadline` | Hoạt động bình thường |
 | 6.07 | Quét camera cả lớp, nhận diện nhiều mặt | GV, QTV | `POST /api/v1/sessions/{session_id}/recognize` | Quét lớp | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường |
 | 6.08 | Xác nhận 2 khung hình trước khi ghi | Hệ thống | nội bộ: /recognize | Quét lớp | ✅ | ✅ `test_confirm_frames.py` | Hoạt động bình thường |
-| 6.09 | SV xem yêu cầu buổi học (QR, phòng) | SV | `GET /api/v1/sessions/{session_id}/checkin-info` | Tự điểm danh | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 6.10 | Chiếu mã QR luân phiên 30 s | GV, QTV | `GET /api/v1/sessions/{session_id}/checkin-code` | Mã QR phiên | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 6.11 | Quét mã QR / nhập 6 chữ số | SV | client `qr_scanner` | Tự điểm danh | ✅ | ✅ `flutter:checkin_qr_test.dart` | Hoạt động bình thường |
+| 6.09 | SV xem phòng học của buổi trước khi tự điểm danh | SV | `GET /api/v1/sessions/{session_id}/checkin-info` | Tự điểm danh | ✅ | ✅ HTTP 200 | Hoạt động bình thường · Thay đổi: Góp ý 11/2026: bỏ mã QR |
 | 6.12 | Đối chiếu GPS (giả lập, sai số, bán kính) | Hệ thống | nội bộ: geo_service | Tự điểm danh | ✅ | ✅ `test_location_checkin.py` | Hoạt động bình thường |
-| 6.13 | SV tự điểm danh bằng ảnh + GPS + QR | SV | `POST /api/v1/sessions/{session_id}/self-checkin` | Tự điểm danh | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường |
+| 6.13 | SV tự điểm danh bằng ảnh + GPS | SV | `POST /api/v1/sessions/{session_id}/self-checkin` | Tự điểm danh | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường · Thay đổi: Góp ý 11/2026: bỏ mã QR |
 | 6.14 | Xác nhận tay | GV, QTV | `POST /api/v1/sessions/{session_id}/manual` | Kết quả phiên | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường |
 | 6.15 | Danh sách lớp trong phiên (roster) | Cán bộ, GV | `GET /api/v1/sessions/{session_id}/roster` | Kết quả phiên | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
 | 6.16 | Danh sách bản ghi của phiên | Cán bộ, GV | `GET /api/v1/sessions/{session_id}/records` | Kết quả phiên | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
 | 6.17 | Sửa trạng thái / duyệt có phép (bắt buộc lý do) | GV, QTV, P.CTSV, LĐ Khoa | `PATCH /api/v1/sessions/{session_id}/records/{record_id}` | Kết quả phiên | ✅ | ✅ HTTP 200, 400, 403, 422 | Hoạt động bình thường |
 | 6.18 | Xem lịch sử sửa điểm danh | Cán bộ, GV | `GET /api/v1/sessions/{session_id}/records/{record_id}/audits` | Kết quả phiên | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
+| 6.19 | SV nộp đơn xin phép vắng một buổi học | SV | `POST /api/v1/leave-requests` | Đơn xin phép | ✅ | ✅ HTTP 200, 400, 403, 404 | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
+| 6.20 | Xem đơn xin phép theo phạm vi | SV, GV, LĐ Khoa, QTV, P.CTSV | `GET /api/v1/leave-requests` | Đơn xin phép | ✅ | ✅ HTTP 200 | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
+| 6.21 | Duyệt đơn xin phép (GV lớp / Lãnh đạo Khoa) | GV, LĐ Khoa | `PATCH /api/v1/leave-requests/{leave_id}/approve` | Đơn xin phép | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
+| 6.22 | Từ chối đơn kèm lý do không hợp lệ | GV, LĐ Khoa | `PATCH /api/v1/leave-requests/{leave_id}/reject` | Đơn xin phép | ✅ | ✅ HTTP 200, 400 | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
+| 6.23 | Phản hồi kết quả duyệt đơn cho SV (thông báo) | Hệ thống | nội bộ: leave_service.approve/reject | Thông báo | ✅ | ✅ `test_leave_and_warnings.py::test_reject_requires_invalid_reason_and_student_confirms` | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
+| 6.24 | SV xác nhận đã nhận kết quả duyệt đơn | SV | `POST /api/v1/leave-requests/{leave_id}/acknowledge` | Đơn xin phép | ✅ | ✅ HTTP 200, 400, 404 | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
+| 6.25 | Đơn đã duyệt ⇒ vắng có phép (khi đóng phiên hoặc đổi bản ghi vắng) | Hệ thống | nội bộ: leave_service._apply_excused | — | ✅ | ✅ `test_leave_and_warnings.py::test_approved_leave_makes_absence_excused_when_session_closes`, `test_leave_and_warnings.py::test_leave_approved_after_close_turns_absent_into_excused` | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
 
 ## PH7. Thông báo
 
 | Mã | Chức năng | Tác nhân | API / nơi xử lý | Màn hình | Chuyển đổi | Kiểm thử | Trạng thái |
 |---|---|---|---|---|---|---|---|
 | 7.01 | Sinh thông báo phụ huynh khi điểm danh/đổi trạng thái | Hệ thống | nội bộ: parent_notify | — | ✅ | ✅ `test_parent_notifications.py::test_checkin_notifies_parent`, `test_parent_notifications.py::test_status_correction_sends_update`, `test_parent_notifications.py::test_flipping_back_does_not_duplicate` | Hoạt động bình thường |
-| 7.02 | Xem hộp thư thông báo | PH | `GET /api/v1/notifications` | Thông báo | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
-| 7.03 | Đếm chưa đọc (chuông) | PH | `GET /api/v1/notifications/unread-count` | Chuông thông báo | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
-| 7.04 | Đánh dấu đã đọc | PH | `POST /api/v1/notifications/{notification_id}/read` | Thông báo | ✅ | ✅ HTTP 200, 404 | Hoạt động bình thường |
-| 7.05 | Đánh dấu đọc tất cả | PH | `POST /api/v1/notifications/read-all` | Thông báo | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
+| 7.02 | Xem hộp thư thông báo | PH, SV, GV | `GET /api/v1/notifications` | Thông báo | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
+| 7.03 | Đếm chưa đọc (chuông) | PH, SV | `GET /api/v1/notifications/unread-count` | Chuông thông báo | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
+| 7.04 | Đánh dấu đã đọc | PH, SV, GV | `POST /api/v1/notifications/{notification_id}/read` | Thông báo | ✅ | ✅ HTTP 200, 404 | Hoạt động bình thường |
+| 7.05 | Đánh dấu đọc tất cả | PH, SV, GV | `POST /api/v1/notifications/read-all` | Thông báo | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
 | 7.06 | Gửi email theo hàng đợi, thử lại tối đa 3 lần | Hệ thống | nền: run_notification_email_loop | — | ✅ | ✅ `test_parent_notifications.py::test_pending_email_is_sent`, `test_parent_notifications.py::test_failed_email_retried_then_given_up`, `test_parent_notifications.py::test_smtp_down_does_not_lose_mail` | Hoạt động bình thường |
 | 7.07 | Xem tùy chọn nhận thông báo | PH | `GET /api/v1/parents/me/preferences` | Tài khoản | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
 | 7.08 | Cập nhật tùy chọn nhận thông báo | PH | `PATCH /api/v1/parents/me/preferences` | Tài khoản | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
+| 7.09 | Thông báo cho SV / GV: kết quả duyệt, đơn xin phép mới, cảnh báo | Hệ thống | nội bộ: user_notify | Thông báo | ✅ | ✅ `test_leave_and_warnings.py::test_student_submits_leave_and_lecturer_is_notified` | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
 
 ## PH8. Báo cáo, thống kê
 
@@ -155,7 +162,8 @@
 | 8.02 | SV xem tóm tắt chuyên cần | SV | `GET /api/v1/reports/my-attendance` | Chuyên cần | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
 | 8.03 | Cán bộ xem chuyên cần một SV | Cán bộ | `GET /api/v1/students/{student_id}/attendance` | Chi tiết SV | ✅ | ✅ HTTP 200 | Hoạt động bình thường |
 | 8.04 | Thống kê chuyên cần theo lớp | Cán bộ, GV | `GET /api/v1/reports/attendance/{class_id}` | Báo cáo | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
-| 8.05 | Cảnh báo vắng ≥ 20 % | Cán bộ, GV | `GET /api/v1/reports/attendance/warnings` | Báo cáo | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
+| 8.05 | Xem danh sách cảnh báo vắng ≥ 20 % (sau thống kê lớp) | Cán bộ, GV | `GET /api/v1/reports/attendance/warnings` | Báo cáo | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
+| 8.11 | Gửi cảnh báo chuyên cần sau thống kê cho SV và phụ huynh | Hệ thống | nội bộ: user_notify.notify_absence_warnings | Thông báo | ✅ | ✅ `test_leave_and_warnings.py::test_absence_warning_after_statistics` | Hoạt động bình thường · Thay đổi: Mới (góp ý 11/2026) |
 | 8.06 | Xuất Excel bảng điểm danh | Cán bộ, GV | `GET /api/v1/reports/attendance/export` | Báo cáo | ✅ | ✅ HTTP 200, 400, 403 | Hoạt động bình thường |
 | 8.07 | Danh sách con của phụ huynh | PH | `GET /api/v1/parents/me/children` | Con của tôi | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
 | 8.08 | Chuyên cần của con | PH | `GET /api/v1/parents/me/children/{student_id}/attendance` | Chuyên cần của con | ✅ | ✅ HTTP 200, 403 | Hoạt động bình thường |
@@ -188,5 +196,13 @@
 
 ## Đối chiếu route ↔ danh mục
 
-Mọi route của server (98) đều đã có trong danh mục.
+Mọi route của server (102) đều đã có trong danh mục.
+
+## Chức năng đã bỏ theo góp ý nghiệp vụ (11/2026)
+
+| Mã cũ | Chức năng | Lý do |
+|---|---|---|
+| 6.04 | Bật/tắt yêu cầu quét QR | Bỏ hẳn mã QR khi SV tự điểm danh (ảnh khuôn mặt + GPS là đủ) |
+| 6.10 | Chiếu mã QR luân phiên 30 s | Bỏ hẳn mã QR |
+| 6.11 | Quét mã QR / nhập 6 chữ số | Bỏ hẳn mã QR |
 

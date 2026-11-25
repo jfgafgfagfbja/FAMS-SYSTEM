@@ -22,11 +22,11 @@ FAMS-SYSTEM/
 │   ├── nginx.conf, Dockerfile bản web + proxy /api/ → server
 │   └── .env.example           API_BASE_URL (địa chỉ máy chủ)
 ├── server/                    FastAPI — toàn bộ nghiệp vụ
-│   ├── app/api/v1/endpoints/  17 controller
-│   ├── app/services/          nghiệp vụ theo module (+ nhận diện, GPS, mã QR, nhật ký, thông báo)
+│   ├── app/api/v1/endpoints/  18 controller
+│   ├── app/services/          nghiệp vụ theo module (+ nhận diện, GPS, đơn xin phép, nhật ký, thông báo)
 │   ├── app/repositories/      truy cập dữ liệu
 │   ├── app/schemas/ · app/db/ · app/core/ · app/jobs/
-│   ├── alembic/               15 migration · tests/ 279 test · tools/
+│   ├── alembic/               16 migration · tests/ 277 test · tools/
 │   └── .env.example
 ├── docs/                      phân tích, kiến trúc, API, CSDL, triển khai, báo cáo kiểm thử
 ├── scripts/                   sao lưu, khôi phục, nhập dữ liệu gốc, kiểm tra hợp đồng API, xuất OpenAPI/ERD
@@ -60,14 +60,14 @@ Chi tiết (Linux/macOS, production HTTPS, biến môi trường, log): [docs/de
 
 - Tiền tố `/api/v1`, xác thực Bearer JWT (+ refresh token xoay vòng), lỗi `{"detail", "code"}`, header `X-Request-ID`,
   phân trang `limit`/`offset` + `X-Total-Count`. Quy ước: [docs/api/API.md](docs/api/API.md).
-- 98 endpoint: [docs/api/ENDPOINTS.md](docs/api/ENDPOINTS.md) · OpenAPI: [docs/api/openapi.json](docs/api/openapi.json) ·
+- 102 endpoint: [docs/api/ENDPOINTS.md](docs/api/ENDPOINTS.md) · OpenAPI: [docs/api/openapi.json](docs/api/openapi.json) ·
   Swagger UI khi chạy: `/docs`.
 
 ## Kiểm thử
 
 ```bash
-cd server && venv\Scripts\python -m pytest -q                         # 279 test (Postgres thật, DB fams_system_test tự tạo/xóa)
-cd client && flutter analyze && flutter test -j 1                     # 55 test
+cd server && venv\Scripts\python -m pytest -q                         # 277 test (Postgres thật, DB fams_system_test tự tạo/xóa)
+cd client && flutter analyze && flutter test -j 1                     # 43 test
 server\venv\Scripts\python scripts\check_api_contract.py              # mọi endpoint client có trên server
 ```
 
@@ -89,19 +89,20 @@ Xem [docs/deployment/BACKUP_RESTORE.md](docs/deployment/BACKUP_RESTORE.md) (lị
 | [PROJECT_OVERVIEW](docs/PROJECT_OVERVIEW.md) | Mục tiêu, vai trò, công nghệ, quy mô |
 | [CURRENT_ARCHITECTURE](docs/CURRENT_ARCHITECTURE.md) | Kiến trúc bản gốc và khoảng trống |
 | [BUSINESS_LOGIC](docs/BUSINESS_LOGIC.md) | Toàn bộ quy tắc nghiệp vụ, ngưỡng, ma trận quyền |
-| [DATABASE_ANALYSIS](docs/DATABASE_ANALYSIS.md) | 21 bảng, quan hệ, migration ([ERD](docs/database/erd.mermaid)) |
-| [FEATURE_INVENTORY](docs/FEATURE_INVENTORY.md) | 126 chức năng + trạng thái chuyển đổi/kiểm thử |
+| [DATABASE_ANALYSIS](docs/DATABASE_ANALYSIS.md) | 22 bảng, quan hệ, 16 migration ([ERD](docs/database/erd.mermaid)), chuẩn hóa 4NF |
+| [FEATURE_INVENTORY](docs/FEATURE_INVENTORY.md) | 134 chức năng + trạng thái chuyển đổi/kiểm thử |
+| [Sơ đồ luồng dữ liệu và CSDL](docs/so-do-luong-du-lieu-va-csdl/README.md) | Phân rã chức năng đến 134 chức năng lá, DFD ngữ cảnh / mức 0 / 1 / 2 (45 sơ đồ), đặc tả + truy vết màn hình → API → service → repository → bảng, ERD, chuẩn hóa CSDL đến 4NF, cây chức năng theo vai trò (HTML mở bằng trình duyệt) |
 | [MIGRATION_PLAN](docs/MIGRATION_PLAN.md) | Kế hoạch, cô lập bản gốc, danh sách thay đổi |
 | [TARGET_ARCHITECTURE](docs/architecture/TARGET_ARCHITECTURE.md) | Kiến trúc Client–Server sau tái cấu trúc, cách thêm module |
 | [DEPLOYMENT](docs/deployment/DEPLOYMENT.md) · [BACKUP_RESTORE](docs/deployment/BACKUP_RESTORE.md) | Vận hành |
 | [TEST_REPORT](docs/TEST_REPORT.md) | Kết quả kiểm thử |
 | [docs/legacy/](docs/legacy/) | Tài liệu thiết kế của bản gốc |
 
-## Nghiệp vụ chính (giữ nguyên bản gốc)
+## Nghiệp vụ chính
 
 Xác thực JWT + refresh xoay vòng, khóa tạm khi đăng nhập sai · Phân quyền 9 vai trò + phạm vi Khoa · Danh mục đơn vị,
-cán bộ, địa điểm, phòng · Lớp học phần, ghi danh, lịch học chống trùng phòng · Hồ sơ SV, đồng ý sinh trắc có phiên bản,
-phụ huynh · Đăng ký/duyệt khuôn mặt (InsightFace + chống giả mạo) · Phiên điểm danh: quét camera xác nhận 2 khung,
-SV tự điểm danh (ảnh + GPS + mã QR luân phiên), xác nhận tay, sửa có lý do + lịch sử · Thông báo phụ huynh (app +
-email) · Chuyên cần, cảnh báo vắng ≥ 20 %, xuất Excel, thống kê theo Khoa · Nhật ký hệ thống tự động.
-Chi tiết: [docs/BUSINESS_LOGIC.md](docs/BUSINESS_LOGIC.md).
+cán bộ, địa điểm, phòng · Lớp học phần, ghi danh, lịch học chống trùng phòng (ghi danh + xếp lịch: Quản trị viên, Phòng Đào tạo) · Hồ sơ SV, đồng ý sinh trắc có phiên bản,
+phụ huynh · Đăng ký khuôn mặt (InsightFace + chống giả mạo), Phòng CTSV duyệt / từ chối có lý do, SV nhận phản hồi và xác nhận · Phiên điểm danh: quét camera xác nhận 2 khung,
+SV tự điểm danh (ảnh + GPS), xác nhận tay, sửa có lý do + lịch sử · Đơn xin phép vắng: GV lớp / Lãnh đạo Khoa duyệt hoặc từ chối có lý do, SV nhận phản hồi và xác nhận, buổi được phép ghi `excused` · Thông báo phụ huynh (app +
+email) · Chuyên cần, cảnh báo vắng ≥ 20 % gửi SV + phụ huynh ngay sau thống kê khi đóng phiên, xuất Excel, thống kê theo Khoa · Nhật ký hệ thống tự động.
+Chi tiết: [docs/BUSINESS_LOGIC.md](docs/BUSINESS_LOGIC.md). Các thay đổi theo góp ý 10/11/2026 (bỏ mã QR, bỏ Quản trị viên duyệt khuôn mặt, bỏ ghi danh/xếp lịch của Văn phòng Khoa, thêm đơn xin phép, phản hồi + xác nhận kết quả duyệt, cảnh báo sau thống kê, CSDL chuẩn 4NF) đánh dấu ★ trong tài liệu; kết quả kiểm thử: [TEST_REPORT §7](docs/TEST_REPORT.md).

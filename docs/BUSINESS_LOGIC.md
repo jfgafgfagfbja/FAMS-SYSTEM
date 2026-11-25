@@ -3,6 +3,11 @@
 > Trích từ mã nguồn bản gốc (`D:\FAMS`, 03/11/2026). Đây là **chuẩn đối chiếu**: sau tái cấu trúc,
 > mọi quy tắc dưới đây phải giữ nguyên (cùng mã HTTP, cùng thông báo lỗi). Các ngưỡng có ghi
 > `BIẾN` đọc từ cấu hình môi trường (`server/app/core/config.py`).
+>
+> **Cập nhật 10/11/2026 theo góp ý nghiệp vụ** (các mục đánh dấu ★): chỉ P.CTSV duyệt khuôn mặt; kết quả duyệt
+> (khuôn mặt, đơn xin phép) gửi cho sinh viên và sinh viên xác nhận đã nhận; từ chối phải ghi lý do không hợp lệ;
+> Văn phòng Khoa không ghi danh, không xếp lịch; thêm đơn xin phép vắng (GV lớp / Lãnh đạo Khoa duyệt); bỏ hẳn mã QR;
+> cảnh báo vắng phát ra sau khi thống kê (gửi SV + phụ huynh); `schedules.room` chuẩn hóa (3NF).
 
 ## 1. Ngưỡng và tham số nghiệp vụ
 
@@ -24,8 +29,7 @@
 | `SELF_CHECKIN_REQUIRE_LOCATION` | True | Bắt buộc đối chiếu GPS khi đã cấu hình địa điểm |
 | `SELF_CHECKIN_MAX_ACCURACY_M` | 100 | Sai số GPS tối đa chấp nhận |
 | `ROOM_MIN_RADIUS_M` | 50 | Bán kính tối thiểu khi dùng tọa độ riêng của phòng |
-| `CHECKIN_QR_ROTATE_SECONDS` | 30 | Chu kỳ đổi mã QR |
-| `SELF_CHECKIN_REQUIRE_QR_DEFAULT` | False | Giá trị mặc định ô "yêu cầu QR" khi mở phiên |
+| `LEAVE_REQUEST_MAX_PAST_DAYS` ★ | 7 | Đơn xin phép được nộp bổ sung cho buổi đã qua tối đa 7 ngày |
 | `MEDIA_URL_EXPIRE_MINUTES` | 60 | Hạn URL ảnh có chữ ký (làm tròn khối 5 phút) |
 | `EVIDENCE_RETENTION_DAYS` | 90 | Ảnh bằng chứng quá hạn bị xóa tự động |
 | `ANTISPOOF_ENABLED` / `ANTISPOOF_THRESHOLD` | True / 0.5 | Chống giả mạo (tự tắt nếu thiếu model) |
@@ -60,14 +64,16 @@
 | Chức năng | Admin | P.ĐT | P.CTSV | Lãnh đạo Khoa | VP Khoa | Ban ngành | GV | SV | PH |
 |---|---|---|---|---|---|---|---|---|---|
 | Đơn vị, tài khoản cán bộ | Sửa | – | – | – | – | – | – | – | – |
-| Lớp HP, lịch, ghi danh | Sửa | Sửa | Xem | Xem* | Sửa* | – | Xem (lớp mình) | lịch lớp mình | – |
+| Lớp học phần ★ | Sửa | Sửa | Xem | Xem* | Sửa* | – | Xem (lớp mình) | – | – |
+| Ghi danh, xếp lịch ★ | Sửa | Sửa | Xem | Xem* | **Xem*** | – | Xem (lớp mình) | lịch lớp mình | – |
 | Phòng học, địa điểm | Sửa | Sửa | Xem | Xem | Xem | – | Xem | – | – |
 | Hồ sơ giảng viên | Sửa | Sửa | – | Xem* | Xem* | – | – | – | – |
 | Hồ sơ SV | Sửa | Xem | Sửa | Xem* | Xem* | – | Xem (SV lớp mình) | của mình | con mình |
 | Phụ huynh | Sửa | Xem | Sửa | – | – | – | – | – | – |
-| Duyệt khuôn mặt | Sửa | – | Sửa | – | – | – | – | – | – |
+| Duyệt khuôn mặt ★ | **–** | – | Sửa | – | – | – | – | xác nhận kết quả | – |
 | Đăng ký khuôn mặt hộ | Có | – | Có | – | – | – | SV lớp mình | của mình | – |
-| Mở phiên, quét, QR, xác nhận tay, sửa mọi trạng thái | Có | – | – | – | – | – | lớp mình | – | – |
+| Mở phiên, quét, xác nhận tay, sửa mọi trạng thái | Có | – | – | – | – | – | lớp mình | – | – |
+| Đơn xin phép vắng ★ | Xem | – | Xem | Duyệt* | – | – | Duyệt (lớp mình) | Nộp, xác nhận kết quả | – |
 | Duyệt "Có phép" / hủy duyệt | Có | – | Có | Có* | – | – | (sửa mọi trạng thái) | – | – |
 | Điểm danh chi tiết, cảnh báo, xuất Excel | Xem | Xem | Xem | Xem* | Xem* | – | lớp mình | – | – |
 | Thống kê tổng hợp | Xem | Xem | Xem | Xem* | Xem* | Xem | – | – | – |
@@ -78,6 +84,9 @@
 - **SV**: Khoa xem SV có `students.faculty_id` = đơn vị mình; GV xem SV có ghi danh vào lớp mình dạy; PH xem con đã liên kết.
 - **Lãnh đạo Khoa duyệt có phép** khi SV thuộc Khoa **hoặc** lớp thuộc Khoa.
 - **VP Khoa tạo lớp** ⇒ lớp luôn thuộc Khoa mình; chỉ định Khoa khác ⇒ 403; tài khoản chưa gắn Khoa ⇒ 403.
+- ★ **Ghi danh SV và xếp lịch** chỉ Quản trị viên / P. Đào tạo; VP Khoa gọi ⇒ 403 "Chi Quan tri vien hoac Phong Dao tao
+  duoc ghi danh va xep lich hoc" (kể cả lớp thuộc Khoa mình).
+- ★ **Duyệt đơn xin phép**: GV dạy lớp của buổi; Lãnh đạo Khoa khi SV hoặc lớp thuộc Khoa; người khác ⇒ 403.
 - Tài khoản Khoa chưa gắn đơn vị ⇒ thấy danh sách rỗng (lọc theo id −1).
 - `faculty_id` truyền lên phải là đơn vị loại `faculty`, không thì 400 "Khoa khong hop le".
 - Thiếu vai trò ⇒ 403 "Khong du quyen"; sai phạm vi ⇒ 403 với thông báo riêng của từng đối tượng.
@@ -103,7 +112,8 @@
 - **Ghi danh**: SV phải tồn tại (404); đã ghi danh ⇒ 400; rút khỏi lớp chưa ghi danh ⇒ 404.
 - **Lịch học**: thứ 0–6 (0 = thứ Hai); giờ bắt đầu < giờ kết thúc; phải chọn phòng hoặc nhập tên phòng; phòng phải
   đang sử dụng; **chống trùng phòng**: cùng phòng, cùng thứ, khung giờ giao nhau ⇒ 400 nêu lớp đang chiếm
-  (hai tiết liền nhau — kết thúc = bắt đầu — hợp lệ); cột chữ `room` luôn có giá trị (lấy mã phòng nếu bỏ trống);
+  (hai tiết liền nhau — kết thúc = bắt đầu — hợp lệ); ★ cột chữ `room` chỉ lưu **tên phòng tự nhập** khi không chọn phòng trong danh mục (đã chọn
+  `room_id` thì để trống — mã phòng lấy qua `room_id`, chuẩn 3NF); API vẫn trả trường `room` = tên tự nhập hoặc mã phòng;
   xóa lịch đã có phiên điểm danh ⇒ 409.
 - **Lịch tuần** `GET /schedules/week?start=`: tuần thứ Hai–CN chứa ngày `start`. SV theo lớp ghi danh; GV/cán bộ theo
   phạm vi xem lớp. Mỗi buổi: phòng, giờ, giờ được mở phiên (= bắt đầu − 15'), phiên (nếu có), địa điểm + bán kính;
@@ -124,13 +134,18 @@
   MSSV không tồn tại ⇒ 404; xóa phụ huynh xóa liên kết, không xóa SV. P.ĐT chỉ xem.
 - **Tùy chọn thông báo** (phụ huynh tự đổi): nhận email, nhận cả tin "có mặt".
 
-## 7. Khuôn mặt (PH5)
+## 7. Khuôn mặt (PH5) ★
 
 - **Đăng ký** `POST /faces/enroll/{sid}` (nhiều ảnh): người gửi là chính SV, admin/P.CTSV, hoặc GV có SV trong lớp;
   SV **chưa đồng ý** ⇒ 400. Mỗi ảnh: đúng 1 khuôn mặt, đạt chất lượng (mục 1), qua chống giả mạo, không giống SV
   khác > 0.60 ⇒ lưu vector **`pending`** + ảnh cắt tạm. `ok=true` chỉ khi **mọi** ảnh đạt.
-- **Duyệt**: danh sách chờ kèm cảnh báo trùng (so với vector **đã duyệt** của SV khác, hiện MSSV + độ giống);
-  duyệt ⇒ `approved`; từ chối bắt buộc lý do ⇒ `rejected`. **Ảnh tạm bị xóa ngay khi có quyết định.**
+- **Duyệt** ★: CHỈ **Phòng Công tác SV** (quản trị viên ⇒ 403). Danh sách chờ kèm cảnh báo trùng (so với vector
+  **đã duyệt** của SV khác, hiện MSSV + độ giống); chỉ xử lý ảnh đang chờ (đã xử lý ⇒ 400); duyệt ⇒ `approved`;
+  từ chối bắt buộc **lý do không hợp lệ** (400) ⇒ `rejected`; ghi `reviewed_by`, `reviewed_at`. **Ảnh tạm bị xóa ngay
+  khi có quyết định.**
+- **Phản hồi kết quả** ★: mỗi quyết định tạo thông báo cho SV (`face_approved` / `face_rejected` kèm lý do).
+  SV **xác nhận đã nhận** `POST /faces/mine/{id}/acknowledge` (ảnh của chính mình — khác ⇒ 404; chưa có kết quả ⇒ 400)
+  ⇒ `student_ack_at`.
 - Chỉ vector `approved` dùng để nhận diện. Trạng thái khuôn mặt của SV: approved > pending > rejected > none.
 - SV xem danh sách vector của mình; `DELETE /faces/mine` = rút đồng ý (xóa toàn bộ).
 
@@ -139,13 +154,13 @@
 ### 8.1 Phiên
 - **Mở phiên** (GV lớp mình/admin): lịch tồn tại (404); ngày = hôm nay; đúng thứ của lịch; trong khung
   `[bắt đầu − 15', kết thúc]`; mỗi lịch tối đa một phiên/ngày (kiểm trước + UNIQUE DB, cả hai trả 400 cùng thông báo).
-  `require_qr` lấy theo request hoặc mặc định cấu hình.
 - **Hạn nhận điểm danh** = ngày phiên + giờ kết thúc + 30'. Sau hạn ⇒ 400 "Da het gio nhan diem danh…".
   Phiên không mở ⇒ 404.
-- **Đóng phiên** (thủ công hoặc tự động mỗi 60 s khi quá hạn): SV ghi danh chưa có bản ghi ⇒ `absent`; trả
-  `absent`, `present` (= số bản ghi đã có), `newly_warned` (SV **vừa** vượt ngưỡng cảnh báo do phiên này);
+- **Đóng phiên** (thủ công hoặc tự động mỗi 60 s khi quá hạn): SV ghi danh chưa có bản ghi ⇒ `absent`, hoặc
+  ★ `excused` nếu có **đơn xin phép đã duyệt** cho buổi đó; sau đó **thống kê lại** chuyên cần và ★ **cảnh báo**
+  SV **vừa** vượt ngưỡng (mục 10); trả `absent`, `excused`, `present` (= số bản ghi đã có), `newly_warned`;
   xóa bộ đếm xác nhận khung hình của phiên. Đóng phiên đã đóng ⇒ 400.
-- Bật/tắt yêu cầu QR chỉ khi phiên còn mở.
+- ★ Đã bỏ hẳn mã QR (bật/tắt, chiếu mã, quét mã); `GET /sessions/{id}/checkin-info` chỉ trả tên phòng.
 
 ### 8.2 Quét camera (`/recognize`)
 - Với mỗi khuôn mặt trong khung hình: so với vector đã duyệt của SV **trong lớp**; độ giống < 0.45 ⇒ `unknown`.
@@ -156,18 +171,15 @@
 
 ### 8.3 Sinh viên tự điểm danh (`/self-checkin`) — thứ tự kiểm tra
 1. Phiên mở và còn hạn → 2. Có hồ sơ SV (404) → 3. Ghi danh lớp (403) → 4. Đã đồng ý (`consent_required`) →
-5. Chưa có bản ghi (`already_checked`) → 6. Nếu phiên yêu cầu QR: mã QR hoặc 6 chữ số hợp lệ ở chu kỳ hiện tại
-hoặc liền trước (`qr_required` / `qr_invalid`) → 7. **GPS trước khi nhận diện** (tiết kiệm tài nguyên) →
-8. Khuôn mặt chỉ so với **chính SV** (`no_face`, `multiple_faces`, `spoof` — có lưu bằng chứng, `not_matched`) →
-9. Ghi bản ghi `present`/`late`, nguồn `selfie`, lưu tọa độ, sai số, khoảng cách.
+5. Chưa có bản ghi (`already_checked`) → 6. **GPS trước khi nhận diện** (tiết kiệm tài nguyên) →
+7. Khuôn mặt chỉ so với **chính SV** (`no_face`, `multiple_faces`, `spoof` — có lưu bằng chứng, `not_matched`) →
+8. Ghi bản ghi `present`/`late`, nguồn `selfie`, lưu tọa độ, sai số, khoảng cách. (★ Bỏ bước mã QR.)
 
 **Vùng địa lý** (theo thứ tự ưu tiên): tọa độ riêng của phòng (bán kính ≥ 50 m) → khu vực chứa phòng → địa điểm gắn
 trực tiếp vào lịch (dữ liệu cũ) → địa điểm mặc định. Không có vùng nào hoặc tắt cấu hình ⇒ không chặn (vẫn tính
 khoảng cách nếu được). Chặn khi: thiếu tọa độ (`location_required`), vị trí giả lập (`location_mocked`), sai số
 > 100 m (`location_inaccurate`), `khoảng cách − sai số > bán kính` (`out_of_range`). Khoảng cách tính Haversine.
 
-**Mã QR**: `FAMS:<session_id>:<chu kỳ>:<HMAC 12 ký tự>` + mã 6 chữ số tương đương; không lưu DB; chỉ người được
-thao tác lớp (GV lớp/admin) lấy được mã, chỉ khi phiên mở.
 
 ### 8.4 Xác nhận tay và hiệu chỉnh
 - **Xác nhận tay** (GV lớp/admin): chỉ khi phiên mở (400); SV phải thuộc lớp (400); chưa có bản ghi (400) ⇒
@@ -178,7 +190,20 @@ thao tác lớp (GV lớp/admin) lấy được mã, chỉ khi phiên mở.
   - P.CTSV / Lãnh đạo Khoa (trong phạm vi): **chỉ** `→ excused` hoặc `excused → absent` (403 nếu khác).
   - Mỗi lần sửa ghi một dòng `attendance_audits` (cũ, mới, người sửa, lý do, thời điểm). Xem lịch sử: mới nhất trước.
 
-## 9. Thông báo phụ huynh (PH7)
+### 8.5 Đơn xin phép vắng ★
+- **Nộp** `POST /leave-requests` (SV): lịch tồn tại (404); SV ghi danh lớp của lịch (403); ngày vắng đúng thứ của lịch
+  (400); nộp bổ sung tối đa `LEAVE_REQUEST_MAX_PAST_DAYS` ngày sau buổi học (400); bắt buộc lý do (400); mỗi
+  (SV, lịch, ngày) một đơn (400 + UNIQUE DB); đã có mặt buổi đó ⇒ 400. Giảng viên lớp nhận thông báo `leave_submitted`.
+- **Xem** `GET /leave-requests`: SV đơn của mình; GV lớp mình dạy; Lãnh đạo Khoa SV / lớp thuộc Khoa; admin, P.CTSV
+  toàn trường (chỉ xem); kèm trạng thái điểm danh của SV ở buổi đó.
+- **Duyệt** `PATCH …/approve` / **từ chối** `PATCH …/reject` (GV lớp, Lãnh đạo Khoa trong phạm vi — 403): đơn phải đang
+  chờ (400); từ chối bắt buộc **lý do không hợp lệ** (400); ghi người duyệt, thời điểm, ghi chú / lý do.
+- **Áp dụng**: duyệt khi phiên của buổi đó đã ghi SV `absent` ⇒ đổi ngay sang `excused` + dòng `attendance_audits`
+  (lý do "Đơn xin phép #id: …"); chưa đóng phiên ⇒ đóng phiên ghi `excused` thay vì `absent`.
+- **Phản hồi kết quả**: thông báo cho SV (`leave_approved` / `leave_rejected` kèm lý do); SV **xác nhận đã nhận**
+  `POST …/acknowledge` (đơn của mình — khác ⇒ 404; chưa có kết quả ⇒ 400) ⇒ `student_ack_at`.
+
+## 9. Thông báo (PH7)
 
 - Sự kiện SQLAlchemy `before_flush`: khi bản ghi điểm danh được **tạo** hoặc **đổi trạng thái** ⇒ tạo thông báo cho
   mọi phụ huynh liên kết với SV. Loại: `attendance_present` (bỏ qua nếu phụ huynh tắt tin có mặt), `_late`,
@@ -187,6 +212,9 @@ thao tác lớp (GV lớp/admin) lấy được mã, chỉ khi phiên mở.
 - Email: thông báo vào hàng đợi (`email_status=pending`) nếu phụ huynh bật email và máy chủ có SMTP, ngược lại
   `skipped`. Tác vụ nền gửi theo lô, thử tối đa 3 lần rồi `failed` kèm lỗi. Việc điểm danh **không chờ** email.
 - Hộp thư: danh sách, số chưa đọc, đánh dấu một/tất cả đã đọc (chỉ thông báo của chính mình, 404 nếu không phải).
+- ★ **Thông báo cho SV / GV** (`services/user_notify.py`): kết quả duyệt khuôn mặt và đơn xin phép (SV), đơn xin phép
+  mới (GV lớp), cảnh báo chuyên cần (SV + phụ huynh — phụ huynh vào hàng đợi email nếu bật email). Hộp thư mở cho
+  phụ huynh, sinh viên, giảng viên, Lãnh đạo Khoa.
 
 ## 10. Báo cáo, thống kê (PH8)
 
@@ -195,6 +223,9 @@ thao tác lớp (GV lớp/admin) lấy được mã, chỉ khi phiên mở.
   cảnh báo khi ≥ 0.2.
 - **Thống kê lớp** / **cảnh báo**: mỗi SV có bản ghi: số buổi theo 5 trạng thái, tổng phiên, tỉ lệ (4 chữ số), cờ cảnh báo;
   sắp xếp theo MSSV.
+- ★ **Cảnh báo sau thống kê**: mỗi lần đóng phiên (thủ công / tự động) hệ thống thống kê lại lớp; SV **vừa** vượt ngưỡng
+  (trước đóng phiên chưa vượt) nhận thông báo `absence_warning`, mọi phụ huynh liên kết cũng nhận. SV đã ở trên ngưỡng
+  từ trước không bị báo lặp.
 - **Chuyên cần một SV** (SV tự xem, PH xem con, cán bộ xem 1 SV): lọc học kỳ (mặc định học kỳ lớn nhất trong các lớp đã
   ghi danh), mỗi lớp: số buổi theo trạng thái, tỉ lệ, ngưỡng, cảnh báo, GV + email, **chi tiết từng buổi** (giờ, ảnh,
   nguồn, GPS, khoảng cách).
@@ -209,7 +240,7 @@ thao tác lớp (GV lớp/admin) lấy được mã, chỉ khi phiên mở.
 
 ## 11. Nhật ký hệ thống (PH9)
 
-- Sự kiện `after_flush`: mọi thêm/sửa/xóa trên 15 loại đối tượng (user, đơn vị, cán bộ, SV, GV, phụ huynh, liên kết,
+- Sự kiện `after_flush`: mọi thêm/sửa/xóa trên 16 loại đối tượng (★ thêm đơn xin phép) (user, đơn vị, cán bộ, SV, GV, phụ huynh, liên kết,
   lớp, ghi danh, lịch, phòng, địa điểm, khuôn mặt, phiên, điểm danh) ⇒ một dòng `audit_logs`: người thao tác (email,
   vai trò snapshot), hành động, đối tượng + nhãn snapshot, Khoa liên quan, IP, kết quả, chi tiết `{trường: [cũ, mới]}`.
 - Không ghi: **tạo** bản ghi điểm danh (luồng thường); giá trị cột nhạy cảm (mật khẩu, vector, OTP, token — chỉ ghi

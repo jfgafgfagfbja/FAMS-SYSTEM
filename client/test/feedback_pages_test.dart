@@ -175,7 +175,7 @@ void main() {
     await tester.pumpWidget(_host(api, const AccountPage(), role: Roles.facultyLeader));
     await tester.pump();
     expect(find.text('Chức năng của Lãnh đạo Khoa'), findsOneWidget);
-    expect(find.text('Duyệt vắng có phép cho sinh viên trong Khoa'), findsOneWidget);
+    expect(find.text('Duyệt đơn xin phép vắng, vắng có phép cho sinh viên trong Khoa'), findsOneWidget);
     expect(find.textContaining('Không nhập liệu'), findsOneWidget);
   });
 }

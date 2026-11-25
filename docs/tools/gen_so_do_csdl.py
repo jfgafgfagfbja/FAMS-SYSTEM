@@ -31,6 +31,10 @@ from so_do_data import FLOWS, GROUPS, PROJECT, ROLES, STORES, TABLES  # noqa: E4
 
 OUT = ROOT / "docs" / "so-do-luong-du-lieu-va-csdl"
 TPL = TOOLS / "so_do_templates"
+# Chi muc chuc nang la do gen_phan_ra.py sinh: neu co, 4 trang nay duoc gan lien ket sang
+# Phan ra chuc nang / DFD / Dac ta & truy vet (va cay chuc nang dung lai tu quyen thuc trong code).
+_IDX = TOOLS / "trace" / "leaf_index.json"
+LEAF_INDEX = json.loads(_IDX.read_text(encoding="utf-8")) if _IDX.exists() else None
 PG = postgresql.dialect()
 META = {t.name: t for t in Base.metadata.sorted_tables}
 ORDER = [name for _g, _c, names in GROUPS for name in names]
@@ -135,12 +139,26 @@ def table_ddl(name: str) -> str:
     return "\n".join(out)
 
 
+def alembic_head() -> str:
+    """Revision head: revision khong bi migration nao khac tro toi qua down_revision."""
+    import re
+    revs, downs = set(), set()
+    for f in (ROOT / "server" / "alembic" / "versions").glob("*.py"):
+        text = f.read_text(encoding="utf-8")
+        m = re.search(r"""^revision\s*(?::\s*str)?\s*=\s*["']([0-9a-f]+)["']""", text, re.M)
+        if m:
+            revs.add(m.group(1))
+        downs.update(re.findall(r"""^down_revision[^=]*=\s*["']([0-9a-f]+)["']""", text, re.M))
+    heads = sorted(revs - downs)
+    return ", ".join(heads) or "?"
+
+
 def build_schema_sql() -> str:
     head = [
         "-- =====================================================================",
         f"-- CSDL: {PROJECT['name'].upper()} (PostgreSQL 16 + pgvector)",
         f"-- {len(META)} bảng. Sinh tự động từ server/app/db/models.py (docs/tools/gen_so_do_csdl.py).",
-        "-- Môi trường thật tạo / nâng cấp schema bằng Alembic (server/alembic, head d4f8a2c6e913);",
+        f"-- Môi trường thật tạo / nâng cấp schema bằng Alembic (server/alembic, head {alembic_head()});",
         "-- tệp này dùng để đọc, đưa vào báo cáo hoặc dựng CSDL thử nghiệm.",
         "-- =====================================================================",
         "-- CREATE DATABASE fams_system ENCODING 'UTF8';  -- \\c fams_system",
@@ -186,8 +204,20 @@ def build_tb() -> list[dict]:
             "cols": [[c.name, f"{model}.{c.name}", col_type(c), col_keys(table, c), html.escape(doc["cols"][c.name])]
                      for c in table.columns],
             "cons": composite_constraints(table), "fkOut": fk_out(table), "fkIn": fk_in(name),
-            "used": used_by_flows(name), "ddl": table_ddl(name),
+            "used": used_by_flows(name), "ddl": table_ddl(name), "leaves": leaves_using(name),
         })
+    return out
+
+
+def leaves_using(name: str) -> list[list[str]]:
+    """[ma la, ten, R|W|RW] cac chuc nang la doc/ghi bang (do khi chay test) - tu leaf_index.json."""
+    if not LEAF_INDEX:
+        return []
+    out = []
+    for lf in LEAF_INDEX["leaves"]:
+        mode = "RW" if name in lf["RW"] else "W" if name in lf["W"] else "R" if name in lf["R"] else ""
+        if mode:
+            out.append([lf["id"], lf["name"], mode])
     return out
 
 
@@ -197,9 +227,96 @@ def tint(hex_color: str) -> str:
 
 
 def build_roles() -> list[dict]:
+    if LEAF_INDEX:
+        return build_roles_from_leaves()
     return [{**r, "tint": tint(r["color"]), "groups": [
         {"menu": g["menu"], "readonly": g.get("readonly", False),
          "rows": [[html.escape(x) for x in row] for row in g["rows"]]} for g in r["groups"]]} for r in ROLES]
+
+
+def build_roles_from_leaves() -> list[dict]:
+    """Cay chuc nang theo vai tro DUNG LAI tu phan ra + quyen thuc trong code (require_roles / pham vi):
+    vai tro -> phan he (menu) -> chuc nang la (lien ket dac ta) + du lieu vao/ra."""
+    out = []
+    for r in ROLES:
+        groups = []
+        for ph in LEAF_INDEX["phs"]:
+            if not ph["dfd"]:
+                continue
+            leaves = [lf for lf in LEAF_INDEX["leaves"] if lf["ph"] == ph["code"] and r["role"] in lf["roles"]]
+            if not leaves:
+                continue
+            rows = [[f'<a href="dac_ta_chuc_nang.html#{lf["id"]}" style="font-weight:800;color:#0E9594;text-decoration:none">{lf["id"]}</a> '
+                     f'{html.escape(lf["name"])}', html.escape(lf["vao"] or "—"), html.escape(lf["ra"] or "—")]
+                    for lf in leaves]
+            groups.append({"menu": f'{ph["n"]}. {ph["name"]}', "readonly": all(lf["readonly"] for lf in leaves),
+                           "rows": rows})
+        out.append({**{k: r[k] for k in ("id", "name", "role", "color", "letter", "desc")},
+                    "tint": tint(r["color"]), "groups": groups})
+    return out
+
+
+NEW_NAV = [("workflow_tong_quan.html", "Sơ đồ quy trình"), ("erd_csdl.html", "CSDL (ERD)"),
+           ("csdl_chi_tiet.html", "Chi tiết từng bảng CSDL"), ("chuc_nang_cay.html", "Sơ đồ chức năng cây"),
+           ("phan_ra_chuc_nang.html", "Phân rã chức năng"), ("dfd.html", "DFD các mức"),
+           ("dac_ta_chuc_nang.html", "Đặc tả & truy vết"), ("chuan_hoa_csdl.html", "Chuẩn hóa CSDL (4NF)")]
+
+
+def patch_template(template: str, text: str) -> str:
+    """Gan lien ket sang bo phan ra / DFD / dac ta (chi khi da co leaf_index.json)."""
+    if not LEAF_INDEX:
+        return text
+    import re
+    nav = '<nav class="top">' + "".join(
+        f'<a href="{h}" class="{"on" if h == template else ""}">{t}</a>' for h, t in NEW_NAV) + "</nav>"
+    if '<nav class="top">' in text:
+        text = re.sub(r'<nav class="top">.*?</nav>', nav, text, count=1, flags=re.S)
+    else:  # cay chuc nang: chua co thanh dieu huong tren cung
+        css = ('<style>nav.top{display:flex;flex-direction:row;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 24px;background:#0f2a3d;position:relative;z-index:9}'
+               'nav.top a{color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px;'
+               'font-family:"Segoe UI",system-ui,sans-serif}nav.top a:hover{background:rgba(255,255,255,.1)}'
+               'nav.top a.on{background:#0e9594;color:#fff}</style>')
+        text = text.replace("<body>", "<body>" + css + nav, 1)
+    if template == "csdl_chi_tiet.html":
+        anchor = "h+='<h3>Câu lệnh tạo bảng ({{DBMS}})</h3>"
+        add = ("h+='<h3>Chức năng lá đọc / ghi bảng này (đo khi chạy 279 test)</h3>'+(t.leaves.length?t.leaves.map(l=>"
+               "`<a class=\"u\" style=\"text-decoration:none;color:#0c4a6e\" href=\"dac_ta_chuc_nang.html#${l[0]}\"><b>${l[0]}</b> ${l[1]} · "
+               "${l[2]==='R'?'đọc':l[2]==='W'?'ghi':'đọc + ghi'}</a>`).join(''):'<i>Không có chức năng nào</i>');")
+        assert anchor in text, "csdl_chi_tiet: doi mau?"
+        text = text.replace(anchor, add + anchor, 1)
+    if template == "workflow_tong_quan.html":
+        a1 = "document.getElementById('dsc').textContent = f.desc;"
+        a2 = '<p id="dsc"></p>'
+        assert a1 in text and a2 in text, "workflow: doi mau?"
+        text = text.replace(a1, a1 + " document.getElementById('lnk').innerHTML = f.links || '';", 1)
+        text = text.replace(a2, a2 + '<p id="lnk" style="margin:6px 0 0;font-size:13px"></p>', 1)
+    if template == "chuc_nang_cay.html":
+        text = text.replace("</script>\n</body>", "if(location.hash) selectTab(location.hash.slice(1));\n"
+                            "window.addEventListener('hashchange',()=>selectTab(location.hash.slice(1)));\n</script>\n</body>", 1)
+    return text
+
+
+def flow_links(flow: dict) -> str:
+    if not LEAF_INDEX:
+        return ""
+    key = flow["key"]
+    if key == "master":
+        return ('Phân rã chi tiết: <a href="dfd.html#CTX">Sơ đồ ngữ cảnh</a> · <a href="dfd.html#L0">DFD mức 0</a> · '
+                '<a href="phan_ra_chuc_nang.html">Sơ đồ phân rã chức năng</a> · <a href="dac_ta_chuc_nang.html">Ma trận truy vết</a>')
+    ph = next((p for p in LEAF_INDEX["phs"] if p["code"].lower() == key), None)
+    if ph:
+        n_leaf = sum(len(LEAF_INDEX["groups"][g]["leaves"]) for g in ph["groups"])
+        first = LEAF_INDEX["groups"][ph["groups"][0]]["leaves"][0]
+        return (f'Phân rã chi tiết: <a href="dfd.html#L1-{ph["code"]}">DFD mức 1 — tiến trình {ph["n"]}</a> '
+                f'({len(ph["groups"])} chức năng cấp 2, {n_leaf} chức năng lá) · '
+                f'<a href="phan_ra_chuc_nang.html#{first}">Sơ đồ phân rã</a> · '
+                f'<a href="dac_ta_chuc_nang.html#{first}">Đặc tả &amp; truy vết từng chức năng lá</a>')
+    role = next((r for r in ROLES if r["id"] == key), None)
+    if role:
+        n = sum(1 for lf in LEAF_INDEX["leaves"] if role["role"] in lf["roles"])
+        return (f'Chi tiết: <a href="chuc_nang_cay.html#{role["id"]}">Cây chức năng của {html.escape(role["name"])}</a> '
+                f'({n} chức năng lá, theo quyền trong code)')
+    return ""
 
 
 # ----------------------------------------------------------------------------- ERD (SVG)
@@ -211,7 +328,7 @@ LAYOUT = {
     "lecturers": (4, 100), "classes": (5, 100), "enrollments": (4, 280), "schedules": (5, 300),
     "students": (0, 680), "parents": (1, 680), "parent_students": (1, 860), "face_embeddings": (0, 980),
     "attendance_sessions": (2, 680), "attendance_records": (3, 680), "attendance_audits": (2, 900),
-    "notifications": (4, 680), "audit_logs": (5, 680),
+    "notifications": (4, 680), "audit_logs": (5, 680), "leave_requests": (3, 1010),
 }
 BADGE = {"PK": "#fde68a", "FK": "#bfdbfe", "UQ": "#e9d5ff"}
 
@@ -364,7 +481,7 @@ def svg_to_png(svg_path: Path, png_path: Path, width: int, height: int, scale: f
 
 # ----------------------------------------------------------------------------- ghep trang
 def fill(template: str, values: dict) -> str:
-    text = (TPL / template).read_text(encoding="utf-8")
+    text = patch_template(template, (TPL / template).read_text(encoding="utf-8"))
     for key, value in values.items():
         text = text.replace("{{" + key + "}}", value)
     if "{{" in text and "}}" in text.split("{{", 1)[1]:
@@ -380,7 +497,7 @@ def main() -> None:
     n_tables = len(META)
     n_func = sum(1 for f in FLOWS if f["func"] and f["key"] != "master")
     n_roles = len(ROLES)
-    flows_json = json.dumps(FLOWS, ensure_ascii=False)
+    flows_json = json.dumps([{**f, "links": flow_links(f)} for f in FLOWS], ensure_ascii=False)
     dumps = lambda o: json.dumps(o, ensure_ascii=False).replace("</", "<\\/")  # noqa: E731
 
     (OUT / "workflow_tong_quan.html").write_text(fill("workflow_tong_quan.html", {
@@ -417,8 +534,12 @@ def main() -> None:
         "COURSE": PROJECT["course"],
         "H1": f"Chức năng con &amp; Giao diện<br>{esc(PROJECT['short'])} – {esc(PROJECT['org'])}",
         "NAVLABEL": "VAI TRÒ",
-        "SIDEFOOT": "Mỗi mục thể hiện: Nhóm Menu → Chức năng con → Dữ liệu đầu vào (Input) → Kết quả đầu ra (Output). "
-                    "Đăng nhập, đổi / quên mật khẩu dùng chung cho mọi vai trò (ghi ở mục Sinh viên).",
+        "SIDEFOOT": ("Mỗi mục: Phân hệ (menu) → Chức năng lá → Dữ liệu vào (Input) → Kết quả ra (Output). Danh sách được "
+                     "dựng tự động từ phân rã chức năng và QUYỀN THẬT trong code (require_roles, phạm vi Khoa/lớp). "
+                     "Bấm mã chức năng để xem đặc tả và truy vết tới code."
+                     if LEAF_INDEX else
+                     "Mỗi mục thể hiện: Nhóm Menu → Chức năng con → Dữ liệu đầu vào (Input) → Kết quả đầu ra (Output). "
+                     "Đăng nhập, đổi / quên mật khẩu dùng chung cho mọi vai trò (ghi ở mục Sinh viên)."),
         "DATA_JSON": dumps(build_roles()),
         "FOOTER": f"{esc(PROJECT['name'])} — {esc(PROJECT['org'])}.",
     }), encoding="utf-8")

@@ -1,4 +1,4 @@
-"""Vong doi phien diem danh: mo phien (khung gio), xem/sua phien, ma QR, han nhan diem danh,
+"""Vong doi phien diem danh: mo phien (khung gio), xem phien, han nhan diem danh,
 dong phien (sinh vang), tu dong dong phien bi quen."""
 import logging
 from datetime import datetime, timedelta
@@ -11,9 +11,9 @@ from app.core.authz import ensure_class_access, ensure_class_view, filter_classe
 from app.core.config import settings
 from app.core.exceptions import BadRequestError, ForbiddenError, NotFoundError
 from app.db import models
-from app.repositories import (class_repository, schedule_repository, session_repository,
+from app.repositories import (class_repository, leave_repository, schedule_repository, session_repository,
                               student_repository)
-from app.services import checkin_code_service
+from app.services import user_notify
 from app.services.attendance_stats import compute_class_attendance_stats
 from app.services.geo_service import resolve_geofence
 from app.services.mappers import room_label
@@ -61,7 +61,6 @@ def session_detail(session: models.AttendanceSession) -> schemas.SessionDetail:
         lecturer_name=clazz.lecturer.user.full_name if clazz.lecturer else None,
         checkin_deadline=checkin_deadline(session),
         location_name=fence.name if fence else None,
-        require_qr=session.require_qr,
     )
 
 
@@ -90,11 +89,7 @@ def open_session(db: Session, user: models.User, body: schemas.SessionCreate) ->
     if session_repository.get_for_schedule_on(db, body.schedule_id, body.session_date):
         raise BadRequestError("Da co phien diem danh cho lich hoc nay trong ngay hom nay")
 
-    session = models.AttendanceSession(
-        schedule_id=body.schedule_id, session_date=body.session_date,
-        require_qr=(settings.SELF_CHECKIN_REQUIRE_QR_DEFAULT if body.require_qr is None
-                    else body.require_qr),
-    )
+    session = models.AttendanceSession(schedule_id=body.schedule_id, session_date=body.session_date)
     db.add(session)
     try:
         db.commit()
@@ -122,45 +117,19 @@ def get_session(db: Session, user: models.User, session_id: int) -> schemas.Sess
     return session_detail(session)
 
 
-def update_session(db: Session, user: models.User, session_id: int,
-                   body: schemas.SessionUpdate) -> schemas.SessionDetail:
-    """Bat/tat yeu cau quet ma QR cho buoi dang dien ra."""
-    session = get_or_404(db, session_id)
-    ensure_class_access(user, session.schedule.class_id, db)
-    if session.status != "open":
-        raise BadRequestError("Phien da dong, khong sua duoc")
-    session.require_qr = body.require_qr
-    db.commit()
-    db.refresh(session)
-    return session_detail(session)
-
-
 def checkin_info(db: Session, user: models.User, session_id: int) -> schemas.CheckinInfoOut:
-    """SV xem buoi nay co bat buoc quet ma QR khong, truoc khi chup anh."""
+    """SV xem phong hoc cua buoi truoc khi chup anh tu diem danh."""
     session = get_or_404(db, session_id)
     student = student_repository.get_by_user(db, user.id)
     if not student or not class_repository.is_enrolled(db, session.schedule.class_id, student.id):
         raise ForbiddenError("Ban khong ghi danh lop hoc phan nay")
-    return schemas.CheckinInfoOut(session_id=session.id, require_qr=session.require_qr,
-                                  room=room_label(session.schedule))
-
-
-def checkin_code(db: Session, user: models.User, session_id: int) -> schemas.CheckinCodeOut:
-    """Ma QR dang hieu luc cua phien. Chi nguoi day/quan ly lop xem duoc - SV lay duoc ma qua
-    API thi khong can co mat trong phong, mat het y nghia cua viec quet ma."""
-    session = get_or_404(db, session_id)
-    ensure_class_access(user, session.schedule.class_id, db)
-    if session.status != "open":
-        raise BadRequestError("Phien da dong, khong con ma diem danh")
-    code = checkin_code_service.current_code(session.id)
-    return schemas.CheckinCodeOut(
-        session_id=session.id, qr_payload=code.qr_payload, digits=code.digits,
-        rotate_seconds=code.rotate_seconds, expires_in_seconds=code.expires_in_seconds)
+    return schemas.CheckinInfoOut(session_id=session.id, room=room_label(session.schedule))
 
 
 def close_session(db: Session, session: models.AttendanceSession) -> dict:
-    """Dong phien: SV ghi danh chua co record -> absent. Tra kem danh sach SV vua vuot
-    nguong canh bao chuyen can do phien nay (so voi truoc khi dong)."""
+    """Dong phien: SV ghi danh chua co record -> absent, hoac excused neu co don xin phep DA DUYET
+    cho buoi nay. Sau do THONG KE lai chuyen can va CANH BAO (thong bao cho SV + phu huynh) nhung SV
+    vua vuot nguong do phien nay (so voi truoc khi dong)."""
     class_id = session.schedule.class_id
 
     # Chup lai trang thai canh bao TRUOC khi dong phien, de sau do biet SV nao
@@ -170,23 +139,31 @@ def close_session(db: Session, session: models.AttendanceSession) -> dict:
     }
 
     checked_ids = {r.student_id for r in session.records}
-    absent_count = 0
+    excused_ids = leave_repository.approved_student_ids(db, session.schedule_id, session.session_date)
+    absent_count = excused_count = 0
     for student_id in class_repository.enrolled_student_ids(db, class_id):
         if student_id not in checked_ids:
-            db.add(models.AttendanceRecord(
-                session_id=session.id, student_id=student_id, status="absent"))
-            absent_count += 1
+            status = "excused" if student_id in excused_ids else "absent"
+            db.add(models.AttendanceRecord(session_id=session.id, student_id=student_id, status=status))
+            if status == "absent":
+                absent_count += 1
+            else:
+                excused_count += 1
 
     session.status = "closed"
     session.closed_at = datetime.now()
     db.commit()
     _confirm_counts.pop(session.id, None)
 
+    # Thong ke lai -> canh bao sau thong ke.
     newly_warned = [
         r for r in compute_class_attendance_stats(db, class_id)
         if r["warning"] and r["student_id"] not in warned_before
     ]
-    return {"ok": True, "absent": absent_count,
+    if newly_warned:
+        user_notify.notify_absence_warnings(db, session.schedule.clazz, newly_warned)
+        db.commit()
+    return {"ok": True, "absent": absent_count, "excused": excused_count,
             "present": len(checked_ids), "newly_warned": newly_warned}
 
 

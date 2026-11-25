@@ -4,7 +4,7 @@ from datetime import date, datetime, time, timedelta
 from sqlalchemy.orm import Session
 
 from app import schemas
-from app.core.authz import can_view_class, ensure_class_manage, filter_classes
+from app.core.authz import can_view_class, ensure_enroll_schedule, filter_classes
 from app.core.config import settings
 from app.core.exceptions import BadRequestError, ConflictError, ForbiddenError, NotFoundError
 from app.db import models
@@ -15,7 +15,7 @@ from app.repositories import (class_repository, location_repository, room_reposi
 from app.repositories.base import Page
 from app.services import class_service
 from app.services.geo_service import Geofence, default_location, resolve_geofence
-from app.services.mappers import room_label, schedule_out
+from app.services.mappers import room_code, room_label, schedule_out
 
 
 def open_from_time(start: time) -> time:
@@ -64,14 +64,26 @@ def _get_or_404(db: Session, schedule_id: int) -> models.Schedule:
     return sched
 
 
+def _normalize_room(data: dict, room_id: int | None) -> None:
+    """Chuan hoa (3NF): da chon phong trong danh muc thi KHONG luu lai ten phong dang chu
+    (room_id -> ma phong); chi luu ten phong tu nhap khi khong chon phong."""
+    if room_id is not None:
+        data["room"] = None
+    else:
+        text = (data.get("room") or "").strip()
+        if not text:
+            raise BadRequestError("Phai chon phong hoc hoac nhap ten phong")
+        data["room"] = text
+
+
 def create_schedule(db: Session, user: models.User, body: schemas.ScheduleCreate) -> schemas.ScheduleOut:
-    ensure_class_manage(user, class_service.get_or_404(db, body.class_id), db)
+    ensure_enroll_schedule(user)
+    class_service.get_or_404(db, body.class_id)
     _validate_location(db, body.location_id)
-    room = _validate_room(db, body.room_id)
+    _validate_room(db, body.room_id)
     _ensure_room_free(db, body.room_id, body.weekday, body.start_time, body.end_time)
     data = body.model_dump()
-    # Cot `room` dang chu luon co gia tri de du lieu cu va cho hien thi khong bi trong.
-    data["room"] = (data.get("room") or "").strip() or (room.code if room else "")
+    _normalize_room(data, body.room_id)
     sched = models.Schedule(**data)
     db.add(sched)
     db.commit()
@@ -81,12 +93,13 @@ def create_schedule(db: Session, user: models.User, body: schemas.ScheduleCreate
 
 def update_schedule(db: Session, user: models.User, schedule_id: int,
                     body: schemas.ScheduleUpdate) -> schemas.ScheduleOut:
+    ensure_enroll_schedule(user)
     sched = _get_or_404(db, schedule_id)
-    ensure_class_manage(user, sched.clazz, db)
     data = body.model_dump(exclude_unset=True)
     if "location_id" in data:
         _validate_location(db, data["location_id"])
-    room = _validate_room(db, data["room_id"]) if "room_id" in data else None
+    if "room_id" in data:
+        _validate_room(db, data["room_id"])
     start = data.get("start_time", sched.start_time)
     end = data.get("end_time", sched.end_time)
     if start is None or end is None or start >= end:
@@ -94,20 +107,20 @@ def update_schedule(db: Session, user: models.User, schedule_id: int,
     weekday = data.get("weekday", sched.weekday)
     _ensure_room_free(db, data.get("room_id", sched.room_id), weekday, start, end,
                       exclude_id=sched.id)
-    if room is not None and not (data.get("room") or "").strip():
-        data["room"] = room.code
+    if "room_id" in data or "room" in data:
+        merged = {"room": data.get("room", sched.room)}
+        _normalize_room(merged, data.get("room_id", sched.room_id))
+        data["room"] = merged["room"]
     for field, value in data.items():
         setattr(sched, field, value)
-    if not (sched.room or "").strip():
-        raise BadRequestError("Phai chon phong hoc hoac nhap ten phong")
     db.commit()
     db.refresh(sched)
     return schedule_out(sched)
 
 
 def delete_schedule(db: Session, user: models.User, schedule_id: int) -> dict:
+    ensure_enroll_schedule(user)
     sched = _get_or_404(db, schedule_id)
-    ensure_class_manage(user, sched.clazz, db)
     if schedule_repository.has_sessions(db, schedule_id):
         raise ConflictError("Lich hoc da co phien diem danh, khong the xoa truc tiep")
     db.delete(sched)
@@ -241,7 +254,7 @@ def today_schedules(db: Session, lecturer: models.Lecturer) -> list[schemas.Toda
         schemas.TodayScheduleOut(
             schedule_id=s.id, class_id=s.class_id, class_code=s.clazz.class_code,
             subject_name=s.clazz.subject_name, weekday=s.weekday,
-            start_time=s.start_time, end_time=s.end_time, room=s.room,
+            start_time=s.start_time, end_time=s.end_time, room=room_code(s),
             open_from=open_from_time(s.start_time),
             session_id=sessions[s.id].id if s.id in sessions else None,
             session_status=sessions[s.id].status if s.id in sessions else None,

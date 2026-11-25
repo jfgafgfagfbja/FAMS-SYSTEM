@@ -6,39 +6,20 @@ from pydantic import BaseModel, ConfigDict
 from app.core.media import SignedMediaUrl
 from app.core.timeutil import LocalDateTime
 
-__all__ = ["SessionCreate", "SessionUpdate", "CheckinInfoOut", "CheckinCodeOut", "SessionOut", "SessionDetail", "RecognizeResult", "SelfCheckinResult", "RecordOut", "RecordUpdate", "AttendanceAuditOut", "ManualCheck", "RosterEntryOut"]
+__all__ = ["SessionCreate", "CheckinInfoOut", "SessionOut", "SessionDetail", "RecognizeResult", "SelfCheckinResult", "RecordOut", "RecordUpdate", "AttendanceAuditOut", "ManualCheck", "RosterEntryOut"]
 
 
 # ---- Attendance ----
 class SessionCreate(BaseModel):
     schedule_id: int
     session_date: date
-    # Bat khi phong co man hinh/may chieu: SV phai quet ma QR dang chieu moi tu diem
-    # danh duoc. De trong thi lay mac dinh trong cau hinh he thong.
-    require_qr: bool | None = None
-
-
-class SessionUpdate(BaseModel):
-    """Giang vien bat/tat yeu cau quet ma QR ngay trong buoi, khong phai quyet dinh
-    tu luc mo phien."""
-    require_qr: bool
 
 
 class CheckinInfoOut(BaseModel):
     """Thong tin toi thieu SV can truoc khi tu diem danh - khong lo danh sach lop
     hay ket qua cua nguoi khac nhu SessionDetail."""
     session_id: int
-    require_qr: bool
     room: str
-
-
-class CheckinCodeOut(BaseModel):
-    """Ma diem danh dang hieu luc cua mot phien - giang vien chieu len man hinh."""
-    session_id: int
-    qr_payload: str
-    digits: str
-    rotate_seconds: int
-    expires_in_seconds: int
 
 
 class SessionOut(BaseModel):
@@ -68,8 +49,6 @@ class SessionDetail(BaseModel):
     lecturer_name: str | None = None
     # Het thoi diem nay (end_time + SESSION_GRACE_MINUTES) khong nhan diem danh nua.
     checkin_deadline: LocalDateTime | None = None
-    # Buoi nay co bat buoc quet ma QR trong phong hay khong.
-    require_qr: bool = False
     location_name: str | None = None  # dia diem doi chieu GPS khi SV tu diem danh
 
 
@@ -91,7 +70,7 @@ class SelfCheckinResult(BaseModel):
     """Ket qua khi SV tu chup selfie diem danh (chi so khop voi khuon mat cua
     CHINH SV do, khac voi RecognizeResult cua luong camera lop hoc quet nhieu mat)."""
     # recognized | already_checked | not_matched | no_face | multiple_faces | spoof
-    # | qr_required | qr_invalid | location_* (xem geo_service)
+    # | consent_required | location_* (xem geo_service)
     status: str
     confidence: float = 0.0
     liveness_score: float | None = None

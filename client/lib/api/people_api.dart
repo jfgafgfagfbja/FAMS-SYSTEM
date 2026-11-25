@@ -47,6 +47,8 @@ class FacesApi {
       _c.postMultipart('/faces/enroll/$studentId', fields: fields, files: files);
   Future<dynamic> mine() => _c.get('/faces/mine');
   Future<dynamic> deleteMine() => _c.delete('/faces/mine');
+  /// SV xac nhan da nhan ket qua duyet (duyet / tu choi kem ly do) cua mot anh khuon mat.
+  Future<dynamic> acknowledge(Object id) => _c.post('/faces/mine/$id/acknowledge');
   Future<dynamic> pending() => _c.get('/faces/pending');
   Future<dynamic> approve(Object id) => _c.patch('/faces/$id/approve');
   Future<dynamic> reject(Object id, {Object? data}) => _c.patch('/faces/$id/reject', data: data);

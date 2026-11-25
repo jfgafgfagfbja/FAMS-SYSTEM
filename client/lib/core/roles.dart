@@ -39,7 +39,8 @@ class Roles {
         admin => const [
             'Quản lý tài khoản cán bộ, đơn vị và toàn bộ danh mục',
             'Mở phiên, sửa kết quả điểm danh mọi lớp',
-            'Xem nhật ký hệ thống toàn trường',
+            'Xem đơn xin phép, nhật ký hệ thống toàn trường',
+            'Không xét duyệt khuôn mặt - việc này do Phòng Công tác SV',
           ],
         training => const [
             'Lớp học phần, lịch học, ghi danh, phân công giảng viên (toàn trường)',
@@ -48,27 +49,30 @@ class Roles {
           ],
         affairs => const [
             'Hồ sơ sinh viên, phụ huynh, ghi nhận đồng ý sinh trắc học',
-            'Duyệt ảnh khuôn mặt sinh viên',
+            'Duyệt ảnh khuôn mặt sinh viên (duy nhất), từ chối phải ghi lý do không hợp lệ',
             'Duyệt vắng có phép toàn trường',
             'Xem điểm danh, báo cáo, cảnh báo vắng toàn trường',
           ],
         faculty => const [
-            'Nhập liệu của Khoa: lớp học phần, lịch học, ghi danh, phân công giảng viên',
-            'Xem sinh viên, giảng viên, điểm danh và báo cáo trong Khoa',
+            'Nhập liệu của Khoa: lớp học phần, phân công giảng viên',
+            'Không ghi danh, xếp lịch - việc này do Phòng Đào tạo',
+            'Xem sinh viên, giảng viên, lịch, điểm danh và báo cáo trong Khoa',
           ],
         facultyLeader => const [
             'Giám sát điểm danh, báo cáo, cảnh báo vắng của Khoa',
-            'Duyệt vắng có phép cho sinh viên trong Khoa',
+            'Duyệt đơn xin phép vắng, vắng có phép cho sinh viên trong Khoa',
             'Xem nhật ký thao tác liên quan đến Khoa',
             'Không nhập liệu - việc này do Văn phòng Khoa đảm nhận',
           ],
         board => const ['Xem thống kê tổng hợp toàn trường (không có tên, ảnh sinh viên)'],
         lecturer => const [
-            'Mở phiên, quét camera, chiếu mã QR điểm danh cho lớp mình dạy',
+            'Mở phiên, quét camera điểm danh cho lớp mình dạy',
             'Xác nhận tay và sửa kết quả điểm danh lớp mình dạy',
+            'Duyệt đơn xin phép vắng của sinh viên lớp mình dạy',
           ],
         student => const [
-            'Tự điểm danh bằng khuôn mặt hoặc mã QR, xem chuyên cần của mình',
+            'Tự điểm danh bằng khuôn mặt + GPS, xem chuyên cần và cảnh báo của mình',
+            'Nộp đơn xin phép vắng, xác nhận đã nhận kết quả duyệt',
             'Đồng ý hoặc rút đồng ý sử dụng dữ liệu khuôn mặt',
           ],
         parent => const ['Xem chuyên cần và nhận thông báo điểm danh của con'],
@@ -86,9 +90,12 @@ class Perms {
   /// Ho so giang vien, phong hoc, dia diem diem danh (toan truong).
   bool get manageAcademic => _in(const [Roles.admin, Roles.training]);
 
-  /// Lop hoc phan, lich hoc, ghi danh, phan cong GV day lop. Van phong Khoa chi trong Khoa
-  /// minh - danh sach lop ho thay da gioi han san theo Khoa.
+  /// Lop hoc phan, phan cong GV day lop. Van phong Khoa chi trong Khoa minh - danh sach lop ho
+  /// thay da gioi han san theo Khoa.
   bool get editClasses => _in(const [Roles.admin, Roles.training, Roles.faculty]);
+
+  /// Ghi danh SV va xep lich hoc: chi admin / Phong Dao tao (Van phong Khoa khong lam).
+  bool get planClasses => _in(const [Roles.admin, Roles.training]);
 
   /// Ho so SV, phu huynh, duyet khuon mat, xac nhan dong y ho.
   bool get manageStudents => _in(const [Roles.admin, Roles.affairs]);
@@ -102,7 +109,13 @@ class Perms {
   bool get viewReports => viewClasses;
   bool get viewOverview =>
       _in(const [Roles.admin, Roles.training, Roles.affairs, ...Roles.facultyRoles, Roles.board]);
-  bool get reviewFaces => manageStudents;
+  /// Duyet / tu choi khuon mat: CHI Phong Cong tac SV.
+  bool get reviewFaces => role == Roles.affairs;
+
+  /// Don xin phep vang: SV nop; GV lop / Lanh dao Khoa duyet; admin, P.CTSV xem.
+  bool get requestLeave => role == Roles.student;
+  bool get reviewLeaves => _in(const [Roles.lecturer, Roles.facultyLeader]);
+  bool get viewLeaves => _in(const [Roles.student, Roles.lecturer, Roles.facultyLeader, Roles.admin, Roles.affairs]);
   bool get manageUnits => role == Roles.admin;
 
   /// Nhat ky he thong: admin toan truong, Lanh dao Khoa trong Khoa minh.

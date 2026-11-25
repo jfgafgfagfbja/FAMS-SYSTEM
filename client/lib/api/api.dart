@@ -37,6 +37,7 @@ extension FamsApi on ApiClient {
   ParentsApi get parents => ParentsApi(this);
   FacesApi get faces => FacesApi(this);
   SessionsApi get sessions => SessionsApi(this);
+  LeaveRequestsApi get leaveRequests => LeaveRequestsApi(this);
   ReportsApi get reports => ReportsApi(this);
   NotificationsApi get notifications => NotificationsApi(this);
   AuditLogsApi get auditLogs => AuditLogsApi(this);

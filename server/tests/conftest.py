@@ -150,6 +150,21 @@ def seed(db_session):
     }
 
 
+@pytest.fixture()
+def ctsv_headers(client, db_session, seed):
+    """Can bo Phong Cong tac SV - nguoi DUY NHAT duyet / tu choi du lieu khuon mat."""
+    unit = models.Unit(code="P-CTSV-FX", name="Phong CTSV (fixture)", type="student_affairs")
+    db_session.add(unit)
+    db_session.flush()
+    user = models.User(email="ctsv.fx@test.local", password_hash=hash_password("staff123"),
+                       role="student_affairs", full_name="CTSV Fixture")
+    db_session.add(user)
+    db_session.flush()
+    db_session.add(models.Staff(user_id=user.id, unit_id=unit.id, position="Chuyen vien"))
+    db_session.commit()
+    return auth_headers(login(client, "ctsv.fx@test.local", "staff123"))
+
+
 def login(client, email, password):
     resp = client.post("/auth/login", data={"username": email, "password": password})
     assert resp.status_code == 200, resp.text

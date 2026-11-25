@@ -14,6 +14,7 @@ erDiagram
     LECTURERS ||--o{ CLASSES : "lecturer_id"
     UNITS |o--o{ CLASSES : "faculty_id"
     STUDENTS ||--o{ FACE_EMBEDDINGS : "student_id"
+    USERS |o--o{ FACE_EMBEDDINGS : "reviewed_by"
     PARENTS ||--o{ PARENT_STUDENTS : "parent_id"
     STUDENTS ||--o{ PARENT_STUDENTS : "student_id"
     STUDENTS ||--o{ ENROLLMENTS : "student_id"
@@ -22,6 +23,9 @@ erDiagram
     ROOMS |o--o{ SCHEDULES : "room_id"
     LOCATIONS |o--o{ SCHEDULES : "location_id"
     SCHEDULES ||--o{ ATTENDANCE_SESSIONS : "schedule_id"
+    STUDENTS ||--o{ LEAVE_REQUESTS : "student_id"
+    SCHEDULES ||--o{ LEAVE_REQUESTS : "schedule_id"
+    USERS |o--o{ LEAVE_REQUESTS : "reviewed_by"
     ATTENDANCE_SESSIONS ||--o{ ATTENDANCE_RECORDS : "session_id"
     STUDENTS ||--o{ ATTENDANCE_RECORDS : "student_id"
     ATTENDANCE_RECORDS ||--o{ ATTENDANCE_AUDITS : "record_id"
@@ -150,6 +154,9 @@ erDiagram
         string status
         string reject_reason
         datetime created_at
+        int reviewed_by FK
+        datetime reviewed_at
+        datetime student_ack_at
     }
     PARENT_STUDENTS {
         int id PK
@@ -178,7 +185,19 @@ erDiagram
         datetime opened_at
         datetime closed_at
         string status
-        bool require_qr
+    }
+    LEAVE_REQUESTS {
+        int id PK
+        int student_id FK
+        int schedule_id FK
+        date absence_date
+        text reason
+        string status
+        datetime created_at
+        int reviewed_by FK
+        datetime reviewed_at
+        string review_note
+        datetime student_ack_at
     }
     ATTENDANCE_RECORDS {
         int id PK

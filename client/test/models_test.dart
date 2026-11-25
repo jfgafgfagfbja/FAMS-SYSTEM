@@ -153,4 +153,29 @@ void main() {
     expect(o.byFaculty.single.facultyId, isNull);
     expect(o.byFaculty.single.students, 5);
   });
+
+  test('LeaveRequest va FaceMine doc ket qua duyet va xac nhan cua SV', () {
+    final leave = LeaveRequest.fromJson({
+      'id': 3, 'student_id': 1, 'student_code': 'SV0001', 'full_name': 'SV Mot', 'schedule_id': 2,
+      'class_id': 4, 'class_code': 'C1', 'subject_name': 'Mon 1', 'absence_date': '2026-11-16',
+      'start_time': '07:00:00', 'end_time': '09:00:00', 'room': 'E2-101', 'reason': 'Om',
+      'status': 'rejected', 'created_at': '2026-11-10T08:00:00+07:00', 'reviewed_at': '2026-11-10T09:00:00+07:00',
+      'reviewer_name': 'GV Mot', 'review_note': 'Khong co giay', 'student_ack_at': null,
+      'attendance_status': null,
+    });
+    expect(leave.status, 'rejected');
+    expect(leave.reviewNote, 'Khong co giay');
+    expect(leave.absenceDate, DateTime(2026, 11, 16));
+    expect(leave.studentAckAt, isNull);
+
+    final face = FaceMine.fromJson({
+      'id': 9, 'status': 'approved', 'reject_reason': '', 'created_at': '2026-11-10T08:00:00+07:00',
+      'reviewed_at': '2026-11-10T08:30:00+07:00', 'student_ack_at': null,
+    });
+    expect(face.needsAck, isTrue);
+    final pending = FaceMine.fromJson({'id': 1, 'status': 'pending', 'reject_reason': ''});
+    expect(pending.needsAck, isFalse);
+    final summary = CloseSummary.fromJson({'absent': 1, 'excused': 2, 'present': 3, 'newly_warned': []});
+    expect(summary.excused, 2);
+  });
 }

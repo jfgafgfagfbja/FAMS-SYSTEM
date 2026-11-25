@@ -1,7 +1,12 @@
 # Phân tích cơ sở dữ liệu FAMS
 
 > PostgreSQL 16 + extension `pgvector`. Định nghĩa: `server/app/db/models.py` (SQLAlchemy 2.0),
-> lịch sử thay đổi: `server/alembic/versions/` (15 migration). Chỉ **server** truy cập DB.
+> lịch sử thay đổi: `server/alembic/versions/` (16 migration). Chỉ **server** truy cập DB.
+>
+> ★ Cập nhật 10/11/2026 theo góp ý nghiệp vụ (migration `e2a7c4b91f6d`): thêm bảng `leave_requests` (đơn xin phép
+> vắng), thêm cột duyệt/xác nhận cho `face_embeddings`, bỏ `attendance_sessions.require_qr` (bỏ hẳn mã QR),
+> `schedules.room` chỉ còn lưu tên phòng tự do khi không chọn phòng trong danh mục (đạt 3NF). Phân tích chuẩn hóa
+> đến **4NF** (gom nhóm 1 bảng → tách bảng → phân rã): [chuan_hoa_csdl.html](so-do-luong-du-lieu-va-csdl/chuan_hoa_csdl.html).
 
 ## 1. Sơ đồ quan hệ (rút gọn)
 
@@ -11,6 +16,7 @@ units ─┬─< staff >── users ──┬──< students >──┬──<
        │ (faculty_id)        │                ├──< face_embeddings  │  └──< schedules >── rooms >── locations
        └── students, lecturers, classes, audit_logs                 │          │    └────────────── locations
                              │                ├──< parent_students >── parents >── users
+                             │                ├──< leave_requests >── schedules   (reviewed_by → users)
                              │                └──< attendance_records >── attendance_sessions >── schedules
                              │                          │
                              │                          ├──< attendance_audits >── users (changed_by)
@@ -20,9 +26,10 @@ units ─┬─< staff >── users ──┬──< students >──┬──<
                              └──< audit_logs (actor_id)
 revoked_tokens (độc lập, theo jti)
 ```
-`A ─< B`: một A có nhiều B. Chi tiết đầy đủ: `docs/legacy/erd.mermaid` (bản gốc) và mục 2.
+`A ─< B`: một A có nhiều B. Chi tiết đầy đủ: `docs/database/erd.mermaid` (sinh từ models, 22 bảng),
+`docs/legacy/erd.mermaid` (bản gốc) và mục 2.
 
-## 2. Danh mục bảng (21 bảng)
+## 2. Danh mục bảng (22 bảng)
 
 ### 2.1 Tài khoản và tổ chức
 | Bảng | Cột chính | Ràng buộc / ghi chú |
@@ -42,15 +49,16 @@ revoked_tokens (độc lập, theo jti)
 | `enrollments` | id, student_id, class_id | UNIQUE(student_id, class_id) |
 | `locations` | id, code, name, latitude, longitude, radius_m (mặc định 150), is_default | code UNIQUE; tối đa 1 is_default (kiểm ở ứng dụng) |
 | `rooms` | id, code, name, building, floor, capacity, latitude, longitude, radius_m, location_id, is_active | code UNIQUE; index location_id |
-| `schedules` | id, class_id, weekday (0 = thứ Hai), start_time, end_time, room (chữ), room_id, location_id | index room_id; chống trùng phòng kiểm ở ứng dụng |
+| `schedules` | id, class_id, weekday (0 = thứ Hai), start_time, end_time, room (chữ, NULL được), room_id, location_id | index room_id; chống trùng phòng kiểm ở ứng dụng. ★ `room` chỉ có giá trị khi `room_id` NULL (phòng ngoài danh mục) — trước đây lặp lại `rooms.code` (phụ thuộc bắc cầu, vi phạm 3NF); API vẫn trả trường `room` = mã phòng |
 
 ### 2.3 Điểm danh và sinh trắc
 | Bảng | Cột chính | Ràng buộc / ghi chú |
 |---|---|---|
-| `attendance_sessions` | id, schedule_id, session_date, opened_at, closed_at, status (open/closed), require_qr | **UNIQUE(schedule_id, session_date)** |
+| `attendance_sessions` | id, schedule_id, session_date, opened_at, closed_at, status (open/closed) | **UNIQUE(schedule_id, session_date)**. ★ Đã bỏ cột `require_qr` |
 | `attendance_records` | id, session_id, student_id, checked_at, status (present/late/absent/manual/excused), confidence, evidence_image, source (camera/selfie/manual), latitude, longitude, location_accuracy, distance_m | **UNIQUE(session_id, student_id)** |
 | `attendance_audits` | id, record_id, changed_by, old_status, new_status, reason, changed_at | không có API xóa |
-| `face_embeddings` | id, student_id, embedding `Vector(512)`, source_image, status (pending/approved/rejected), reject_reason, created_at | **index HNSW `vector_cosine_ops`** |
+| `face_embeddings` | id, student_id, embedding `Vector(512)`, source_image, status (pending/approved/rejected), reject_reason, created_at, ★ reviewed_by, reviewed_at, student_ack_at | **index HNSW `vector_cosine_ops`**; reviewed_by → users ON DELETE SET NULL (cán bộ CTSV đã duyệt); student_ack_at = lúc SV xác nhận đã xem kết quả |
+| ★ `leave_requests` | id, student_id, schedule_id, absence_date, reason, status (pending/approved/rejected), created_at, reviewed_by, reviewed_at, review_note, student_ack_at | **UNIQUE(student_id, schedule_id, absence_date)**; index student_id, schedule_id; reviewed_by → users ON DELETE SET NULL. Duyệt ⇒ bản ghi điểm danh của buổi đó là `excused`; từ chối bắt buộc có lý do (`review_note`) |
 
 ### 2.4 Bảo mật, thông báo, nhật ký
 | Bảng | Cột chính | Ràng buộc / ghi chú |
@@ -88,7 +96,8 @@ revoked_tokens (độc lập, theo jti)
 | 12 | `c3d9f61a84b7` | `rooms`, `schedules.room_id` |
 | 13 | `a71c4e9d3b82` | `attendance_sessions.require_qr` |
 | 14 | `b8e2d5f1c947` | `notifications`, tùy chọn nhận tin của phụ huynh |
-| 15 | `d4f8a2c6e913` | `audit_logs`; chi tiết đồng ý (phiên bản, cách, người ghi) — **head** |
+| 15 | `d4f8a2c6e913` | `audit_logs`; chi tiết đồng ý (phiên bản, cách, người ghi) |
+| 16 | `e2a7c4b91f6d` | ★ `leave_requests`; cột duyệt/xác nhận của `face_embeddings`; bỏ `attendance_sessions.require_qr`; `schedules.room` NULL được và xóa giá trị lặp `rooms.code` — **head** (có downgrade đầy đủ) |
 
 ## 5. Truy vấn trọng yếu và hiệu năng
 
@@ -111,6 +120,8 @@ revoked_tokens (độc lập, theo jti)
 
 1. **Không đổi schema** trong giai đoạn tái cấu trúc kiến trúc: giữ nguyên 21 bảng, 15 migration và revision head
    `d4f8a2c6e913` ⇒ dữ liệu của bản gốc khôi phục thẳng vào bản mới mà không cần chuyển đổi.
+   ★ Sau góp ý nghiệp vụ 10/11/2026 thêm migration 16 `e2a7c4b91f6d`: dữ liệu bản gốc vẫn nhập được — khôi phục ở
+   `d4f8a2c6e913` rồi `alembic upgrade head` sẽ tạo bảng mới, bỏ cột QR và dọn `schedules.room`.
 2. Database của bản mới là **database riêng** (`fams_system` trên container `fams-system-db-1`, cổng 5433).
 3. Nhập dữ liệu từ bản gốc (khi cần): `pg_dump` chỉ-đọc từ DB gốc → `pg_restore` vào DB mới, rồi
    `alembic upgrade head` (không làm gì nếu đã ở head). Script: `scripts/` — xem

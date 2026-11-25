@@ -122,7 +122,6 @@ Các tệp được ghi đè:
 - Trình duyệt chỉ cho dùng camera trên **HTTPS hoặc localhost**. Triển khai web thật cần reverse proxy HTTPS.
 - Ảnh bằng chứng là URL có chữ ký, hết hạn sau `MEDIA_URL_EXPIRE_MINUTES` — kéo để tải lại trang nếu ảnh không hiện.
 - Tự điểm danh cần quyền vị trí: lớp có gắn địa điểm sẽ bị chặn nếu ở ngoài bán kính hoặc GPS sai số lớn. Nếu người dùng đã từ chối vĩnh viễn, màn hình hiện nút **Mở cài đặt ứng dụng**; nếu máy tắt định vị thì hiện **Mở cài đặt định vị**.
-- **Mã QR điểm danh**: GPS chỉ xác nhận sinh viên ở trong khu vực, không biết đúng phòng hay không. Giảng viên bật công tắc *Yêu cầu quét mã QR* ở màn quét lớp rồi chiếu mã lên máy chiếu; mã tự đổi sau mỗi 30 giây nên ảnh chụp màn hình gửi ra ngoài chỉ dùng được trong giây lát. Sinh viên quét mã, hoặc nhập 6 chữ số hiện kèm nếu ngồi cuối phòng không quét được.
-- Thư viện quét mã dùng bản MLKit **đóng gói sẵn** nên chạy được cả khi máy không có Google Play, đổi lại APK nặng thêm khoảng 3–10 MB. Muốn nhẹ hơn thì thêm `dev.steenbakker.mobile_scanner.useUnbundled=true` vào `android/gradle.properties`.
+- ★ **Đã bỏ hẳn mã QR điểm danh** (góp ý 10/11/2026): sinh viên tự điểm danh bằng ảnh khuôn mặt + GPS; màn hình hiện tên phòng của buổi để sinh viên biết cần có mặt ở đâu. Vắng có lý do thì nộp **Đơn xin phép vắng** (mục *Đơn xin phép* trên thanh điều hướng).
 - Camera tự nhả khi app chạy nền và mở lại khi quay lại (`CameraLifecycleMixin`). Không có bước này thì trên Android khung xem trước đứng hình, còn iOS báo camera đang bận.
 - Màn quét cả lớp: nếu khung mặt bị lệch trái/phải (tùy thiết bị camera trước), bật/tắt **Lật khung**.

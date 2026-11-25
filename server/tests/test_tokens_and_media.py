@@ -128,9 +128,9 @@ def _enroll_one(client, seed, monkeypatch, tmp_path):
     return token
 
 
-def test_review_image_saved_then_deleted_on_approve(client, seed, monkeypatch, tmp_path):
+def test_review_image_saved_then_deleted_on_approve(client, seed, monkeypatch, tmp_path, ctsv_headers):
     _enroll_one(client, seed, monkeypatch, tmp_path)
-    admin = auth_headers(login(client, "admin@test.local", "admin123"))
+    admin = ctsv_headers  # chi P.CTSV duyet khuon mat
     pending = client.get("/faces/pending", headers=admin).json()
     assert len(pending) == 1
     image_url = pending[0]["source_image"]

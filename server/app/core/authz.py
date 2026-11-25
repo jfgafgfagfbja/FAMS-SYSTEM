@@ -20,7 +20,7 @@ Van phong Khoa (giao vu) lo nhap lieu cua Khoa; Lanh dao Khoa (Truong/Pho khoa) 
 phe duyet, khong nhap lieu. Giang vien: mo phien/quet camera/chieu ma QR/sua diem danh lop
 minh day. SV/phu huynh: du lieu cua minh/con.
 """
-from sqlalchemy import false
+from sqlalchemy import false, or_
 from sqlalchemy.orm import Query, Session
 
 from app.core.exceptions import BadRequestError, ForbiddenError, NotFoundError
@@ -35,11 +35,19 @@ SCHOOL_WIDE_VIEWERS = (ROLE_ADMIN, ROLE_TRAINING, ROLE_AFFAIRS)
 CLASS_VIEWERS = (ROLE_ADMIN, ROLE_TRAINING, ROLE_AFFAIRS, *FACULTY_ROLES, ROLE_LECTURER)
 # Quan ly hoc vu: lop hoc phan, lich hoc, ghi danh, ho so giang vien.
 ACADEMIC_MANAGERS = (ROLE_ADMIN, ROLE_TRAINING)
-# Nhap lieu lop hoc phan, lich hoc, ghi danh: Van phong Khoa chi trong Khoa minh
+# Nhap lieu lop hoc phan (them/sua/xoa lop): Van phong Khoa chi trong Khoa minh
 # (ensure_class_manage), admin/P.DT toan truong.
 CLASS_EDITORS = (ROLE_ADMIN, ROLE_TRAINING, ROLE_FACULTY)
-# Quan ly ho so SV, phu huynh, duyet khuon mat.
+# Ghi danh SV vao lop va xep lich hoc: chi admin/P.DT - Van phong Khoa KHONG ghi danh, xep lich.
+ENROLL_SCHEDULE_EDITORS = ACADEMIC_MANAGERS
+# Quan ly ho so SV, phu huynh; dang ky khuon mat ho SV.
 STUDENT_MANAGERS = (ROLE_ADMIN, ROLE_AFFAIRS)
+# Duyet / tu choi du lieu khuon mat: CHI Phong Cong tac SV (quan tri vien khong xet duyet).
+FACE_REVIEWERS = (ROLE_AFFAIRS,)
+# Duyet / tu choi don xin phep vang: giang vien day lop, Lanh dao Khoa (trong pham vi Khoa).
+LEAVE_REVIEWERS = (ROLE_LECTURER, ROLE_FACULTY_LEADER)
+# Xem danh sach don xin phep (SV chi xem don cua minh): them admin, P.CTSV xem toan truong.
+LEAVE_VIEWERS = (ROLE_ADMIN, ROLE_AFFAIRS, ROLE_LECTURER, ROLE_FACULTY_LEADER, ROLE_STUDENT)
 # Duoc xem thong ke tong hop (khong co ten/anh).
 OVERVIEW_VIEWERS = (ROLE_ADMIN, ROLE_TRAINING, ROLE_AFFAIRS, *FACULTY_ROLES, ROLE_BOARD)
 
@@ -113,8 +121,8 @@ def filter_classes(query: Query, user: models.User, db: Session) -> Query:
 
 
 def ensure_class_manage(user: models.User, clazz: models.Class, db: Session) -> None:
-    """Quyen SUA lop hoc phan va lich, ghi danh cua lop: admin/P.DT moi lop; Van phong Khoa
-    chi lop thuoc Khoa minh."""
+    """Quyen SUA lop hoc phan: admin/P.DT moi lop; Van phong Khoa chi lop thuoc Khoa minh.
+    (Ghi danh, xep lich chi admin/P.DT - xem ensure_enroll_schedule.)"""
     if user.role in ACADEMIC_MANAGERS:
         return
     if user.role == ROLE_FACULTY:
@@ -122,6 +130,12 @@ def ensure_class_manage(user: models.User, clazz: models.Class, db: Session) -> 
         if unit_id is not None and clazz.faculty_id == unit_id:
             return
     raise _forbid("Chi duoc sua lop hoc phan thuoc Khoa minh")
+
+
+def ensure_enroll_schedule(user: models.User) -> None:
+    """Ghi danh SV va xep lich hoc: chi admin / Phong Dao tao (Van phong Khoa khong lam)."""
+    if user.role not in ENROLL_SCHEDULE_EDITORS:
+        raise _forbid("Chi Quan tri vien hoac Phong Dao tao duoc ghi danh va xep lich hoc")
 
 
 def faculty_for_new_class(user: models.User, db: Session, requested: int | None) -> int | None:
@@ -219,6 +233,35 @@ def can_excuse_record(user: models.User, record: models.AttendanceRecord, db: Se
         clazz = record.session.schedule.clazz
         return record.student.faculty_id == unit_id or clazz.faculty_id == unit_id
     return False
+
+
+def can_review_leave(user: models.User, leave: models.LeaveRequest, db: Session) -> bool:
+    """Duyet don xin phep vang: giang vien DAY lop cua buoi hoc; Lanh dao Khoa khi SV thuoc Khoa
+    hoac lop thuoc Khoa minh."""
+    clazz = leave.schedule.clazz
+    if user.role == ROLE_LECTURER:
+        lecturer = lecturer_profile(user, db)
+        return lecturer is not None and clazz.lecturer_id == lecturer.id
+    if user.role == ROLE_FACULTY_LEADER:
+        unit_id = staff_unit_id(user, db)
+        return unit_id is not None and (leave.student.faculty_id == unit_id or clazz.faculty_id == unit_id)
+    return False
+
+
+def filter_leave_requests(query: Query, user: models.User, db: Session) -> Query:
+    """Loc query da join LeaveRequest -> Schedule -> Class, Student theo pham vi xem don."""
+    if user.role in (ROLE_ADMIN, ROLE_AFFAIRS):
+        return query
+    if user.role == ROLE_LECTURER:
+        lecturer = lecturer_profile(user, db)
+        return query.filter(models.Class.lecturer_id == (lecturer.id if lecturer else -1))
+    if user.role == ROLE_FACULTY_LEADER:
+        unit_id = staff_unit_id(user, db)
+        unit_id = unit_id if unit_id is not None else -1
+        return query.filter(or_(models.Student.faculty_id == unit_id, models.Class.faculty_id == unit_id))
+    if user.role == ROLE_STUDENT:
+        return query.filter(models.Student.user_id == user.id)
+    return query.filter(false())
 
 
 def validate_faculty_id(db: Session, faculty_id: int | None) -> None:

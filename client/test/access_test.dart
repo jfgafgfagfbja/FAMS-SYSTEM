@@ -103,4 +103,29 @@ void main() {
       expect(canAccess(role, '/staff'), role == Roles.admin, reason: role);
     }
   });
+
+  test('gop y nghiep vu 11/2026: duyet khuon mat, ghi danh - xep lich, don xin phep', () {
+    // Chi P.CTSV duyet khuon mat - quan tri vien khong con xet duyet.
+    expect(canAccess(Roles.admin, '/face-review'), isFalse);
+    expect(Perms(Roles.admin).reviewFaces, isFalse);
+    expect(Perms(Roles.affairs).reviewFaces, isTrue);
+    expect(navItemsFor(Roles.admin).map((i) => i.path), isNot(contains('/face-review')));
+    // Van phong Khoa sua lop hoc phan nhung khong ghi danh, xep lich.
+    expect(Perms(Roles.faculty).editClasses, isTrue);
+    expect(Perms(Roles.faculty).planClasses, isFalse);
+    expect(Perms(Roles.training).planClasses, isTrue);
+    // Don xin phep: SV nop; GV lop, Lanh dao Khoa duyet; admin, P.CTSV chi xem.
+    expect(Perms(Roles.student).requestLeave, isTrue);
+    expect(Perms(Roles.lecturer).reviewLeaves, isTrue);
+    expect(Perms(Roles.facultyLeader).reviewLeaves, isTrue);
+    expect(Perms(Roles.affairs).reviewLeaves, isFalse);
+    expect(Perms(Roles.admin).reviewLeaves, isFalse);
+    for (final role in [Roles.student, Roles.lecturer, Roles.facultyLeader, Roles.admin, Roles.affairs]) {
+      expect(canAccess(role, '/leave-requests'), isTrue, reason: role);
+    }
+    for (final role in [Roles.parent, Roles.training, Roles.faculty, Roles.board]) {
+      expect(canAccess(role, '/leave-requests'), isFalse, reason: role);
+    }
+    expect(alertTargetFor(Roles.lecturer), '/leave-requests');
+  });
 }

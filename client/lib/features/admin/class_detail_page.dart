@@ -199,7 +199,7 @@ class _StudentsTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (perms.editClasses)
+        if (perms.planClasses)
           Wrap(spacing: 12, runSpacing: 8, children: [
             FilledButton.icon(onPressed: () => _enrollOne(context), icon: const Icon(Icons.person_add_alt), label: const Text('Ghi danh')),
             OutlinedButton.icon(onPressed: () => _importCsv(context), icon: const Icon(Icons.upload_file), label: const Text('Nhập CSV (MSSV)')),
@@ -224,7 +224,7 @@ class _StudentsTab extends StatelessWidget {
                           onPressed: () => context.push('/enroll-face/${s.id}'),
                           icon: const Icon(Icons.add_a_photo_outlined),
                         ),
-                      if (perms.editClasses)
+                      if (perms.planClasses)
                         IconButton(
                           tooltip: 'Hủy ghi danh',
                           onPressed: () async {
@@ -314,7 +314,7 @@ class _SchedulesTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (perms.editClasses)
+        if (perms.planClasses)
           Align(
             alignment: Alignment.centerLeft,
             child: FilledButton.icon(
@@ -338,7 +338,7 @@ class _SchedulesTab extends StatelessWidget {
                     leading: const Icon(Icons.schedule),
                     title: Text('${weekdayLabel(s.weekday)} · ${hhmm(s.startTime)}–${hhmm(s.endTime)}'),
                     subtitle: Text(roomLabel(s.room)),
-                    trailing: perms.editClasses
+                    trailing: perms.planClasses
                         ? Wrap(children: [
                             IconButton(
                               tooltip: 'Sửa',

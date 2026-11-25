@@ -3,6 +3,9 @@
 > Đầu vào: [CURRENT_ARCHITECTURE.md](CURRENT_ARCHITECTURE.md) (hiện trạng, khoảng trống),
 > [BUSINESS_LOGIC.md](BUSINESS_LOGIC.md) (chuẩn nghiệp vụ), [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) (danh mục kiểm tra).
 > Kiến trúc đích chi tiết: [architecture/TARGET_ARCHITECTURE.md](architecture/TARGET_ARCHITECTURE.md).
+>
+> ★ Mục 1–7 là kế hoạch tái cấu trúc (giữ nguyên nghiệp vụ). Thay đổi **nghiệp vụ** theo góp ý 10/11/2026 làm
+> sau khi tái cấu trúc xong, ghi riêng ở mục 8.
 
 ## 1. Nguyên tắc
 
@@ -52,7 +55,7 @@ FAMS-SYSTEM/
 │   │   ├── api/
 │   │   │   ├── deps.py             phụ thuộc dùng chung (DB, người dùng hiện tại, vai trò)
 │   │   │   └── v1/                 router.py + endpoints/ — CONTROLLER mỏng
-│   │   ├── services/               NGHIỆP VỤ theo module (+ service nhận diện, GPS, QR… sẵn có)
+│   │   ├── services/               NGHIỆP VỤ theo module (+ service nhận diện, GPS… sẵn có)
 │   │   ├── repositories/           TRUY CẬP DỮ LIỆU theo bảng/nhóm bảng
 │   │   ├── schemas/                Pydantic theo module (tách từ schemas.py 842 dòng)
 │   │   ├── db/                     engine, session, models (không đổi)
@@ -162,3 +165,24 @@ Client (api/<module>_api.dart) ──HTTP /api/v1/...──▶ nginx ──▶ C
 | 8. Sao lưu/khôi phục | ✅ | Khôi phục vòng tròn 22 bảng trùng số dòng |
 | 9. Kiểm thử đầu-cuối trên trình duyệt | ✅ (04/11/2026) | Flutter web qua nginx: đăng nhập, 13 trang quản trị, giao diện sáng/tối, lấy GPS (giả lập) |
 | 10. Tài liệu | ✅ | README, docs/, `FEATURE_INVENTORY.md` sinh từ kết quả test (126/126 chức năng có bằng chứng) |
+
+## 8. Thay đổi nghiệp vụ theo góp ý (10/11/2026)
+
+Làm theo thứ tự: sửa server (model, migration, service, quyền, test) → sửa client → sinh lại tài liệu từ code và kết
+quả test. Kết quả kiểm thử: [TEST_REPORT §7](TEST_REPORT.md). Quy tắc chi tiết: các mục ★ của
+[BUSINESS_LOGIC.md](BUSINESS_LOGIC.md).
+
+| # | Góp ý | Thay đổi | Nơi sửa chính |
+|---|---|---|---|
+| 1 | Sau khi PCTSV duyệt, gửi kết quả và SV xác nhận | Duyệt/từ chối khuôn mặt ⇒ thông báo cho SV; SV bấm "Đã xem" ⇒ ghi `face_embeddings.student_ack_at`; lưu người duyệt, thời điểm duyệt | `face_data_service`, `user_notify`, `POST /faces/mine/{id}/acknowledge`, `enroll_face_page.dart` |
+| 2 | Bỏ Quản trị viên xét duyệt khuôn mặt | Chỉ **Phòng CTSV** duyệt (`FACE_REVIEWERS`); Quản trị viên ⇒ 403 | `core/authz.py`, `faces.py`, `roles.dart` |
+| 3 | Bỏ ghi danh và xếp lịch ở Văn phòng Khoa | Ghi danh SV, thêm/sửa/xóa lịch học: chỉ Quản trị viên, Phòng Đào tạo (`ENROLL_SCHEDULE_EDITORS`) | `authz.ensure_enroll_schedule`, `classes.py`, `class_service`, `schedule_service`, `Perms.planClasses` |
+| 4 | Duyệt và lý do không hợp lệ | Từ chối (khuôn mặt, đơn xin phép) **bắt buộc** nhập lý do không hợp lệ | `FaceRejectBody`, `LeaveReject` |
+| 5 | Phản hồi kết quả duyệt | Thông báo kết quả (kèm lý do) tới SV trong hộp thư; SV xác nhận đã nhận | `user_notify`, `notifications_page.dart` |
+| 6 | Cho cảnh báo sau thống kê | Khi đóng phiên, thống kê lại; SV **vừa** vượt ngưỡng vắng 20 % ⇒ cảnh báo cho SV và phụ huynh (email nếu phụ huynh bật) | `session_service.close_session`, `user_notify.notify_absence_warnings` |
+| 7 | Đơn xin phép vắng, duyệt | Bảng mới `leave_requests`; SV nộp đơn cho một buổi; **GV của lớp** hoặc **Lãnh đạo Khoa** duyệt / từ chối có lý do; SV nhận phản hồi, xác nhận; buổi được phép ⇒ `excused` (cả khi duyệt sau khi đóng phiên) | `leave_service`, `leave_repository`, `endpoints/leave_requests.py`, `leave_requests_page.dart` |
+| 8 | Bỏ bật QR | Bỏ hẳn mã QR: cột `attendance_sessions.require_qr`, `PATCH /sessions/{id}`, `GET /sessions/{id}/checkin-code`, trường `checkin_code`, màn hình chiếu/quét QR, gói `qr_flutter` + `mobile_scanner` | `session_service`, `attendance_service`, client |
+| 9 | CSDL theo chuẩn 4 (gom 1 bảng → tách bảng → phân rã) | Phân tích quan hệ phổ quát, phụ thuộc hàm, phụ thuộc đa trị, phân rã 1NF → 2NF → 3NF → BCNF → 4NF; sửa vi phạm 3NF `schedules.room` (chỉ lưu khi không chọn phòng danh mục) | migration `e2a7c4b91f6d`, `mappers.room_code`, [chuan_hoa_csdl.html](so-do-luong-du-lieu-va-csdl/chuan_hoa_csdl.html) |
+
+Migration `e2a7c4b91f6d` (sau `d4f8a2c6e913`) có `downgrade` đầy đủ; `test_migrations.py` kiểm upgrade trên DB trống
+khớp `models.py` và downgrade/upgrade lại. Bản gốc `D:\FAMS` và container `fams-db-1` không bị đụng tới.

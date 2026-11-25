@@ -2,7 +2,7 @@
 
 > Sinh boi `scripts/export_openapi.py` tu server phien ban 2.0.0. Dac ta day du: [openapi.json](openapi.json) (mo bang Swagger Editor) hoac `/docs` khi server chay.
 
-Tong: **98** endpoint.
+Tong: **102** endpoint.
 
 ## health
 
@@ -150,16 +150,17 @@ PH4/PH7/PH8 - Phu huynh, lien ket con, tuy chon thong bao
 
 ## faces
 
-PH5 - Dang ky, duyet du lieu khuon mat
+PH5 - Dang ky khuon mat, P.CTSV duyet, SV xac nhan ket qua
 
 | Method | Duong dan | Xac thuc | Tham so / body | Mo ta |
 |---|---|---|---|---|
 | POST | `/api/v1/faces/enroll/{student_id}` | Bearer | multipart | Dang ky khuon mat: chinh SV, admin/P.CTSV, hoac GV voi SV lop minh day. |
 | GET | `/api/v1/faces/mine` | Bearer |  | My Faces |
 | DELETE | `/api/v1/faces/mine` | Bearer |  | Delete My Faces |
+| POST | `/api/v1/faces/mine/{embedding_id}/acknowledge` | Bearer |  | SV xac nhan da nhan ket qua duyet (duyet / tu choi kem ly do) cua anh khuon mat. |
 | GET | `/api/v1/faces/pending` | Bearer |  | List Pending |
-| PATCH | `/api/v1/faces/{embedding_id}/approve` | Bearer |  | Approve Face |
-| PATCH | `/api/v1/faces/{embedding_id}/reject` | Bearer | JSON | Reject Face |
+| PATCH | `/api/v1/faces/{embedding_id}/approve` | Bearer |  | P.CTSV duyet anh dang cho -> gui ket qua cho SV. |
+| PATCH | `/api/v1/faces/{embedding_id}/reject` | Bearer | JSON | P.CTSV tu choi kem ly do khong hop le (bat buoc) -> gui ket qua cho SV. |
 
 ## attendance
 
@@ -170,9 +171,7 @@ PH6 - Phien diem danh, quet camera, tu diem danh, sua ket qua
 | GET | `/api/v1/sessions` | Bearer | `status`, `class_id`, `mine`, `limit` | Phien trong pham vi xem lop cua user, loc theo status (open/closed) va class_id. |
 | POST | `/api/v1/sessions` | Bearer | JSON | Mo phien: dung ngay hom nay, dung thu cua lich, trong khung |
 | GET | `/api/v1/sessions/{session_id}` | Bearer |  | Get Session |
-| PATCH | `/api/v1/sessions/{session_id}` | Bearer | JSON | Bat/tat yeu cau quet ma QR cho buoi dang dien ra. |
-| GET | `/api/v1/sessions/{session_id}/checkin-code` | Bearer |  | Ma QR dang hieu luc de giang vien chieu trong phong (chi nguoi day/quan ly lop). |
-| GET | `/api/v1/sessions/{session_id}/checkin-info` | Bearer |  | Checkin Info |
+| GET | `/api/v1/sessions/{session_id}/checkin-info` | Bearer |  | SV xem phong hoc cua buoi truoc khi tu diem danh (anh khuon mat + GPS). |
 | PATCH | `/api/v1/sessions/{session_id}/close` | Bearer |  | Dong phien: SV chua co record -> absent; tra kem SV vua vuot nguong canh bao. |
 | POST | `/api/v1/sessions/{session_id}/manual` | Bearer | JSON | Manual Check |
 | POST | `/api/v1/sessions/{session_id}/recognize` | Bearer | multipart | Nhan 1 frame tu camera lop hoc, nhan dien va tu dong ghi diem danh. |
@@ -180,7 +179,19 @@ PH6 - Phien diem danh, quet camera, tu diem danh, sua ket qua
 | PATCH | `/api/v1/sessions/{session_id}/records/{record_id}` | Bearer | JSON | Sua trang thai (bat buoc ly do, luu lich su). Phong ban chi duyet/huy "Co phep". |
 | GET | `/api/v1/sessions/{session_id}/records/{record_id}/audits` | Bearer |  | Lich su sua diem danh cua 1 record. |
 | GET | `/api/v1/sessions/{session_id}/roster` | Bearer |  | Danh sach SV cua lop gop voi trang thai diem danh cua phien nay. |
-| POST | `/api/v1/sessions/{session_id}/self-checkin` | Bearer | multipart | SV tu diem danh: anh tu chup + GPS (+ ma QR neu buoi hoc yeu cau). |
+| POST | `/api/v1/sessions/{session_id}/self-checkin` | Bearer | multipart | SV tu diem danh: anh tu chup + GPS. |
+
+## leave
+
+PH6 - Don xin phep vang: SV nop, GV lop / Lanh dao Khoa duyet, SV xac nhan ket qua
+
+| Method | Duong dan | Xac thuc | Tham so / body | Mo ta |
+|---|---|---|---|---|
+| GET | `/api/v1/leave-requests` | Bearer | `status`, `class_id`, `limit` | SV: don cua minh; GV: lop minh day; Lanh dao Khoa: SV/lop thuoc Khoa; admin, P.CTSV: toan truong. |
+| POST | `/api/v1/leave-requests` | Bearer | JSON | SV nop don xin phep vang mot buoi hoc (lich hoc + ngay); giang vien lop nhan thong bao. |
+| POST | `/api/v1/leave-requests/{leave_id}/acknowledge` | Bearer |  | SV xac nhan da nhan ket qua duyet don. |
+| PATCH | `/api/v1/leave-requests/{leave_id}/approve` | Bearer | JSON | Duyet don => buoi do tinh vang co phep; gui ket qua cho SV. |
+| PATCH | `/api/v1/leave-requests/{leave_id}/reject` | Bearer | JSON | Tu choi don kem ly do khong hop le (bat buoc); gui ket qua cho SV. |
 
 ## reports
 
@@ -196,7 +207,7 @@ PH8 - Thong ke, canh bao vang, xuat Excel
 
 ## notifications
 
-PH7 - Hop thu thong bao
+PH7 - Hop thu thong bao (phu huynh, sinh vien, giang vien)
 
 | Method | Duong dan | Xac thuc | Tham so / body | Mo ta |
 |---|---|---|---|---|

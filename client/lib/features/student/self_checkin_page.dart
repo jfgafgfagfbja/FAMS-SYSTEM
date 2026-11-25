@@ -10,7 +10,6 @@ import '../../core/theme.dart';
 import '../../models/models.dart';
 import '../../widgets/camera_capture.dart';
 import '../../widgets/common.dart';
-import '../../widgets/qr_scanner.dart';
 import '../../api/api.dart';
 
 /// SV tu chup selfie diem danh: xin vi tri (co the tu choi), chup, gui len backend -
@@ -37,12 +36,12 @@ class _SelfCheckinPageState extends State<SelfCheckinPage>
   CameraHandle get camera => _camera;
   _GeoState _geoState = _GeoState.loading;
   Position? _position;
-  /// Buoi nay co bat buoc quet ma QR khong (hoi backend luc mo man hinh).
-  bool _requireQr = false;
-  String? _scannedCode;
   Uint8List? _shot;
   bool _submitting = false;
   SelfCheckinResult? _result;
+
+  /// Phong hoc cua buoi (hoi backend luc mo man hinh) - SV biet minh can o dau khi chup.
+  String? _room;
 
   @override
   void initState() {
@@ -51,22 +50,16 @@ class _SelfCheckinPageState extends State<SelfCheckinPage>
       if (mounted) setState(() {});
     });
     _locate();
-    _loadCheckinInfo();
+    _loadRoom();
   }
 
-  Future<void> _loadCheckinInfo() async {
+  Future<void> _loadRoom() async {
     try {
-      final data = await context.read<ApiClient>().sessions.checkinInfo(
-          widget.sessionId) as Json;
-      if (mounted) setState(() => _requireQr = data['require_qr'] == true);
+      final data = await context.read<ApiClient>().sessions.checkinInfo(widget.sessionId) as Json;
+      if (mounted) setState(() => _room = data['room'] as String?);
     } catch (_) {
-      // Khong lay duoc thi cu de SV chup binh thuong; backend van chan neu thieu ma.
+      // Khong lay duoc ten phong thi van chup binh thuong.
     }
-  }
-
-  Future<void> _scanCode() async {
-    final code = await scanCheckinCode(context);
-    if (code != null && mounted) setState(() => _scannedCode = code);
   }
 
   @override
@@ -129,7 +122,6 @@ class _SelfCheckinPageState extends State<SelfCheckinPage>
           'longitude': _position?.longitude,
           'accuracy': _position?.accuracy,
           'is_mocked': _position?.isMocked ?? false,
-          if (_scannedCode != null) 'checkin_code': _scannedCode,
         },
         files: [UploadFile('frame', shot, 'selfie.jpg')],
       ) as Json;
@@ -143,16 +135,10 @@ class _SelfCheckinPageState extends State<SelfCheckinPage>
 
   void _retake() {
     final relocate = _result?.isLocationProblem ?? false;
-    final badCode = _result?.isQrProblem ?? false;
     setState(() {
       _shot = null;
       _result = null;
       if (relocate) _geoState = _GeoState.loading;
-      if (badCode) {
-        // Ma het han hoac sai buoi: bo ma cu di de SV quet lai ma dang chieu.
-        _scannedCode = null;
-        _requireQr = true;
-      }
     });
     if (relocate) _locate();
   }
@@ -187,6 +173,8 @@ class _SelfCheckinPageState extends State<SelfCheckinPage>
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(widget.title!, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
           ),
+        if (_room != null && _room!.isNotEmpty)
+          Align(child: InfoLine(icon: Icons.meeting_room_outlined, text: roomLabel(_room!))),
         Align(child: _geoBanner()),
         if (_geoState == _GeoState.denied || _geoState == _GeoState.blocked || _geoState == _GeoState.unavailable)
           Wrap(
@@ -217,10 +205,6 @@ class _SelfCheckinPageState extends State<SelfCheckinPage>
           ),
         const SizedBox(height: 12),
         if (result == null) ...[
-          if (_requireQr) ...[
-            CheckinCodeBanner(hasCode: _scannedCode != null, onScan: _scanCode),
-            const SizedBox(height: 8),
-          ],
           if (_shot != null)
             ClipRRect(
               borderRadius: BorderRadius.circular(14),
@@ -242,14 +226,8 @@ class _SelfCheckinPageState extends State<SelfCheckinPage>
                 const SizedBox(width: 12),
                 Expanded(
                   child: FilledButton(
-                    onPressed: _submitting ||
-                            _geoState == _GeoState.loading ||
-                            (_requireQr && _scannedCode == null)
-                        ? null
-                        : _submit,
-                    child: Text(_submitting
-                        ? 'Đang gửi…'
-                        : (_requireQr && _scannedCode == null) ? 'Cần quét mã QR' : 'Gửi điểm danh'),
+                    onPressed: _submitting || _geoState == _GeoState.loading ? null : _submit,
+                    child: Text(_submitting ? 'Đang gửi…' : 'Gửi điểm danh'),
                   ),
                 ),
               ],
@@ -288,8 +266,6 @@ class _ResultCard extends StatelessWidget {
       'location_required' => (Icons.location_off, 'Cần bật định vị để điểm danh', AppColors.warning),
       'location_inaccurate' => (Icons.gps_not_fixed, 'Vị trí chưa đủ chính xác', AppColors.warning),
       'location_mocked' => (Icons.gpp_bad, 'Phát hiện vị trí giả lập', AppColors.danger),
-      'qr_required' => (Icons.qr_code_2, 'Buổi này cần quét mã QR trong phòng', AppColors.warning),
-      'qr_invalid' => (Icons.qr_code_scanner, 'Mã QR đã hết hạn hoặc không đúng buổi', AppColors.warning),
       'consent_required' => (Icons.privacy_tip_outlined, 'Bạn chưa đồng ý sử dụng dữ liệu khuôn mặt', AppColors.warning),
       _ => (Icons.warning_amber_rounded, 'Chưa nhận diện được', AppColors.warning),
     };

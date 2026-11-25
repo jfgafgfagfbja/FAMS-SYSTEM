@@ -27,7 +27,9 @@ List<NavItem> navItemsFor(String role) {
         NavItem('/', 'Trang chủ', Icons.home_outlined),
         NavItem('/schedule', 'Lịch học', Icons.calendar_month_outlined),
         NavItem('/my-attendance', 'Chuyên cần', Icons.fact_check_outlined),
+        NavItem('/leave-requests', 'Đơn xin phép', Icons.event_busy_outlined),
         NavItem('/face', 'Khuôn mặt', Icons.face_retouching_natural_outlined),
+        NavItem('/notifications', 'Thông báo', Icons.notifications_outlined),
         account,
       ];
     case Roles.parent:
@@ -42,7 +44,9 @@ List<NavItem> navItemsFor(String role) {
         NavItem('/schedule', 'Lịch dạy', Icons.calendar_month_outlined),
         NavItem('/classes', 'Lớp của tôi', Icons.class_outlined),
         NavItem('/sessions', 'Phiên điểm danh', Icons.how_to_reg_outlined),
+        NavItem('/leave-requests', 'Duyệt đơn xin phép', Icons.event_busy_outlined),
         NavItem('/reports', 'Báo cáo', Icons.bar_chart_outlined),
+        NavItem('/notifications', 'Thông báo', Icons.notifications_outlined),
         account,
       ];
     case Roles.admin:
@@ -57,8 +61,8 @@ List<NavItem> navItemsFor(String role) {
         NavItem('/sessions', 'Phiên điểm danh', Icons.how_to_reg_outlined),
         NavItem('/reports', 'Báo cáo', Icons.bar_chart_outlined),
         // Ho so
+        NavItem('/leave-requests', 'Đơn xin phép', Icons.event_busy_outlined),
         NavItem('/students', 'Sinh viên', Icons.school_outlined),
-        NavItem('/face-review', 'Duyệt khuôn mặt', Icons.face_outlined),
         NavItem('/lecturers', 'Giảng viên', Icons.co_present_outlined),
         NavItem('/parents', 'Phụ huynh', Icons.family_restroom_outlined),
         // He thong
@@ -89,6 +93,7 @@ List<NavItem> navItemsFor(String role) {
         NavItem('/students', 'Sinh viên & duyệt phép', Icons.school_outlined),
         NavItem('/face-review', 'Duyệt khuôn mặt', Icons.face_outlined),
         NavItem('/parents', 'Phụ huynh', Icons.family_restroom_outlined),
+        NavItem('/leave-requests', 'Đơn xin phép', Icons.event_busy_outlined),
         NavItem('/reports', 'Báo cáo', Icons.bar_chart_outlined),
         NavItem('/sessions', 'Phiên điểm danh', Icons.how_to_reg_outlined),
         NavItem('/classes', 'Lớp học phần', Icons.class_outlined),
@@ -111,6 +116,7 @@ List<NavItem> navItemsFor(String role) {
       return const [
         NavItem('/', 'Tổng quan Khoa', Icons.dashboard_outlined),
         NavItem('/reports', 'Báo cáo & cảnh báo', Icons.bar_chart_outlined),
+        NavItem('/leave-requests', 'Duyệt đơn xin phép', Icons.event_busy_outlined),
         NavItem('/students', 'Sinh viên & duyệt phép', Icons.school_outlined),
         NavItem('/sessions', 'Phiên điểm danh', Icons.how_to_reg_outlined),
         NavItem('/classes', 'Lớp học phần', Icons.class_outlined),

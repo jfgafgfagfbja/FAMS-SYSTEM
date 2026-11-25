@@ -90,19 +90,6 @@ class _AttendanceScanPageState extends State<AttendanceScanPage>
     }
   }
 
-  /// Bat/tat yeu cau quet ma QR cho buoi dang dien ra. Bat xong mo luon man chieu ma.
-  Future<void> _toggleQr(bool value) async {
-    try {
-      final data = await _api.sessions.update(widget.sessionId,
-          data: {'require_qr': value}) as Json;
-      if (!mounted) return;
-      setState(() => _session = SessionDetail.fromJson(data));
-      if (value) context.push('/sessions/${widget.sessionId}/qr');
-    } catch (e) {
-      if (mounted) showSnack(context, errorText(e), error: true);
-    }
-  }
-
   Future<void> _reloadRoster() async {
     final data = await _api.sessions.roster(widget.sessionId) as List<dynamic>;
     if (mounted) setState(() => _roster = data.map((e) => RosterEntry.fromJson(e as Json)).toList());
@@ -190,8 +177,12 @@ class _AttendanceScanPageState extends State<AttendanceScanPage>
             children: [
               Text('Có mặt: ${summary.present}'),
               Text('Vắng: ${summary.absent}'),
+              if (summary.excused > 0) Text('Vắng có phép (đơn đã duyệt): ${summary.excused}'),
               Text('SV vừa vượt ngưỡng vắng: ${summary.newlyWarned.length}'),
-              if (summary.newlyWarned.isNotEmpty) Text(summary.newlyWarned.map((w) => w.fullName).join(', ')),
+              if (summary.newlyWarned.isNotEmpty) ...[
+                Text(summary.newlyWarned.map((w) => w.fullName).join(', ')),
+                const Text('Đã gửi cảnh báo chuyên cần cho các sinh viên này và phụ huynh.'),
+              ],
             ],
           ),
           actions: [FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Xem chi tiết'))],
@@ -227,20 +218,6 @@ class _AttendanceScanPageState extends State<AttendanceScanPage>
         Text('${session.classCode} — ${session.subjectName}', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
         InfoLine(icon: Icons.schedule, text: '${fmtDate(session.sessionDate)} · ${hhmm(session.startTime)}–${hhmm(session.endTime)} · ${roomLabel(session.room)}'),
         if (session.checkinDeadline != null) InfoLine(icon: Icons.timer_outlined, text: 'Nhận điểm danh tới ${fmtDateTime(session.checkinDeadline)}'),
-        // Ma QR xac nhan SV co mat dung phong - GPS chi biet SV o trong khu vuc.
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Switch(value: session.requireQr, onChanged: _toggleQr),
-            const Text('Yêu cầu quét mã QR'),
-          ],
-        ),
-        if (session.requireQr)
-          OutlinedButton.icon(
-            onPressed: () => context.push('/sessions/${widget.sessionId}/qr'),
-            icon: const Icon(Icons.qr_code_2),
-            label: const Text('Chiếu mã QR'),
-          ),
         FilledButton.icon(
           onPressed: _closing ? null : _close,
           style: FilledButton.styleFrom(backgroundColor: AppColors.brand),

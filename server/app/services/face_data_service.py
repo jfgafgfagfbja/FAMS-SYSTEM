@@ -1,8 +1,13 @@
 """Nghiep vu du lieu khuon mat (PH5): quyen dang ky, quy trinh duyet, SV tu quan ly du lieu.
 
+Quy trinh duyet: CHI Phong Cong tac SV duyet hoac tu choi (bat buoc ly do khong hop le) mot anh
+dang cho -> he thong gui ket qua cho SV (thong bao) -> SV xac nhan da nhan ket qua.
+
 Phan xu ly anh/nhan dien (InsightFace, chat luong anh, chong gia mao) nam o face_service va
 duoc goi qua ten module (face_service.enroll_face) - test thay the ham nay bang monkeypatch.
 """
+from datetime import datetime
+
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
@@ -14,7 +19,7 @@ from app.core.media import delete_media
 from app.db import models
 from app.db.models import ROLE_LECTURER, ROLE_STUDENT
 from app.repositories import face_repository, student_repository
-from app.services import face_service
+from app.services import face_service, user_notify
 from app.services.consent_service import withdraw_consent
 
 
@@ -113,21 +118,56 @@ def _discard_review_image(emb: models.FaceEmbedding) -> None:
     emb.source_image = ""
 
 
-def approve(db: Session, embedding_id: int) -> dict:
+def _decide(db: Session, user: models.User, embedding_id: int, status: str, reason: str) -> models.FaceEmbedding:
+    """Ghi quyet dinh cua P.CTSV va gui ket qua cho SV. Chi xu ly anh dang cho duyet."""
     emb = _get_or_404(db, embedding_id)
-    emb.status = "approved"
-    emb.reject_reason = ""
+    if emb.status != "pending":
+        raise BadRequestError("Anh khuon mat nay da duoc xu ly truoc do")
+    emb.status = status
+    emb.reject_reason = reason
+    emb.reviewed_by = user.id
+    emb.reviewed_at = datetime.now()
+    emb.student_ack_at = None
     _discard_review_image(emb)
+    if status == "approved":
+        user_notify.notify(db, emb.student.user_id, user_notify.KIND_FACE_APPROVED,
+                           "Ảnh khuôn mặt đã được duyệt",
+                           "Phòng Công tác sinh viên đã duyệt ảnh khuôn mặt của bạn. Từ nay bạn có thể "
+                           "điểm danh bằng khuôn mặt. Vui lòng xác nhận đã nhận kết quả trong mục Khuôn mặt.",
+                           "/face")
+    else:
+        user_notify.notify(db, emb.student.user_id, user_notify.KIND_FACE_REJECTED,
+                           "Ảnh khuôn mặt không được duyệt",
+                           f"Lý do không hợp lệ: {reason}. Hãy chụp lại theo hướng dẫn và xác nhận "
+                           "đã nhận kết quả trong mục Khuôn mặt.",
+                           "/face")
     db.commit()
+    return emb
+
+
+def approve(db: Session, user: models.User, embedding_id: int) -> dict:
+    _decide(db, user, embedding_id, "approved", "")
     return {"ok": True}
 
 
-def reject(db: Session, embedding_id: int, body: schemas.FaceRejectBody) -> dict:
-    emb = _get_or_404(db, embedding_id)
-    if not body.reason.strip():
-        raise BadRequestError("Can nhap ly do tu choi")
-    emb.status = "rejected"
-    emb.reject_reason = body.reason.strip()
-    _discard_review_image(emb)
-    db.commit()
+def reject(db: Session, user: models.User, embedding_id: int, body: schemas.FaceRejectBody) -> dict:
+    reason = body.reason.strip()
+    if not reason:
+        raise BadRequestError("Can nhap ly do khong hop le khi tu choi")
+    _decide(db, user, embedding_id, "rejected", reason)
     return {"ok": True}
+
+
+def acknowledge(db: Session, user: models.User, embedding_id: int) -> models.FaceEmbedding:
+    """SV xac nhan da nhan ket qua duyet (duyet / tu choi) cua mot anh khuon mat cua minh."""
+    student = _own_student(db, user)
+    emb = face_repository.get(db, embedding_id)
+    if emb is None or emb.student_id != student.id:
+        raise NotFoundError("Khong tim thay anh khuon mat")
+    if emb.status == "pending":
+        raise BadRequestError("Anh khuon mat chua co ket qua duyet")
+    if emb.student_ack_at is None:
+        emb.student_ack_at = datetime.now()
+        db.commit()
+        db.refresh(emb)
+    return emb

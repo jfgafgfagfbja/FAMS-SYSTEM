@@ -278,7 +278,6 @@ class SessionDetail {
         endTime = _s(j['end_time']),
         lecturerName = _so(j['lecturer_name']),
         checkinDeadline = _dt(j['checkin_deadline']),
-        requireQr = _b(j['require_qr']),
         locationName = _so(j['location_name']);
 
   final int id;
@@ -295,9 +294,6 @@ class SessionDetail {
   final String endTime;
   final String? lecturerName;
   final DateTime? checkinDeadline;
-
-  /// Buoi nay bat buoc SV quet ma QR dang chieu trong phong moi tu diem danh duoc.
-  final bool requireQr;
   final String? locationName;
 
   bool get isOpen => status == 'open';
@@ -384,9 +380,6 @@ class SelfCheckinResult {
   /// Bi chan vi vi tri (can bat dinh vi/ra gan khu vuc roi lay vi tri lai).
   bool get isLocationProblem =>
       const ['location_required', 'location_mocked', 'location_inaccurate', 'out_of_range'].contains(status);
-
-  /// Ma QR thieu hoac het han - SV can quet lai ma dang chieu, khong phai chup lai anh.
-  bool get isQrProblem => const ['qr_required', 'qr_invalid'].contains(status);
 }
 
 class SessionAttendance {
@@ -486,11 +479,17 @@ class ClassStatRow {
 class CloseSummary {
   CloseSummary.fromJson(Json j)
       : absent = _i(j['absent']),
+        excused = _i(j['excused']),
         present = _i(j['present']),
         newlyWarned = _list(j['newly_warned'], ClassStatRow.fromJson);
 
   final int absent;
+
+  /// SV vang nhung co don xin phep da duyet -> ghi "vang co phep".
+  final int excused;
   final int present;
+
+  /// SV vua vuot nguong vang sau thong ke - he thong da gui canh bao cho SV va phu huynh.
   final List<ClassStatRow> newlyWarned;
 }
 
@@ -662,12 +661,21 @@ class FaceMine {
       : id = _i(j['id']),
         status = _s(j['status']),
         rejectReason = _s(j['reject_reason']),
-        createdAt = _dt(j['created_at']);
+        createdAt = _dt(j['created_at']),
+        reviewedAt = _dt(j['reviewed_at']),
+        studentAckAt = _dt(j['student_ack_at']);
 
   final int id;
   final String status;
   final String rejectReason;
   final DateTime? createdAt;
+  final DateTime? reviewedAt;
+
+  /// Thoi diem SV xac nhan da nhan ket qua duyet (null: chua xac nhan).
+  final DateTime? studentAckAt;
+
+  /// P.CTSV da duyet / tu choi nhung SV chua xac nhan da nhan ket qua.
+  bool get needsAck => status != 'pending' && studentAckAt == null;
 }
 
 class OverviewStats {
@@ -728,23 +736,6 @@ class Overview {
   final List<String> semesters;
   final OverviewStats totals;
   final List<OverviewFacultyRow> byFaculty;
-}
-
-/// Ma diem danh dang hieu luc cua mot phien - giang vien chieu len man hinh,
-/// sinh vien quet (hoac go 6 chu so). Ma tu doi sau [rotateSeconds] giay.
-class CheckinCode {
-  CheckinCode.fromJson(Json j)
-      : sessionId = _i(j['session_id']),
-        qrPayload = _s(j['qr_payload']),
-        digits = _s(j['digits']),
-        rotateSeconds = _i(j['rotate_seconds']),
-        expiresInSeconds = _i(j['expires_in_seconds']);
-
-  final int sessionId;
-  final String qrPayload;
-  final String digits;
-  final int rotateSeconds;
-  final int expiresInSeconds;
 }
 
 /// Mot thong bao trong hop thu (hien dung cho phu huynh: con duoc ghi nhan diem danh).
@@ -822,4 +813,57 @@ class ConsentPolicy {
   final String title;
   final List<String> items;
   final String checkbox;
+}
+
+
+/// Don xin phep vang mot buoi hoc.
+class LeaveRequest {
+  LeaveRequest.fromJson(Json j)
+      : id = _i(j['id']),
+        studentId = _i(j['student_id']),
+        studentCode = _s(j['student_code']),
+        fullName = _s(j['full_name']),
+        scheduleId = _i(j['schedule_id']),
+        classId = _i(j['class_id']),
+        classCode = _s(j['class_code']),
+        subjectName = _s(j['subject_name']),
+        absenceDate = _date(j['absence_date']),
+        startTime = _s(j['start_time']),
+        endTime = _s(j['end_time']),
+        room = _s(j['room']),
+        reason = _s(j['reason']),
+        status = _s(j['status']),
+        createdAt = _dt(j['created_at']),
+        reviewedAt = _dt(j['reviewed_at']),
+        reviewerName = _so(j['reviewer_name']),
+        reviewNote = _s(j['review_note']),
+        studentAckAt = _dt(j['student_ack_at']),
+        attendanceStatus = _so(j['attendance_status']);
+
+  final int id;
+  final int studentId;
+  final String studentCode;
+  final String fullName;
+  final int scheduleId;
+  final int classId;
+  final String classCode;
+  final String subjectName;
+  final DateTime absenceDate;
+  final String startTime;
+  final String endTime;
+  final String room;
+  final String reason;
+
+  /// pending | approved | rejected
+  final String status;
+  final DateTime? createdAt;
+  final DateTime? reviewedAt;
+  final String? reviewerName;
+
+  /// Ly do khong hop le (khi tu choi) hoac ghi chu cua nguoi duyet.
+  final String reviewNote;
+  final DateTime? studentAckAt;
+
+  /// Trang thai diem danh cua SV o buoi do (neu phien da co ban ghi).
+  final String? attendanceStatus;
 }

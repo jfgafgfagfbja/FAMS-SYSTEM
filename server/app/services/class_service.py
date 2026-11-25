@@ -6,7 +6,7 @@ theo pham vi xem (Khoa: lop Khoa quan ly, GV: lop minh day).
 from sqlalchemy.orm import Session
 
 from app import schemas
-from app.core.authz import (ensure_class_manage, ensure_class_view, faculty_for_new_class,
+from app.core.authz import (ensure_class_manage, ensure_class_view, ensure_enroll_schedule, faculty_for_new_class,
                             filter_classes, validate_faculty_id)
 from app.core.exceptions import BadRequestError, ConflictError, NotFoundError
 from app.db import models
@@ -95,7 +95,8 @@ def delete_class(db: Session, user: models.User, class_id: int) -> dict:
 
 
 def enroll_student(db: Session, user: models.User, class_id: int, student_id: int) -> dict:
-    ensure_class_manage(user, get_or_404(db, class_id), db)
+    ensure_enroll_schedule(user)
+    get_or_404(db, class_id)
     if not student_repository.get(db, student_id):
         raise NotFoundError("Sinh vien khong ton tai")
     if class_repository.is_enrolled(db, class_id, student_id):
@@ -106,7 +107,8 @@ def enroll_student(db: Session, user: models.User, class_id: int, student_id: in
 
 
 def unenroll_student(db: Session, user: models.User, class_id: int, student_id: int) -> dict:
-    ensure_class_manage(user, get_or_404(db, class_id), db)
+    ensure_enroll_schedule(user)
+    get_or_404(db, class_id)
     enrollment = class_repository.get_enrollment(db, class_id, student_id)
     if not enrollment:
         raise NotFoundError("Sinh vien chua ghi danh lop nay")

@@ -1,0 +1,3676 @@
+{
+ "leaves": [
+  {
+   "id": "1.1.1",
+   "fid": "1.01",
+   "name": "Đăng nhập email + mật khẩu",
+   "ph": "PH1",
+   "group": "1.1",
+   "R": [
+    "users"
+   ],
+   "W": [
+    "refresh_tokens"
+   ],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "email, mật khẩu (form OAuth2)",
+   "ra": "access token, refresh token, vai trò, thời hạn",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "1.1.2",
+   "fid": "1.02",
+   "name": "Khóa tạm sau 5 lần sai/5 phút, giới hạn 30 lần/phút/IP",
+   "ph": "PH1",
+   "group": "1.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "1.1.3",
+   "fid": "1.03",
+   "name": "Làm mới token xoay vòng, dùng lại token cũ ⇒ thu hồi tất cả",
+   "ph": "PH1",
+   "group": "1.1",
+   "R": [
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "refresh_tokens"
+   ],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "refresh token",
+   "ra": "access token + refresh token mới",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "1.1.4",
+   "fid": "1.08",
+   "name": "Đăng xuất (thu hồi access + refresh token)",
+   "ph": "PH1",
+   "group": "1.1",
+   "R": [
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "refresh_tokens",
+    "revoked_tokens"
+   ],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "access token, refresh token",
+   "ra": "xác nhận đăng xuất",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "1.2.1",
+   "fid": "1.04",
+   "name": "Đổi mật khẩu (giữ phiên hiện tại, đăng xuất phiên khác)",
+   "ph": "PH1",
+   "group": "1.2",
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": [
+    "refresh_tokens"
+   ],
+   "RW": [
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "mật khẩu hiện tại, mật khẩu mới",
+   "ra": "token mới cho phiên đang dùng",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "1.2.2",
+   "fid": "1.05",
+   "name": "Gửi OTP quên mật khẩu",
+   "ph": "PH1",
+   "group": "1.2",
+   "R": [
+    "users"
+   ],
+   "W": [
+    "password_resets"
+   ],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "email",
+   "ra": "thông báo chung (không lộ email có tồn tại hay không)",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "1.2.3",
+   "fid": "1.06",
+   "name": "Đặt lại mật khẩu bằng OTP",
+   "ph": "PH1",
+   "group": "1.2",
+   "R": [],
+   "W": [
+    "refresh_tokens"
+   ],
+   "RW": [
+    "password_resets",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "email, OTP, mật khẩu mới",
+   "ra": "xác nhận đặt lại mật khẩu",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "1.2.4",
+   "fid": "1.11",
+   "name": "Thu hồi token khi đổi/đặt lại mật khẩu (token_version)",
+   "ph": "PH1",
+   "group": "1.2",
+   "R": [],
+   "W": [
+    "refresh_tokens",
+    "users"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "1.3.1",
+   "fid": "1.07",
+   "name": "Xem thông tin tài khoản + hồ sơ theo vai trò",
+   "ph": "PH1",
+   "group": "1.3",
+   "R": [
+    "classes",
+    "enrollments",
+    "face_embeddings",
+    "lecturers",
+    "revoked_tokens",
+    "staff",
+    "students",
+    "units",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "access token",
+   "ra": "thông tin tài khoản + hồ sơ theo vai trò",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "1.3.2",
+   "fid": "1.09",
+   "name": "Kiểm tra vai trò, phạm vi Khoa",
+   "ph": "PH1",
+   "group": "1.3",
+   "R": [
+    "classes",
+    "enrollments",
+    "lecturers",
+    "parent_students",
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "access token (header Authorization)",
+   "ra": "chấp nhận / từ chối (401, 403)",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "1.4.1",
+   "fid": "1.10",
+   "name": "Ảnh bằng chứng qua URL ký HMAC, hết hạn 60 phút",
+   "ph": "PH1",
+   "group": "1.4",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "đường dẫn ảnh + exp + sig",
+   "ra": "tệp ảnh JPEG",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "1.4.2",
+   "fid": "1.12",
+   "name": "Kiểm tra sức khỏe dịch vụ",
+   "ph": "PH1",
+   "group": "1.4",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "yêu cầu kiểm tra",
+   "ra": "trạng thái tiến trình",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "1.4.3",
+   "fid": "1.13",
+   "name": "Kiểm tra sức khỏe kèm kết nối CSDL (đi qua nginx)",
+   "ph": "PH1",
+   "group": "1.4",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "yêu cầu kiểm tra (qua nginx)",
+   "ra": "trạng thái tiến trình + CSDL",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "1.4.4",
+   "fid": "1.14",
+   "name": "Định dạng lỗi thống nhất {detail, code} + X-Request-ID",
+   "ph": "PH1",
+   "group": "1.4",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "mọi yêu cầu API",
+   "ra": "phản hồi lỗi {detail, code} + header X-Request-ID",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "2.1.1",
+   "fid": "2.01",
+   "name": "Xem danh sách đơn vị",
+   "ph": "PH2",
+   "group": "2.1",
+   "R": [
+    "units"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer"
+   ],
+   "vao": "yêu cầu xem danh sách",
+   "ra": "danh sách đơn vị (mã, tên, loại)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "2.1.2",
+   "fid": "2.02",
+   "name": "Thêm đơn vị",
+   "ph": "PH2",
+   "group": "2.1",
+   "R": [],
+   "W": [],
+   "RW": [
+    "units"
+   ],
+   "roles": [
+    "admin"
+   ],
+   "vao": "mã, tên, loại đơn vị",
+   "ra": "đơn vị vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.1.3",
+   "fid": "2.03",
+   "name": "Sửa đơn vị (không đổi loại)",
+   "ph": "PH2",
+   "group": "2.1",
+   "R": [],
+   "W": [],
+   "RW": [
+    "units"
+   ],
+   "roles": [
+    "admin"
+   ],
+   "vao": "mã đơn vị, thông tin sửa",
+   "ra": "đơn vị sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.1.4",
+   "fid": "2.04",
+   "name": "Xóa đơn vị (chặn khi còn dữ liệu)",
+   "ph": "PH2",
+   "group": "2.1",
+   "R": [
+    "classes",
+    "lecturers",
+    "staff",
+    "students"
+   ],
+   "W": [],
+   "RW": [
+    "units"
+   ],
+   "roles": [
+    "admin"
+   ],
+   "vao": "mã đơn vị",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.2.1",
+   "fid": "2.05",
+   "name": "Tra cứu cán bộ",
+   "ph": "PH2",
+   "group": "2.2",
+   "R": [
+    "staff",
+    "units",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin"
+   ],
+   "vao": "điều kiện tìm (từ khóa, đơn vị), trang",
+   "ra": "danh sách cán bộ (email, họ tên, đơn vị, chức vụ, vai trò)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "2.2.2",
+   "fid": "2.06",
+   "name": "Tạo tài khoản cán bộ, vai trò suy ra từ đơn vị",
+   "ph": "PH2",
+   "group": "2.2",
+   "R": [
+    "units"
+   ],
+   "W": [],
+   "RW": [
+    "staff",
+    "users"
+   ],
+   "roles": [
+    "admin"
+   ],
+   "vao": "email, mật khẩu, họ tên, đơn vị, chức vụ, cờ Lãnh đạo Khoa",
+   "ra": "cán bộ vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.2.3",
+   "fid": "2.07",
+   "name": "Sửa cán bộ",
+   "ph": "PH2",
+   "group": "2.2",
+   "R": [
+    "units"
+   ],
+   "W": [],
+   "RW": [
+    "staff",
+    "users"
+   ],
+   "roles": [
+    "admin"
+   ],
+   "vao": "mã cán bộ, thông tin sửa",
+   "ra": "cán bộ sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.2.4",
+   "fid": "2.08",
+   "name": "Xóa cán bộ (chặn khi đã sửa điểm danh)",
+   "ph": "PH2",
+   "group": "2.2",
+   "R": [
+    "attendance_audits",
+    "lecturers",
+    "students"
+   ],
+   "W": [
+    "password_resets",
+    "refresh_tokens",
+    "staff"
+   ],
+   "RW": [
+    "users"
+   ],
+   "roles": [
+    "admin"
+   ],
+   "vao": "mã cán bộ",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.3.1",
+   "fid": "2.09",
+   "name": "Xem danh sách địa điểm",
+   "ph": "PH2",
+   "group": "2.3",
+   "R": [
+    "locations"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "yêu cầu xem danh sách",
+   "ra": "danh sách địa điểm (tọa độ, bán kính, mặc định)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "2.3.2",
+   "fid": "2.10",
+   "name": "Thêm địa điểm (tối đa 1 mặc định)",
+   "ph": "PH2",
+   "group": "2.3",
+   "R": [],
+   "W": [],
+   "RW": [
+    "locations"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã, tên, vĩ độ, kinh độ, bán kính, cờ mặc định",
+   "ra": "địa điểm vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.3.3",
+   "fid": "2.11",
+   "name": "Sửa địa điểm",
+   "ph": "PH2",
+   "group": "2.3",
+   "R": [],
+   "W": [],
+   "RW": [
+    "locations"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã địa điểm, thông tin sửa",
+   "ra": "địa điểm sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.3.4",
+   "fid": "2.12",
+   "name": "Xóa địa điểm (chặn khi gắn lịch)",
+   "ph": "PH2",
+   "group": "2.3",
+   "R": [
+    "schedules"
+   ],
+   "W": [],
+   "RW": [
+    "locations"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã địa điểm",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.3.5",
+   "fid": "2.18",
+   "name": "Lấy vị trí hiện tại khi nhập tọa độ",
+   "ph": "PH2",
+   "group": "2.3",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "cho phép truy cập vị trí thiết bị",
+   "ra": "tọa độ điền sẵn vào form",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "2.4.1",
+   "fid": "2.13",
+   "name": "Tra cứu phòng học",
+   "ph": "PH2",
+   "group": "2.4",
+   "R": [
+    "rooms",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "tòa nhà, khu vực, chỉ phòng đang dùng",
+   "ra": "danh sách phòng học",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "2.4.2",
+   "fid": "2.14",
+   "name": "Danh sách tòa nhà",
+   "ph": "PH2",
+   "group": "2.4",
+   "R": [
+    "rooms"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "yêu cầu",
+   "ra": "danh sách tòa nhà",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "2.4.3",
+   "fid": "2.15",
+   "name": "Thêm phòng học",
+   "ph": "PH2",
+   "group": "2.4",
+   "R": [
+    "locations"
+   ],
+   "W": [],
+   "RW": [
+    "rooms"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã, tên, tòa nhà, khu vực, tọa độ riêng, bán kính",
+   "ra": "phòng vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.4.4",
+   "fid": "2.16",
+   "name": "Sửa, ngừng sử dụng phòng",
+   "ph": "PH2",
+   "group": "2.4",
+   "R": [
+    "locations"
+   ],
+   "W": [],
+   "RW": [
+    "rooms"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã phòng, thông tin sửa, cờ đang sử dụng",
+   "ra": "phòng sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "2.4.5",
+   "fid": "2.17",
+   "name": "Xóa phòng (chặn khi còn lịch)",
+   "ph": "PH2",
+   "group": "2.4",
+   "R": [
+    "schedules"
+   ],
+   "W": [
+    "rooms"
+   ],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã phòng",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.1.1",
+   "fid": "3.01",
+   "name": "Tra cứu giảng viên",
+   "ph": "PH3",
+   "group": "3.1",
+   "R": [
+    "lecturers",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "faculty_office",
+    "faculty_leader"
+   ],
+   "vao": "điều kiện tìm, trang",
+   "ra": "danh sách giảng viên (mã, họ tên, bộ môn, Khoa)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.1.2",
+   "fid": "3.02",
+   "name": "Thêm giảng viên",
+   "ph": "PH3",
+   "group": "3.1",
+   "R": [],
+   "W": [],
+   "RW": [
+    "lecturers",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "email, mật khẩu, họ tên, mã GV, bộ môn, Khoa",
+   "ra": "giảng viên vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.1.3",
+   "fid": "3.03",
+   "name": "Sửa giảng viên",
+   "ph": "PH3",
+   "group": "3.1",
+   "R": [
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "lecturers"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã GV, thông tin sửa",
+   "ra": "giảng viên sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.1.4",
+   "fid": "3.04",
+   "name": "Xóa giảng viên (chặn khi đang dạy/đã sửa điểm danh)",
+   "ph": "PH3",
+   "group": "3.1",
+   "R": [
+    "attendance_audits",
+    "classes",
+    "students"
+   ],
+   "W": [
+    "password_resets",
+    "refresh_tokens"
+   ],
+   "RW": [
+    "lecturers",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã GV",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.2.1",
+   "fid": "3.05",
+   "name": "Tra cứu lớp học phần",
+   "ph": "PH3",
+   "group": "3.2",
+   "R": [
+    "classes",
+    "enrollments",
+    "lecturers",
+    "units",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã lớp / tên môn, học kỳ, Khoa, trang",
+   "ra": "danh sách lớp kèm sĩ số",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.2.2",
+   "fid": "3.06",
+   "name": "Xem chi tiết lớp",
+   "ph": "PH3",
+   "group": "3.2",
+   "R": [
+    "enrollments",
+    "lecturers",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã lớp",
+   "ra": "thông tin lớp, giảng viên, Khoa, sĩ số",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.2.3",
+   "fid": "3.07",
+   "name": "Thêm lớp (VP Khoa: chỉ Khoa mình)",
+   "ph": "PH3",
+   "group": "3.2",
+   "R": [
+    "lecturers",
+    "units",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "classes"
+   ],
+   "roles": [
+    "admin",
+    "training_office",
+    "faculty_office"
+   ],
+   "vao": "mã lớp, tên môn, học kỳ, giảng viên, Khoa",
+   "ra": "lớp vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.2.4",
+   "fid": "3.08",
+   "name": "Sửa lớp",
+   "ph": "PH3",
+   "group": "3.2",
+   "R": [
+    "lecturers",
+    "units",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "classes"
+   ],
+   "roles": [
+    "admin",
+    "training_office",
+    "faculty_office"
+   ],
+   "vao": "mã lớp, thông tin sửa",
+   "ra": "lớp sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.2.5",
+   "fid": "3.09",
+   "name": "Xóa lớp (chặn khi có SV/lịch)",
+   "ph": "PH3",
+   "group": "3.2",
+   "R": [
+    "enrollments",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [
+    "classes"
+   ],
+   "roles": [
+    "admin",
+    "training_office",
+    "faculty_office"
+   ],
+   "vao": "mã lớp",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.3.1",
+   "fid": "3.10",
+   "name": "Danh sách SV của lớp",
+   "ph": "PH3",
+   "group": "3.3",
+   "R": [
+    "enrollments",
+    "face_embeddings",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã lớp",
+   "ra": "danh sách SV đã ghi danh",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.3.2",
+   "fid": "3.11",
+   "name": "Ghi danh sinh viên",
+   "ph": "PH3",
+   "group": "3.3",
+   "R": [
+    "classes",
+    "students"
+   ],
+   "W": [],
+   "RW": [
+    "enrollments"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã lớp, mã SV",
+   "ra": "xác nhận ghi danh",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.3.3",
+   "fid": "3.12",
+   "name": "Rút sinh viên khỏi lớp",
+   "ph": "PH3",
+   "group": "3.3",
+   "R": [
+    "classes"
+   ],
+   "W": [],
+   "RW": [
+    "enrollments"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã lớp, mã SV",
+   "ra": "xác nhận rút",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.4.1",
+   "fid": "3.13",
+   "name": "Lịch của một lớp",
+   "ph": "PH3",
+   "group": "3.4",
+   "R": [
+    "classes",
+    "enrollments",
+    "schedules",
+    "students"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer",
+    "student"
+   ],
+   "vao": "mã lớp",
+   "ra": "các buổi học hằng tuần (thứ, giờ, phòng)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.4.2",
+   "fid": "3.14",
+   "name": "Tra cứu toàn bộ lịch",
+   "ph": "PH3",
+   "group": "3.4",
+   "R": [
+    "classes",
+    "rooms",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader"
+   ],
+   "vao": "điều kiện lọc, trang",
+   "ra": "danh sách lịch học",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.4.3",
+   "fid": "3.15",
+   "name": "Thêm lịch (chống trùng phòng)",
+   "ph": "PH3",
+   "group": "3.4",
+   "R": [
+    "classes",
+    "rooms"
+   ],
+   "W": [],
+   "RW": [
+    "schedules"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "lớp, thứ, giờ bắt đầu / kết thúc, phòng (hoặc tên phòng), địa điểm",
+   "ra": "lịch vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.4.4",
+   "fid": "3.16",
+   "name": "Sửa lịch (chống trùng phòng)",
+   "ph": "PH3",
+   "group": "3.4",
+   "R": [
+    "locations",
+    "rooms"
+   ],
+   "W": [],
+   "RW": [
+    "schedules"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã lịch, thông tin sửa",
+   "ra": "lịch sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.4.5",
+   "fid": "3.17",
+   "name": "Xóa lịch (chặn khi đã có phiên)",
+   "ph": "PH3",
+   "group": "3.4",
+   "R": [
+    "attendance_sessions"
+   ],
+   "W": [],
+   "RW": [
+    "schedules"
+   ],
+   "roles": [
+    "admin",
+    "training_office"
+   ],
+   "vao": "mã lịch",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "3.5.1",
+   "fid": "3.18",
+   "name": "Lịch theo tuần (kèm trạng thái phiên, điểm danh)",
+   "ph": "PH3",
+   "group": "3.5",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "locations",
+    "schedules",
+    "students"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer",
+    "student"
+   ],
+   "vao": "một ngày trong tuần (start)",
+   "ra": "các buổi trong tuần kèm phiên và trạng thái điểm danh",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.5.2",
+   "fid": "3.19",
+   "name": "Lịch dạy hôm nay",
+   "ph": "PH3",
+   "group": "3.5",
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "lecturers",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "lecturer"
+   ],
+   "vao": "yêu cầu (tài khoản GV)",
+   "ra": "buổi dạy hôm nay, giờ được mở phiên, phiên đang có",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "3.5.3",
+   "fid": "3.20",
+   "name": "In lịch tuần ra PDF",
+   "ph": "PH3",
+   "group": "3.5",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "lecturer",
+    "student"
+   ],
+   "vao": "lệnh in lịch",
+   "ra": "tệp PDF lịch tuần",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "4.1.1",
+   "fid": "4.01",
+   "name": "Tra cứu sinh viên",
+   "ph": "PH4",
+   "group": "4.1",
+   "R": [
+    "face_embeddings",
+    "students",
+    "units",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "MSSV / họ tên, Khoa, trang",
+   "ra": "danh sách sinh viên",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "4.1.2",
+   "fid": "4.02",
+   "name": "Xem chi tiết sinh viên",
+   "ph": "PH4",
+   "group": "4.1",
+   "R": [
+    "face_embeddings",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã SV",
+   "ra": "hồ sơ SV, trạng thái đồng ý, khuôn mặt, lớp",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "4.1.3",
+   "fid": "4.03",
+   "name": "Hồ sơ của chính SV",
+   "ph": "PH4",
+   "group": "4.1",
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student"
+   ],
+   "vao": "yêu cầu (tài khoản SV)",
+   "ra": "hồ sơ của chính SV",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "4.1.4",
+   "fid": "4.04",
+   "name": "Thêm sinh viên",
+   "ph": "PH4",
+   "group": "4.1",
+   "R": [
+    "face_embeddings",
+    "units"
+   ],
+   "W": [],
+   "RW": [
+    "students",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "email, mật khẩu, họ tên, MSSV, ngành, khóa, Khoa",
+   "ra": "sinh viên vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.1.5",
+   "fid": "4.05",
+   "name": "Sửa sinh viên",
+   "ph": "PH4",
+   "group": "4.1",
+   "R": [
+    "face_embeddings"
+   ],
+   "W": [],
+   "RW": [
+    "students",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "mã SV, thông tin sửa",
+   "ra": "sinh viên sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.1.6",
+   "fid": "4.06",
+   "name": "Xóa sinh viên (chặn khi có dữ liệu)",
+   "ph": "PH4",
+   "group": "4.1",
+   "R": [
+    "attendance_records",
+    "enrollments",
+    "face_embeddings",
+    "lecturers"
+   ],
+   "W": [
+    "parent_students",
+    "password_resets",
+    "refresh_tokens"
+   ],
+   "RW": [
+    "students",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "mã SV",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.2.1",
+   "fid": "4.07",
+   "name": "Nội dung đồng ý sinh trắc (có phiên bản)",
+   "ph": "PH4",
+   "group": "4.2",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "student_affairs",
+    "student"
+   ],
+   "vao": "yêu cầu",
+   "ra": "phiên bản và nội dung điều khoản sinh trắc",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "4.2.2",
+   "fid": "4.08",
+   "name": "Ghi nhận đồng ý (SV tự / cán bộ nhập bản giấy)",
+   "ph": "PH4",
+   "group": "4.2",
+   "R": [],
+   "W": [],
+   "RW": [
+    "students"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs",
+    "student"
+   ],
+   "vao": "phiên bản, xác nhận đồng ý, phương thức (self / paper)",
+   "ra": "trạng thái đồng ý",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.2.3",
+   "fid": "4.09",
+   "name": "Rút đồng ý (xóa toàn bộ dữ liệu khuôn mặt)",
+   "ph": "PH4",
+   "group": "4.2",
+   "R": [],
+   "W": [],
+   "RW": [
+    "face_embeddings",
+    "students"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs",
+    "student"
+   ],
+   "vao": "mã SV",
+   "ra": "xác nhận rút đồng ý",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.3.1",
+   "fid": "4.10",
+   "name": "Xem danh sách phụ huynh",
+   "ph": "PH4",
+   "group": "4.3",
+   "R": [
+    "parent_students",
+    "parents",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs"
+   ],
+   "vao": "điều kiện tìm, trang",
+   "ra": "danh sách phụ huynh",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "4.3.2",
+   "fid": "4.11",
+   "name": "Thêm phụ huynh",
+   "ph": "PH4",
+   "group": "4.3",
+   "R": [
+    "parent_students"
+   ],
+   "W": [],
+   "RW": [
+    "parents",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "email, mật khẩu, họ tên, số điện thoại",
+   "ra": "phụ huynh vừa tạo",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.3.3",
+   "fid": "4.12",
+   "name": "Sửa phụ huynh",
+   "ph": "PH4",
+   "group": "4.3",
+   "R": [
+    "parent_students"
+   ],
+   "W": [],
+   "RW": [
+    "parents",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "mã phụ huynh, thông tin sửa",
+   "ra": "phụ huynh sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.3.4",
+   "fid": "4.13",
+   "name": "Xóa phụ huynh",
+   "ph": "PH4",
+   "group": "4.3",
+   "R": [
+    "lecturers",
+    "students"
+   ],
+   "W": [
+    "password_resets",
+    "refresh_tokens"
+   ],
+   "RW": [
+    "parent_students",
+    "parents",
+    "users"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "mã phụ huynh",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.4.1",
+   "fid": "4.14",
+   "name": "Xem con đã liên kết",
+   "ph": "PH4",
+   "group": "4.4",
+   "R": [
+    "parent_students",
+    "parents"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs"
+   ],
+   "vao": "mã phụ huynh",
+   "ra": "danh sách con đã liên kết",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "4.4.2",
+   "fid": "4.15",
+   "name": "Liên kết con bằng MSSV",
+   "ph": "PH4",
+   "group": "4.4",
+   "R": [
+    "parents",
+    "students"
+   ],
+   "W": [],
+   "RW": [
+    "parent_students"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "mã phụ huynh, MSSV",
+   "ra": "xác nhận liên kết",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "4.4.3",
+   "fid": "4.16",
+   "name": "Gỡ liên kết con",
+   "ph": "PH4",
+   "group": "4.4",
+   "R": [],
+   "W": [],
+   "RW": [
+    "parent_students"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs"
+   ],
+   "vao": "mã phụ huynh, mã SV",
+   "ra": "xác nhận gỡ liên kết",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "5.1.1",
+   "fid": "5.07",
+   "name": "Chụp ảnh bằng camera (web/di động)",
+   "ph": "PH5",
+   "group": "5.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "student_affairs",
+    "lecturer",
+    "student"
+   ],
+   "vao": "hình ảnh từ camera",
+   "ra": "xem trước khung hình",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "5.1.2",
+   "fid": "5.08",
+   "name": "Chống giả mạo MiniFASNet (tự tắt khi thiếu model)",
+   "ph": "PH5",
+   "group": "5.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "5.1.3",
+   "fid": "5.01",
+   "name": "Đăng ký khuôn mặt (quyền, đồng ý, chất lượng, chống giả mạo, trùng)",
+   "ph": "PH5",
+   "group": "5.1",
+   "R": [
+    "students"
+   ],
+   "W": [],
+   "RW": [
+    "face_embeddings"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs",
+    "lecturer",
+    "student"
+   ],
+   "vao": "mã SV, các ảnh khuôn mặt",
+   "ra": "kết quả từng ảnh, ok",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "5.2.1",
+   "fid": "5.02",
+   "name": "Danh sách chờ duyệt kèm cảnh báo trùng",
+   "ph": "PH5",
+   "group": "5.2",
+   "R": [
+    "face_embeddings",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student_affairs"
+   ],
+   "vao": "yêu cầu",
+   "ra": "vector chờ duyệt kèm ảnh tạm và cảnh báo trùng",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "5.2.2",
+   "fid": "5.03",
+   "name": "Duyệt khuôn mặt (chỉ ảnh đang chờ, xóa ảnh tạm)",
+   "ph": "PH5",
+   "group": "5.2",
+   "R": [
+    "students"
+   ],
+   "W": [],
+   "RW": [
+    "face_embeddings"
+   ],
+   "roles": [
+    "student_affairs"
+   ],
+   "vao": "mã vector",
+   "ra": "vector đã duyệt",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "5.2.3",
+   "fid": "5.04",
+   "name": "Từ chối khuôn mặt kèm lý do không hợp lệ (xóa ảnh tạm)",
+   "ph": "PH5",
+   "group": "5.2",
+   "R": [
+    "students"
+   ],
+   "W": [
+    "face_embeddings"
+   ],
+   "RW": [],
+   "roles": [
+    "student_affairs"
+   ],
+   "vao": "mã vector, lý do không hợp lệ",
+   "ra": "vector bị từ chối",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "5.2.4",
+   "fid": "5.09",
+   "name": "Phản hồi kết quả duyệt khuôn mặt cho SV (thông báo)",
+   "ph": "PH5",
+   "group": "5.2",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student"
+   ],
+   "vao": "",
+   "ra": "thông báo kết quả duyệt khuôn mặt (kèm lý do không hợp lệ)",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "5.3.1",
+   "fid": "5.05",
+   "name": "SV xem dữ liệu khuôn mặt của mình",
+   "ph": "PH5",
+   "group": "5.3",
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student"
+   ],
+   "vao": "yêu cầu (tài khoản SV)",
+   "ra": "các vector của mình: trạng thái, lý do không hợp lệ, thời điểm duyệt, đã xác nhận chưa",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "5.3.2",
+   "fid": "5.10",
+   "name": "SV xác nhận đã nhận kết quả duyệt khuôn mặt",
+   "ph": "PH5",
+   "group": "5.3",
+   "R": [
+    "students"
+   ],
+   "W": [],
+   "RW": [
+    "face_embeddings"
+   ],
+   "roles": [
+    "student"
+   ],
+   "vao": "mã ảnh khuôn mặt",
+   "ra": "thời điểm đã xác nhận nhận kết quả",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "5.3.3",
+   "fid": "5.06",
+   "name": "SV xóa dữ liệu khuôn mặt",
+   "ph": "PH5",
+   "group": "5.3",
+   "R": [],
+   "W": [],
+   "RW": [
+    "face_embeddings",
+    "students"
+   ],
+   "roles": [
+    "student"
+   ],
+   "vao": "yêu cầu xóa",
+   "ra": "xác nhận xóa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.1.1",
+   "fid": "6.01",
+   "name": "Mở phiên (khung giờ, mỗi lịch 1 phiên/ngày)",
+   "ph": "PH6",
+   "group": "6.1",
+   "R": [
+    "schedules"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_sessions"
+   ],
+   "roles": [
+    "admin",
+    "lecturer"
+   ],
+   "vao": "lịch học, ngày điểm danh",
+   "ra": "phiên vừa mở",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.1.2",
+   "fid": "6.02",
+   "name": "Tra cứu phiên",
+   "ph": "PH6",
+   "group": "6.1",
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "trạng thái (open / closed), lớp",
+   "ra": "danh sách phiên trong phạm vi",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "6.1.3",
+   "fid": "6.03",
+   "name": "Xem chi tiết phiên",
+   "ph": "PH6",
+   "group": "6.1",
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "lecturers",
+    "locations",
+    "rooms",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã phiên",
+   "ra": "chi tiết phiên (lớp, lịch, phòng, thống kê)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "6.1.4",
+   "fid": "6.05",
+   "name": "Đóng phiên: sinh vắng / vắng có phép theo đơn, thống kê lại, cảnh báo SV vừa vượt ngưỡng",
+   "ph": "PH6",
+   "group": "6.1",
+   "R": [
+    "classes",
+    "enrollments",
+    "leave_requests",
+    "parent_students",
+    "parents",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records",
+    "attendance_sessions"
+   ],
+   "roles": [
+    "admin",
+    "lecturer"
+   ],
+   "vao": "mã phiên",
+   "ra": "số vắng, số vắng có phép, số có mặt, SV vừa vượt ngưỡng",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.1.5",
+   "fid": "6.06",
+   "name": "Tự đóng phiên quá hạn (60 s/lần)",
+   "ph": "PH6",
+   "group": "6.1",
+   "R": [
+    "classes",
+    "enrollments",
+    "leave_requests",
+    "parent_students",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records",
+    "attendance_sessions"
+   ],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "job"
+  },
+  {
+   "id": "6.2.1",
+   "fid": "6.07",
+   "name": "Quét camera cả lớp, nhận diện nhiều mặt",
+   "ph": "PH6",
+   "group": "6.2",
+   "R": [
+    "attendance_sessions",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records"
+   ],
+   "roles": [
+    "admin",
+    "lecturer"
+   ],
+   "vao": "khung hình camera",
+   "ra": "kết quả từng khuôn mặt (recognized / confirming / already_checked / unknown / spoof)",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.2.2",
+   "fid": "6.08",
+   "name": "Xác nhận 2 khung hình trước khi ghi",
+   "ph": "PH6",
+   "group": "6.2",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "6.3.1",
+   "fid": "6.09",
+   "name": "SV xem phòng học của buổi trước khi tự điểm danh",
+   "ph": "PH6",
+   "group": "6.3",
+   "R": [
+    "attendance_sessions",
+    "enrollments",
+    "schedules",
+    "students"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student"
+   ],
+   "vao": "mã phiên",
+   "ra": "tên phòng của buổi",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "6.3.2",
+   "fid": "6.12",
+   "name": "Đối chiếu GPS (giả lập, sai số, bán kính)",
+   "ph": "PH6",
+   "group": "6.3",
+   "R": [
+    "locations",
+    "rooms",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "6.3.3",
+   "fid": "6.13",
+   "name": "SV tự điểm danh bằng ảnh + GPS",
+   "ph": "PH6",
+   "group": "6.3",
+   "R": [
+    "attendance_sessions",
+    "enrollments",
+    "locations",
+    "rooms",
+    "schedules",
+    "students"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records"
+   ],
+   "roles": [
+    "student"
+   ],
+   "vao": "ảnh selfie, tọa độ GPS + sai số",
+   "ra": "kết quả: đã ghi nhận hoặc lý do từ chối",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.4.1",
+   "fid": "6.14",
+   "name": "Xác nhận tay",
+   "ph": "PH6",
+   "group": "6.4",
+   "R": [
+    "attendance_sessions",
+    "enrollments",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records"
+   ],
+   "roles": [
+    "admin",
+    "lecturer"
+   ],
+   "vao": "mã phiên, mã SV",
+   "ra": "bản ghi xác nhận tay",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.4.2",
+   "fid": "6.15",
+   "name": "Danh sách lớp trong phiên (roster)",
+   "ph": "PH6",
+   "group": "6.4",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "enrollments",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã phiên",
+   "ra": "SV của lớp kèm trạng thái trong phiên",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "6.4.3",
+   "fid": "6.16",
+   "name": "Danh sách bản ghi của phiên",
+   "ph": "PH6",
+   "group": "6.4",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã phiên",
+   "ra": "các bản ghi của phiên",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "6.4.4",
+   "fid": "6.17",
+   "name": "Sửa trạng thái / duyệt có phép (bắt buộc lý do)",
+   "ph": "PH6",
+   "group": "6.4",
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records"
+   ],
+   "roles": [
+    "admin",
+    "student_affairs",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "trạng thái mới, lý do",
+   "ra": "bản ghi sau khi sửa",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.4.5",
+   "fid": "6.18",
+   "name": "Xem lịch sử sửa điểm danh",
+   "ph": "PH6",
+   "group": "6.4",
+   "R": [
+    "attendance_audits",
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã phiên, mã bản ghi",
+   "ra": "các lần sửa (cũ, mới, người sửa, lý do, thời điểm)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "6.5.1",
+   "fid": "6.19",
+   "name": "SV nộp đơn xin phép vắng một buổi học",
+   "ph": "PH6",
+   "group": "6.5",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "lecturers",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "leave_requests"
+   ],
+   "roles": [
+    "student"
+   ],
+   "vao": "lịch học, ngày vắng, lý do",
+   "ra": "đơn vừa nộp (chờ duyệt)",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.5.2",
+   "fid": "6.20",
+   "name": "Xem đơn xin phép theo phạm vi",
+   "ph": "PH6",
+   "group": "6.5",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "leave_requests",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "student_affairs",
+    "faculty_leader",
+    "lecturer",
+    "student"
+   ],
+   "vao": "trạng thái, lớp",
+   "ra": "danh sách đơn kèm trạng thái điểm danh buổi đó",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "6.5.3",
+   "fid": "6.21",
+   "name": "Duyệt đơn xin phép (GV lớp / Lãnh đạo Khoa)",
+   "ph": "PH6",
+   "group": "6.5",
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records",
+    "leave_requests"
+   ],
+   "roles": [
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã đơn, ghi chú (tùy chọn)",
+   "ra": "đơn đã duyệt",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.5.4",
+   "fid": "6.22",
+   "name": "Từ chối đơn kèm lý do không hợp lệ",
+   "ph": "PH6",
+   "group": "6.5",
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "leave_requests"
+   ],
+   "roles": [
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã đơn, lý do không hợp lệ",
+   "ra": "đơn bị từ chối",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.5.5",
+   "fid": "6.23",
+   "name": "Phản hồi kết quả duyệt đơn cho SV (thông báo)",
+   "ph": "PH6",
+   "group": "6.5",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student"
+   ],
+   "vao": "",
+   "ra": "thông báo kết quả duyệt đơn (kèm lý do không hợp lệ)",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "6.5.6",
+   "fid": "6.24",
+   "name": "SV xác nhận đã nhận kết quả duyệt đơn",
+   "ph": "PH6",
+   "group": "6.5",
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [
+    "leave_requests"
+   ],
+   "roles": [
+    "student"
+   ],
+   "vao": "mã đơn",
+   "ra": "thời điểm đã xác nhận nhận kết quả",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "6.5.7",
+   "fid": "6.25",
+   "name": "Đơn đã duyệt ⇒ vắng có phép (khi đóng phiên hoặc đổi bản ghi vắng)",
+   "ph": "PH6",
+   "group": "6.5",
+   "R": [
+    "leave_requests"
+   ],
+   "W": [],
+   "RW": [
+    "attendance_records"
+   ],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "7.1.1",
+   "fid": "7.01",
+   "name": "Sinh thông báo phụ huynh khi điểm danh/đổi trạng thái",
+   "ph": "PH7",
+   "group": "7.1",
+   "R": [
+    "parent_students",
+    "parents",
+    "students"
+   ],
+   "W": [
+    "notifications"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "7.1.2",
+   "fid": "7.09",
+   "name": "Thông báo cho SV / GV: kết quả duyệt, đơn xin phép mới, cảnh báo",
+   "ph": "PH7",
+   "group": "7.1",
+   "R": [],
+   "W": [
+    "notifications"
+   ],
+   "RW": [],
+   "roles": [
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "",
+   "ra": "thông báo: kết quả duyệt, đơn xin phép mới, cảnh báo chuyên cần",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "7.2.1",
+   "fid": "7.02",
+   "name": "Xem hộp thư thông báo",
+   "ph": "PH7",
+   "group": "7.2",
+   "R": [
+    "notifications"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "yêu cầu",
+   "ra": "danh sách thông báo",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "7.2.2",
+   "fid": "7.03",
+   "name": "Đếm chưa đọc (chuông)",
+   "ph": "PH7",
+   "group": "7.2",
+   "R": [
+    "notifications"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student",
+    "parent"
+   ],
+   "vao": "yêu cầu",
+   "ra": "số thông báo chưa đọc",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "7.2.3",
+   "fid": "7.04",
+   "name": "Đánh dấu đã đọc",
+   "ph": "PH7",
+   "group": "7.2",
+   "R": [],
+   "W": [],
+   "RW": [
+    "notifications"
+   ],
+   "roles": [
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "mã thông báo",
+   "ra": "xác nhận đã đọc",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "7.2.4",
+   "fid": "7.05",
+   "name": "Đánh dấu đọc tất cả",
+   "ph": "PH7",
+   "group": "7.2",
+   "R": [],
+   "W": [
+    "notifications"
+   ],
+   "RW": [],
+   "roles": [
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "yêu cầu",
+   "ra": "số thông báo vừa đánh dấu",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "7.3.1",
+   "fid": "7.06",
+   "name": "Gửi email theo hàng đợi, thử lại tối đa 3 lần",
+   "ph": "PH7",
+   "group": "7.3",
+   "R": [],
+   "W": [
+    "notifications"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "job"
+  },
+  {
+   "id": "7.4.1",
+   "fid": "7.07",
+   "name": "Xem tùy chọn nhận thông báo",
+   "ph": "PH7",
+   "group": "7.4",
+   "R": [
+    "parents"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "parent"
+   ],
+   "vao": "yêu cầu",
+   "ra": "nhận email, nhận cả tin có mặt",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "7.4.2",
+   "fid": "7.08",
+   "name": "Cập nhật tùy chọn nhận thông báo",
+   "ph": "PH7",
+   "group": "7.4",
+   "R": [],
+   "W": [],
+   "RW": [
+    "parents"
+   ],
+   "roles": [
+    "parent"
+   ],
+   "vao": "nhận email, nhận cả tin có mặt",
+   "ra": "tùy chọn sau khi lưu",
+   "readonly": false,
+   "kind": "api"
+  },
+  {
+   "id": "8.1.1",
+   "fid": "8.01",
+   "name": "SV xem chuyên cần chi tiết theo học kỳ",
+   "ph": "PH8",
+   "group": "8.1",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "lecturers",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student"
+   ],
+   "vao": "học kỳ",
+   "ra": "theo lớp: số buổi theo trạng thái, tỉ lệ, cảnh báo, chi tiết từng buổi",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.1.2",
+   "fid": "8.02",
+   "name": "SV xem tóm tắt chuyên cần",
+   "ph": "PH8",
+   "group": "8.1",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "schedules",
+    "students"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "student"
+   ],
+   "vao": "yêu cầu",
+   "ra": "tóm tắt chuyên cần theo lớp (không lọc học kỳ)",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.1.3",
+   "fid": "8.03",
+   "name": "Cán bộ xem chuyên cần một SV",
+   "ph": "PH8",
+   "group": "8.1",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "lecturers",
+    "schedules",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader"
+   ],
+   "vao": "mã SV, học kỳ",
+   "ra": "chuyên cần của SV như 8.1.1",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.2.1",
+   "fid": "8.04",
+   "name": "Thống kê chuyên cần theo lớp",
+   "ph": "PH8",
+   "group": "8.2",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã lớp",
+   "ra": "mỗi SV: số buổi theo 5 trạng thái, tổng phiên, tỉ lệ, cờ cảnh báo",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.2.2",
+   "fid": "8.05",
+   "name": "Xem danh sách cảnh báo vắng ≥ 20 % (sau thống kê lớp)",
+   "ph": "PH8",
+   "group": "8.2",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã lớp",
+   "ra": "SV có tỉ lệ vắng ≥ 20 %",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.2.3",
+   "fid": "8.11",
+   "name": "Gửi cảnh báo chuyên cần sau thống kê cho SV và phụ huynh",
+   "ph": "PH8",
+   "group": "8.2",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "enrollments",
+    "parent_students"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "8.2.4",
+   "fid": "8.06",
+   "name": "Xuất Excel bảng điểm danh",
+   "ph": "PH8",
+   "group": "8.2",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "lecturer"
+   ],
+   "vao": "mã lớp, học kỳ",
+   "ra": "tệp diemdanh_<mã lớp>_<học kỳ>.xlsx",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.3.1",
+   "fid": "8.07",
+   "name": "Danh sách con của phụ huynh",
+   "ph": "PH8",
+   "group": "8.3",
+   "R": [
+    "classes",
+    "enrollments",
+    "face_embeddings",
+    "parent_students",
+    "parents",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "parent"
+   ],
+   "vao": "yêu cầu",
+   "ra": "danh sách con đã liên kết",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.3.2",
+   "fid": "8.08",
+   "name": "Chuyên cần của con",
+   "ph": "PH8",
+   "group": "8.3",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "lecturers",
+    "parent_students",
+    "parents",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "parent"
+   ],
+   "vao": "mã SV (con), học kỳ",
+   "ra": "chuyên cần của con như 8.1.1",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.4.1",
+   "fid": "8.09",
+   "name": "Thống kê tổng hợp, so sánh theo Khoa",
+   "ph": "PH8",
+   "group": "8.4",
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "schedules",
+    "students",
+    "units",
+    "users"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board"
+   ],
+   "vao": "học kỳ",
+   "ra": "số liệu tổng + theo từng Khoa",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "8.4.2",
+   "fid": "8.10",
+   "name": "Biểu đồ chuyên cần",
+   "ph": "PH8",
+   "group": "8.4",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board"
+   ],
+   "vao": "chọn học kỳ",
+   "ra": "biểu đồ chuyên cần",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "9.1.1",
+   "fid": "9.01",
+   "name": "Ghi vết sửa điểm danh (attendance_audits)",
+   "ph": "PH9",
+   "group": "9.1",
+   "R": [],
+   "W": [
+    "attendance_audits"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "9.1.2",
+   "fid": "9.02",
+   "name": "Ghi đăng nhập, đăng nhập sai, khóa, đăng xuất",
+   "ph": "PH9",
+   "group": "9.1",
+   "R": [],
+   "W": [
+    "audit_logs"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "9.1.3",
+   "fid": "9.03",
+   "name": "Ghi tự động mọi thêm/sửa/xóa dữ liệu quản lý",
+   "ph": "PH9",
+   "group": "9.1",
+   "R": [],
+   "W": [
+    "audit_logs"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "9.1.4",
+   "fid": "9.04",
+   "name": "Ghi xuất báo cáo",
+   "ph": "PH9",
+   "group": "9.1",
+   "R": [],
+   "W": [
+    "audit_logs"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "9.2.1",
+   "fid": "9.05",
+   "name": "Tra cứu, lọc nhật ký (LĐ Khoa chỉ Khoa mình)",
+   "ph": "PH9",
+   "group": "9.2",
+   "R": [
+    "audit_logs"
+   ],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "faculty_leader"
+   ],
+   "vao": "từ khóa, nhóm hành động, kết quả, khoảng ngày",
+   "ra": "nhật ký, mới nhất trước",
+   "readonly": true,
+   "kind": "api"
+  },
+  {
+   "id": "9.3.1",
+   "fid": "9.06",
+   "name": "Dọn ảnh bằng chứng quá 90 ngày",
+   "ph": "PH9",
+   "group": "9.3",
+   "R": [],
+   "W": [
+    "attendance_records"
+   ],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "",
+   "readonly": false,
+   "kind": "job"
+  },
+  {
+   "id": "9.3.2",
+   "fid": "9.07",
+   "name": "Nhật ký ứng dụng (log dịch vụ)",
+   "ph": "PH9",
+   "group": "9.3",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [],
+   "vao": "",
+   "ra": "log dịch vụ (stdout của container)",
+   "readonly": false,
+   "kind": "internal"
+  },
+  {
+   "id": "10.1.1",
+   "fid": "10.01",
+   "name": "Điều hướng theo vai trò, chặn route không có quyền",
+   "ph": "PH10",
+   "group": "10.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "đường dẫn trang",
+   "ra": "trang được phép hoặc chuyển hướng",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "10.1.2",
+   "fid": "10.02",
+   "name": "Đăng nhập, nhập địa chỉ máy chủ",
+   "ph": "PH10",
+   "group": "10.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "email, mật khẩu, địa chỉ máy chủ (tùy chọn)",
+   "ra": "vào trang chủ theo vai trò",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "10.1.3",
+   "fid": "10.03",
+   "name": "Đổi mật khẩu trên giao diện",
+   "ph": "PH10",
+   "group": "10.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "mật khẩu hiện tại, mật khẩu mới",
+   "ra": "thông báo kết quả",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "10.1.4",
+   "fid": "10.04",
+   "name": "Thông báo phụ huynh trên giao diện",
+   "ph": "PH10",
+   "group": "10.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "parent"
+   ],
+   "vao": "mở chuông / hộp thư",
+   "ra": "số chưa đọc, danh sách thông báo",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "10.1.5",
+   "fid": "10.05",
+   "name": "Đọc dữ liệu API (models)",
+   "ph": "PH10",
+   "group": "10.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "JSON từ API",
+   "ra": "đối tượng Dart",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "10.1.6",
+   "fid": "10.06",
+   "name": "Định dạng ngày, phần trăm, trạng thái",
+   "ph": "PH10",
+   "group": "10.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "giá trị thô",
+   "ra": "chuỗi hiển thị",
+   "readonly": false,
+   "kind": "client"
+  },
+  {
+   "id": "10.1.7",
+   "fid": "10.07",
+   "name": "Giao diện sáng/tối",
+   "ph": "PH10",
+   "group": "10.1",
+   "R": [],
+   "W": [],
+   "RW": [],
+   "roles": [
+    "admin",
+    "training_office",
+    "student_affairs",
+    "faculty_office",
+    "faculty_leader",
+    "board",
+    "lecturer",
+    "student",
+    "parent"
+   ],
+   "vao": "chọn Theo hệ thống / Sáng / Tối",
+   "ra": "giao diện đổi ngay, nhớ sau khi tải lại",
+   "readonly": false,
+   "kind": "client"
+  }
+ ],
+ "phs": [
+  {
+   "code": "PH1",
+   "n": 1,
+   "name": "Xác thực và tài khoản",
+   "groups": [
+    "1.1",
+    "1.2",
+    "1.3",
+    "1.4"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH2",
+   "n": 2,
+   "name": "Quản trị danh mục hệ thống",
+   "groups": [
+    "2.1",
+    "2.2",
+    "2.3",
+    "2.4"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH3",
+   "n": 3,
+   "name": "Quản lý đào tạo",
+   "groups": [
+    "3.1",
+    "3.2",
+    "3.3",
+    "3.4",
+    "3.5"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH4",
+   "n": 4,
+   "name": "Quản lý người học",
+   "groups": [
+    "4.1",
+    "4.2",
+    "4.3",
+    "4.4"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH5",
+   "n": 5,
+   "name": "Sinh trắc khuôn mặt",
+   "groups": [
+    "5.1",
+    "5.2",
+    "5.3"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH6",
+   "n": 6,
+   "name": "Điểm danh",
+   "groups": [
+    "6.1",
+    "6.2",
+    "6.3",
+    "6.4",
+    "6.5"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH7",
+   "n": 7,
+   "name": "Thông báo",
+   "groups": [
+    "7.1",
+    "7.2",
+    "7.3",
+    "7.4"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH8",
+   "n": 8,
+   "name": "Báo cáo, thống kê",
+   "groups": [
+    "8.1",
+    "8.2",
+    "8.3",
+    "8.4"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH9",
+   "n": 9,
+   "name": "Nhật ký hệ thống",
+   "groups": [
+    "9.1",
+    "9.2",
+    "9.3"
+   ],
+   "dfd": true
+  },
+  {
+   "code": "PH10",
+   "n": 10,
+   "name": "Giao diện chung (hỗ trợ)",
+   "groups": [
+    "10.1"
+   ],
+   "dfd": false
+  }
+ ],
+ "groups": {
+  "1.1": {
+   "name": "Đăng nhập và phiên làm việc",
+   "ph": "PH1",
+   "leaves": [
+    "1.1.1",
+    "1.1.2",
+    "1.1.3",
+    "1.1.4"
+   ]
+  },
+  "1.2": {
+   "name": "Quản lý mật khẩu",
+   "ph": "PH1",
+   "leaves": [
+    "1.2.1",
+    "1.2.2",
+    "1.2.3",
+    "1.2.4"
+   ]
+  },
+  "1.3": {
+   "name": "Hồ sơ và phân quyền",
+   "ph": "PH1",
+   "leaves": [
+    "1.3.1",
+    "1.3.2"
+   ]
+  },
+  "1.4": {
+   "name": "Dịch vụ nền tảng",
+   "ph": "PH1",
+   "leaves": [
+    "1.4.1",
+    "1.4.2",
+    "1.4.3",
+    "1.4.4"
+   ]
+  },
+  "2.1": {
+   "name": "Quản lý đơn vị",
+   "ph": "PH2",
+   "leaves": [
+    "2.1.1",
+    "2.1.2",
+    "2.1.3",
+    "2.1.4"
+   ]
+  },
+  "2.2": {
+   "name": "Quản lý cán bộ",
+   "ph": "PH2",
+   "leaves": [
+    "2.2.1",
+    "2.2.2",
+    "2.2.3",
+    "2.2.4"
+   ]
+  },
+  "2.3": {
+   "name": "Quản lý địa điểm điểm danh",
+   "ph": "PH2",
+   "leaves": [
+    "2.3.1",
+    "2.3.2",
+    "2.3.3",
+    "2.3.4",
+    "2.3.5"
+   ]
+  },
+  "2.4": {
+   "name": "Quản lý phòng học",
+   "ph": "PH2",
+   "leaves": [
+    "2.4.1",
+    "2.4.2",
+    "2.4.3",
+    "2.4.4",
+    "2.4.5"
+   ]
+  },
+  "3.1": {
+   "name": "Quản lý giảng viên",
+   "ph": "PH3",
+   "leaves": [
+    "3.1.1",
+    "3.1.2",
+    "3.1.3",
+    "3.1.4"
+   ]
+  },
+  "3.2": {
+   "name": "Quản lý lớp học phần",
+   "ph": "PH3",
+   "leaves": [
+    "3.2.1",
+    "3.2.2",
+    "3.2.3",
+    "3.2.4",
+    "3.2.5"
+   ]
+  },
+  "3.3": {
+   "name": "Ghi danh sinh viên",
+   "ph": "PH3",
+   "leaves": [
+    "3.3.1",
+    "3.3.2",
+    "3.3.3"
+   ]
+  },
+  "3.4": {
+   "name": "Xếp lịch học",
+   "ph": "PH3",
+   "leaves": [
+    "3.4.1",
+    "3.4.2",
+    "3.4.3",
+    "3.4.4",
+    "3.4.5"
+   ]
+  },
+  "3.5": {
+   "name": "Tra cứu lịch",
+   "ph": "PH3",
+   "leaves": [
+    "3.5.1",
+    "3.5.2",
+    "3.5.3"
+   ]
+  },
+  "4.1": {
+   "name": "Quản lý hồ sơ sinh viên",
+   "ph": "PH4",
+   "leaves": [
+    "4.1.1",
+    "4.1.2",
+    "4.1.3",
+    "4.1.4",
+    "4.1.5",
+    "4.1.6"
+   ]
+  },
+  "4.2": {
+   "name": "Đồng ý sinh trắc",
+   "ph": "PH4",
+   "leaves": [
+    "4.2.1",
+    "4.2.2",
+    "4.2.3"
+   ]
+  },
+  "4.3": {
+   "name": "Quản lý phụ huynh",
+   "ph": "PH4",
+   "leaves": [
+    "4.3.1",
+    "4.3.2",
+    "4.3.3",
+    "4.3.4"
+   ]
+  },
+  "4.4": {
+   "name": "Liên kết phụ huynh – sinh viên",
+   "ph": "PH4",
+   "leaves": [
+    "4.4.1",
+    "4.4.2",
+    "4.4.3"
+   ]
+  },
+  "5.1": {
+   "name": "Thu nhận khuôn mặt",
+   "ph": "PH5",
+   "leaves": [
+    "5.1.1",
+    "5.1.2",
+    "5.1.3"
+   ]
+  },
+  "5.2": {
+   "name": "Duyệt khuôn mặt (Phòng CTSV)",
+   "ph": "PH5",
+   "leaves": [
+    "5.2.1",
+    "5.2.2",
+    "5.2.3",
+    "5.2.4"
+   ]
+  },
+  "5.3": {
+   "name": "Sinh viên quản lý dữ liệu, xác nhận kết quả",
+   "ph": "PH5",
+   "leaves": [
+    "5.3.1",
+    "5.3.2",
+    "5.3.3"
+   ]
+  },
+  "6.1": {
+   "name": "Quản lý phiên điểm danh",
+   "ph": "PH6",
+   "leaves": [
+    "6.1.1",
+    "6.1.2",
+    "6.1.3",
+    "6.1.4",
+    "6.1.5"
+   ]
+  },
+  "6.2": {
+   "name": "Điểm danh bằng camera",
+   "ph": "PH6",
+   "leaves": [
+    "6.2.1",
+    "6.2.2"
+   ]
+  },
+  "6.3": {
+   "name": "Sinh viên tự điểm danh (khuôn mặt + GPS)",
+   "ph": "PH6",
+   "leaves": [
+    "6.3.1",
+    "6.3.2",
+    "6.3.3"
+   ]
+  },
+  "6.4": {
+   "name": "Xác nhận và hiệu chỉnh kết quả",
+   "ph": "PH6",
+   "leaves": [
+    "6.4.1",
+    "6.4.2",
+    "6.4.3",
+    "6.4.4",
+    "6.4.5"
+   ]
+  },
+  "6.5": {
+   "name": "Đơn xin phép vắng",
+   "ph": "PH6",
+   "leaves": [
+    "6.5.1",
+    "6.5.2",
+    "6.5.3",
+    "6.5.4",
+    "6.5.5",
+    "6.5.6",
+    "6.5.7"
+   ]
+  },
+  "7.1": {
+   "name": "Sinh thông báo",
+   "ph": "PH7",
+   "leaves": [
+    "7.1.1",
+    "7.1.2"
+   ]
+  },
+  "7.2": {
+   "name": "Hộp thư thông báo",
+   "ph": "PH7",
+   "leaves": [
+    "7.2.1",
+    "7.2.2",
+    "7.2.3",
+    "7.2.4"
+   ]
+  },
+  "7.3": {
+   "name": "Gửi email thông báo",
+   "ph": "PH7",
+   "leaves": [
+    "7.3.1"
+   ]
+  },
+  "7.4": {
+   "name": "Tùy chọn nhận thông báo",
+   "ph": "PH7",
+   "leaves": [
+    "7.4.1",
+    "7.4.2"
+   ]
+  },
+  "8.1": {
+   "name": "Chuyên cần cá nhân",
+   "ph": "PH8",
+   "leaves": [
+    "8.1.1",
+    "8.1.2",
+    "8.1.3"
+   ]
+  },
+  "8.2": {
+   "name": "Báo cáo theo lớp: thống kê → cảnh báo → xuất",
+   "ph": "PH8",
+   "leaves": [
+    "8.2.1",
+    "8.2.2",
+    "8.2.3",
+    "8.2.4"
+   ]
+  },
+  "8.3": {
+   "name": "Phụ huynh theo dõi chuyên cần",
+   "ph": "PH8",
+   "leaves": [
+    "8.3.1",
+    "8.3.2"
+   ]
+  },
+  "8.4": {
+   "name": "Thống kê tổng hợp",
+   "ph": "PH8",
+   "leaves": [
+    "8.4.1",
+    "8.4.2"
+   ]
+  },
+  "9.1": {
+   "name": "Ghi nhật ký",
+   "ph": "PH9",
+   "leaves": [
+    "9.1.1",
+    "9.1.2",
+    "9.1.3",
+    "9.1.4"
+   ]
+  },
+  "9.2": {
+   "name": "Tra cứu nhật ký",
+   "ph": "PH9",
+   "leaves": [
+    "9.2.1"
+   ]
+  },
+  "9.3": {
+   "name": "Bảo trì và giám sát",
+   "ph": "PH9",
+   "leaves": [
+    "9.3.1",
+    "9.3.2"
+   ]
+  },
+  "10.1": {
+   "name": "Khung ứng dụng client",
+   "ph": "PH10",
+   "leaves": [
+    "10.1.1",
+    "10.1.2",
+    "10.1.3",
+    "10.1.4",
+    "10.1.5",
+    "10.1.6",
+    "10.1.7"
+   ]
+  }
+ },
+ "diagrams": [
+  "CTX",
+  "L0",
+  "L1-PH1",
+  "L1-PH2",
+  "L1-PH3",
+  "L1-PH4",
+  "L1-PH5",
+  "L1-PH6",
+  "L1-PH7",
+  "L1-PH8",
+  "L1-PH9",
+  "L2-1.1",
+  "L2-1.2",
+  "L2-1.3",
+  "L2-1.4",
+  "L2-2.1",
+  "L2-2.2",
+  "L2-2.3",
+  "L2-2.4",
+  "L2-3.1",
+  "L2-3.2",
+  "L2-3.3",
+  "L2-3.4",
+  "L2-3.5",
+  "L2-4.1",
+  "L2-4.2",
+  "L2-4.3",
+  "L2-4.4",
+  "L2-5.1",
+  "L2-5.2",
+  "L2-5.3",
+  "L2-6.1",
+  "L2-6.2",
+  "L2-6.3",
+  "L2-6.4",
+  "L2-6.5",
+  "L2-7.1",
+  "L2-7.2",
+  "L2-7.4",
+  "L2-8.1",
+  "L2-8.2",
+  "L2-8.3",
+  "L2-8.4",
+  "L2-9.1",
+  "L2-9.3"
+ ],
+ "nav": [
+  [
+   "workflow_tong_quan.html",
+   "Sơ đồ quy trình"
+  ],
+  [
+   "erd_csdl.html",
+   "CSDL (ERD)"
+  ],
+  [
+   "csdl_chi_tiet.html",
+   "Chi tiết từng bảng CSDL"
+  ],
+  [
+   "chuc_nang_cay.html",
+   "Sơ đồ chức năng cây"
+  ],
+  [
+   "phan_ra_chuc_nang.html",
+   "Phân rã chức năng"
+  ],
+  [
+   "dfd.html",
+   "DFD các mức"
+  ],
+  [
+   "dac_ta_chuc_nang.html",
+   "Đặc tả & truy vết"
+  ],
+  [
+   "chuan_hoa_csdl.html",
+   "Chuẩn hóa CSDL (4NF)"
+  ]
+ ]
+}

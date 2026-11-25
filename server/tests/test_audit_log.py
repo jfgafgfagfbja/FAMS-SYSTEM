@@ -83,12 +83,12 @@ def test_password_change_never_stores_the_hash(client, db_session, seed):
     assert "$2b$" not in log.detail  # khong lot ban bam bcrypt
 
 
-def test_face_approval_and_consent_have_readable_names(client, db_session, seed, admin_headers):
+def test_face_approval_and_consent_have_readable_names(client, db_session, seed, ctsv_headers):
     emb = models.FaceEmbedding(student_id=seed["sv1_id"], embedding=np.ones(512).tolist(),
                                status="pending")
     db_session.add(emb)
     db_session.commit()
-    client.patch(f"/faces/{emb.id}/approve", headers=admin_headers)
+    client.patch(f"/faces/{emb.id}/approve", headers=ctsv_headers)
     assert _logs(db_session, "face.approved")
 
     token = login(client, "sv1@test.local", "sv123")

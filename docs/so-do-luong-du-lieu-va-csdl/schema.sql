@@ -1,7 +1,7 @@
 -- =====================================================================
 -- CSDL: HỆ THỐNG FAMS – QUẢN LÝ SINH VIÊN VÀ ĐIỂM DANH BẰNG NHẬN DIỆN KHUÔN MẶT (PostgreSQL 16 + pgvector)
--- 21 bảng. Sinh tự động từ server/app/db/models.py (docs/tools/gen_so_do_csdl.py).
--- Môi trường thật tạo / nâng cấp schema bằng Alembic (server/alembic, head d4f8a2c6e913);
+-- 22 bảng. Sinh tự động từ server/app/db/models.py (docs/tools/gen_so_do_csdl.py).
+-- Môi trường thật tạo / nâng cấp schema bằng Alembic (server/alembic, head e2a7c4b91f6d);
 -- tệp này dùng để đọc, đưa vào báo cáo hoặc dựng CSDL thử nghiệm.
 -- =====================================================================
 -- CREATE DATABASE fams_system ENCODING 'UTF8';  -- \c fams_system
@@ -295,20 +295,27 @@ CREATE TABLE face_embeddings (
   embedding VECTOR(512) NOT NULL,  -- Vector ArcFace 512 chiều
   source_image VARCHAR(500) NOT NULL,  -- Ảnh khuôn mặt lưu tạm chờ duyệt (/evidence/faces/...)
   status VARCHAR(10) NOT NULL,  -- pending | approved | rejected
-  reject_reason VARCHAR(500) NOT NULL,  -- Lý do từ chối
+  reject_reason VARCHAR(500) NOT NULL,  -- Lý do không hợp lệ (khi từ chối)
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,  -- Ngày đăng ký
+  reviewed_by INTEGER,  -- Cán bộ P.CTSV đã duyệt / từ chối
+  reviewed_at TIMESTAMP WITHOUT TIME ZONE,  -- Thời điểm duyệt / từ chối
+  student_ack_at TIMESTAMP WITHOUT TIME ZONE,  -- Thời điểm SV xác nhận đã nhận kết quả
   PRIMARY KEY (id),
-  FOREIGN KEY(student_id) REFERENCES students (id)
+  FOREIGN KEY(student_id) REFERENCES students (id),
+  FOREIGN KEY(reviewed_by) REFERENCES users (id) ON DELETE SET NULL
 );
 CREATE INDEX ix_face_embeddings_embedding_hnsw ON face_embeddings USING hnsw (embedding vector_cosine_ops);
-COMMENT ON TABLE face_embeddings IS 'Dữ liệu khuôn mặt: Vector đặc trưng khuôn mặt 512 chiều (pgvector, chỉ mục HNSW cosine). Ảnh cắt chỉ lưu tạm để duyệt, xóa ngay khi duyệt / từ chối.';
+COMMENT ON TABLE face_embeddings IS 'Dữ liệu khuôn mặt: Vector đặc trưng khuôn mặt 512 chiều (pgvector, chỉ mục HNSW cosine). Ảnh cắt chỉ lưu tạm để duyệt, xóa ngay khi duyệt / từ chối. Chỉ Phòng Công tác SV duyệt; kết quả được gửi cho sinh viên và sinh viên xác nhận đã nhận.';
 COMMENT ON COLUMN face_embeddings.id IS 'Mã vector';
 COMMENT ON COLUMN face_embeddings.student_id IS 'Sinh viên';
 COMMENT ON COLUMN face_embeddings.embedding IS 'Vector ArcFace 512 chiều';
 COMMENT ON COLUMN face_embeddings.source_image IS 'Ảnh khuôn mặt lưu tạm chờ duyệt (/evidence/faces/...)';
 COMMENT ON COLUMN face_embeddings.status IS 'pending | approved | rejected';
-COMMENT ON COLUMN face_embeddings.reject_reason IS 'Lý do từ chối';
+COMMENT ON COLUMN face_embeddings.reject_reason IS 'Lý do không hợp lệ (khi từ chối)';
 COMMENT ON COLUMN face_embeddings.created_at IS 'Ngày đăng ký';
+COMMENT ON COLUMN face_embeddings.reviewed_by IS 'Cán bộ P.CTSV đã duyệt / từ chối';
+COMMENT ON COLUMN face_embeddings.reviewed_at IS 'Thời điểm duyệt / từ chối';
+COMMENT ON COLUMN face_embeddings.student_ack_at IS 'Thời điểm SV xác nhận đã nhận kết quả';
 
 -- ---------------------------------------------------------------- parent_students (Liên kết phụ huynh – sinh viên · Người học & sinh trắc)
 CREATE TABLE parent_students (
@@ -347,7 +354,7 @@ CREATE TABLE schedules (
   weekday INTEGER NOT NULL,  -- Thứ (0 = thứ Hai … 6 = Chủ nhật)
   start_time TIME WITHOUT TIME ZONE NOT NULL,  -- Giờ bắt đầu
   end_time TIME WITHOUT TIME ZONE NOT NULL,  -- Giờ kết thúc
-  room VARCHAR(50) NOT NULL,  -- Tên phòng dạng chữ (dữ liệu cũ, hiển thị khi chưa gắn phòng)
+  room VARCHAR(50),  -- Tên phòng TỰ NHẬP — chỉ có khi không chọn phòng trong danh mục (đã chọn phòng thì để trống: mã phòng lấy qua room_id, tránh phụ thuộc bắc cầu room_id → mã phòng)
   room_id INTEGER,  -- Phòng trong danh mục
   location_id INTEGER,  -- Địa điểm gắn trực tiếp (dữ liệu cũ)
   PRIMARY KEY (id),
@@ -362,7 +369,7 @@ COMMENT ON COLUMN schedules.class_id IS 'Lớp học phần';
 COMMENT ON COLUMN schedules.weekday IS 'Thứ (0 = thứ Hai … 6 = Chủ nhật)';
 COMMENT ON COLUMN schedules.start_time IS 'Giờ bắt đầu';
 COMMENT ON COLUMN schedules.end_time IS 'Giờ kết thúc';
-COMMENT ON COLUMN schedules.room IS 'Tên phòng dạng chữ (dữ liệu cũ, hiển thị khi chưa gắn phòng)';
+COMMENT ON COLUMN schedules.room IS 'Tên phòng TỰ NHẬP — chỉ có khi không chọn phòng trong danh mục (đã chọn phòng thì để trống: mã phòng lấy qua room_id, tránh phụ thuộc bắc cầu room_id → mã phòng)';
 COMMENT ON COLUMN schedules.room_id IS 'Phòng trong danh mục';
 COMMENT ON COLUMN schedules.location_id IS 'Địa điểm gắn trực tiếp (dữ liệu cũ)';
 
@@ -374,7 +381,6 @@ CREATE TABLE attendance_sessions (
   opened_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,  -- Thời điểm mở
   closed_at TIMESTAMP WITHOUT TIME ZONE,  -- Thời điểm đóng
   status VARCHAR(10) NOT NULL,  -- open | closed
-  require_qr BOOLEAN NOT NULL,  -- Bắt buộc quét mã QR chiếu trong phòng khi tự điểm danh
   PRIMARY KEY (id),
   UNIQUE (schedule_id, session_date),
   FOREIGN KEY(schedule_id) REFERENCES schedules (id)
@@ -386,7 +392,40 @@ COMMENT ON COLUMN attendance_sessions.session_date IS 'Ngày điểm danh';
 COMMENT ON COLUMN attendance_sessions.opened_at IS 'Thời điểm mở';
 COMMENT ON COLUMN attendance_sessions.closed_at IS 'Thời điểm đóng';
 COMMENT ON COLUMN attendance_sessions.status IS 'open | closed';
-COMMENT ON COLUMN attendance_sessions.require_qr IS 'Bắt buộc quét mã QR chiếu trong phòng khi tự điểm danh';
+
+-- ---------------------------------------------------------------- leave_requests (Đơn xin phép vắng · Điểm danh)
+CREATE TABLE leave_requests (
+  id SERIAL NOT NULL,  -- Mã đơn
+  student_id INTEGER NOT NULL,  -- Sinh viên
+  schedule_id INTEGER NOT NULL,  -- Lịch học (lớp, thứ, giờ)
+  absence_date DATE NOT NULL,  -- Ngày vắng (đúng thứ của lịch)
+  reason TEXT NOT NULL,  -- Lý do xin phép
+  status VARCHAR(10) NOT NULL,  -- pending | approved | rejected
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,  -- Thời điểm nộp
+  reviewed_by INTEGER,  -- Người duyệt / từ chối (GV lớp, Lãnh đạo Khoa)
+  reviewed_at TIMESTAMP WITHOUT TIME ZONE,  -- Thời điểm duyệt / từ chối
+  review_note VARCHAR(500) NOT NULL,  -- Lý do không hợp lệ (khi từ chối) hoặc ghi chú khi duyệt
+  student_ack_at TIMESTAMP WITHOUT TIME ZONE,  -- Thời điểm SV xác nhận đã nhận kết quả
+  PRIMARY KEY (id),
+  UNIQUE (student_id, schedule_id, absence_date),
+  FOREIGN KEY(student_id) REFERENCES students (id),
+  FOREIGN KEY(schedule_id) REFERENCES schedules (id),
+  FOREIGN KEY(reviewed_by) REFERENCES users (id) ON DELETE SET NULL
+);
+CREATE INDEX ix_leave_requests_schedule_id ON leave_requests (schedule_id);
+CREATE INDEX ix_leave_requests_student_id ON leave_requests (student_id);
+COMMENT ON TABLE leave_requests IS 'Đơn xin phép vắng: Sinh viên xin phép vắng một buổi học (lịch học + ngày). Giảng viên lớp hoặc Lãnh đạo Khoa duyệt / từ chối (bắt buộc lý do không hợp lệ); kết quả gửi cho sinh viên, sinh viên xác nhận đã nhận. Đơn đã duyệt ⇒ buổi đó ghi vắng có phép.';
+COMMENT ON COLUMN leave_requests.id IS 'Mã đơn';
+COMMENT ON COLUMN leave_requests.student_id IS 'Sinh viên';
+COMMENT ON COLUMN leave_requests.schedule_id IS 'Lịch học (lớp, thứ, giờ)';
+COMMENT ON COLUMN leave_requests.absence_date IS 'Ngày vắng (đúng thứ của lịch)';
+COMMENT ON COLUMN leave_requests.reason IS 'Lý do xin phép';
+COMMENT ON COLUMN leave_requests.status IS 'pending | approved | rejected';
+COMMENT ON COLUMN leave_requests.created_at IS 'Thời điểm nộp';
+COMMENT ON COLUMN leave_requests.reviewed_by IS 'Người duyệt / từ chối (GV lớp, Lãnh đạo Khoa)';
+COMMENT ON COLUMN leave_requests.reviewed_at IS 'Thời điểm duyệt / từ chối';
+COMMENT ON COLUMN leave_requests.review_note IS 'Lý do không hợp lệ (khi từ chối) hoặc ghi chú khi duyệt';
+COMMENT ON COLUMN leave_requests.student_ack_at IS 'Thời điểm SV xác nhận đã nhận kết quả';
 
 -- ---------------------------------------------------------------- attendance_records (Kết quả điểm danh · Điểm danh)
 CREATE TABLE attendance_records (
@@ -446,8 +485,8 @@ COMMENT ON COLUMN attendance_audits.changed_at IS 'Thời điểm sửa';
 -- ---------------------------------------------------------------- notifications (Thông báo · Thông báo & nhật ký)
 CREATE TABLE notifications (
   id SERIAL NOT NULL,  -- Mã thông báo
-  user_id INTEGER NOT NULL,  -- Người nhận (phụ huynh)
-  kind VARCHAR(30) NOT NULL,  -- attendance_present | attendance_late | attendance_absent | attendance_excused
+  user_id INTEGER NOT NULL,  -- Người nhận (phụ huynh, sinh viên, giảng viên)
+  kind VARCHAR(30) NOT NULL,  -- attendance_present | _late | _absent | _excused | face_approved | face_rejected | leave_submitted | leave_approved | leave_rejected | absence_warning
   title VARCHAR(255) NOT NULL,  -- Tiêu đề
   body TEXT NOT NULL,  -- Nội dung
   link VARCHAR(255),  -- Đường dẫn trong app
@@ -465,10 +504,10 @@ CREATE TABLE notifications (
 );
 CREATE INDEX ix_notifications_email_pending ON notifications (id) WHERE email_status = 'pending';
 CREATE INDEX ix_notifications_user_id ON notifications (user_id);
-COMMENT ON TABLE notifications IS 'Thông báo: Hộp thư trong app và hàng đợi email. Sinh tự động khi bản ghi điểm danh của con được tạo / đổi trạng thái; mỗi bản ghi chỉ báo một lần cho mỗi loại.';
+COMMENT ON TABLE notifications IS 'Thông báo: Hộp thư trong app và hàng đợi email. Phụ huynh: khi bản ghi điểm danh của con được tạo / đổi trạng thái (mỗi bản ghi chỉ báo một lần cho mỗi loại). Sinh viên: kết quả duyệt khuôn mặt / đơn xin phép, cảnh báo chuyên cần sau thống kê. Giảng viên: đơn xin phép mới.';
 COMMENT ON COLUMN notifications.id IS 'Mã thông báo';
-COMMENT ON COLUMN notifications.user_id IS 'Người nhận (phụ huynh)';
-COMMENT ON COLUMN notifications.kind IS 'attendance_present | attendance_late | attendance_absent | attendance_excused';
+COMMENT ON COLUMN notifications.user_id IS 'Người nhận (phụ huynh, sinh viên, giảng viên)';
+COMMENT ON COLUMN notifications.kind IS 'attendance_present | _late | _absent | _excused | face_approved | face_rejected | leave_submitted | leave_approved | leave_rejected | absence_warning';
 COMMENT ON COLUMN notifications.title IS 'Tiêu đề';
 COMMENT ON COLUMN notifications.body IS 'Nội dung';
 COMMENT ON COLUMN notifications.link IS 'Đường dẫn trong app';

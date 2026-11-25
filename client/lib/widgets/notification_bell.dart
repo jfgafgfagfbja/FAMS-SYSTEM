@@ -11,44 +11,34 @@ import '../api/api.dart';
 
 /// Trang xu ly canh bao khi bam chuong, theo vai tro (null = khong hien chuong).
 String? alertTargetFor(String role) => switch (role) {
-      Roles.admin || Roles.affairs => '/face-review',
-      Roles.lecturer || Roles.training || Roles.faculty || Roles.facultyLeader => '/reports',
-      Roles.student => '/my-attendance',
+      Roles.affairs => '/face-review',
+      Roles.lecturer || Roles.facultyLeader => '/leave-requests',
+      Roles.admin || Roles.training || Roles.faculty => '/reports',
+      Roles.student || Roles.parent => '/notifications',
       Roles.board => '/',
-      Roles.parent => '/notifications',
       _ => null,
     };
 
 String alertLabelFor(String role) => switch (role) {
-      Roles.admin || Roles.affairs => 'khuôn mặt chờ duyệt',
-      Roles.student => 'lớp vượt ngưỡng vắng',
-      Roles.parent => 'thông báo mới',
+      Roles.affairs => 'khuôn mặt chờ duyệt',
+      Roles.lecturer || Roles.facultyLeader => 'đơn xin phép chờ duyệt',
+      Roles.student || Roles.parent => 'thông báo mới',
       _ => 'sinh viên vượt ngưỡng vắng',
     };
 
-/// So muc can chu y, lay tu du lieu that: admin/P.CTSV -> khuon mat cho duyet; GV -> SV
-/// vuot nguong vang o lop minh day; P.DT/Khoa/Ban -> SV vuot nguong trong pham vi;
-/// SV -> so lop minh vuot nguong; phu huynh -> so thong bao diem danh cua con chua doc.
+/// So muc can chu y, lay tu du lieu that: P.CTSV -> khuon mat cho duyet; GV / Lanh dao Khoa ->
+/// don xin phep cho duyet trong pham vi; admin/P.DT/VP Khoa/Ban -> SV vuot nguong vang;
+/// SV, phu huynh -> thong bao chua doc (ket qua duyet, canh bao, diem danh cua con).
 Future<int> countAlerts(ApiClient api, String role) async {
   switch (role) {
-    case Roles.admin || Roles.affairs:
+    case Roles.affairs:
       return (await api.faces.pending() as List<dynamic>).length;
-    case Roles.lecturer:
-      final me = Me.fromJson(await api.auth.me() as Json);
-      final warned = <int>{};
-      for (final clazz in me.classes) {
-        final rows = await api.reports.warnings(query: {'class_id': clazz.id}) as List<dynamic>;
-        warned.addAll(rows.map((row) => (row as Json)['student_id'] as int));
-      }
-      return warned.length;
-    case Roles.training || Roles.faculty || Roles.facultyLeader || Roles.board:
+    case Roles.lecturer || Roles.facultyLeader:
+      return (await api.leaveRequests.list(query: {'status': 'pending'}) as List<dynamic>).length;
+    case Roles.admin || Roles.training || Roles.faculty || Roles.board:
       final overview = Overview.fromJson(await api.reports.overview() as Json);
       return overview.totals.warnedStudents;
-    case Roles.student:
-      final classes = await api.students.myAttendance() as List<dynamic>;
-      return classes.map((e) => ClassAttendance.fromJson(e as Json)).where((c) => c.warning).length;
-    case Roles.parent:
-      // Phu huynh: so thong bao diem danh cua con chua doc (hop thu trong app).
+    case Roles.student || Roles.parent:
       final data = await api.notifications.unreadCount() as Json;
       return data['count'] as int;
     default:

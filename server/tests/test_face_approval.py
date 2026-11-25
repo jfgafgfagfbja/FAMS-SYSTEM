@@ -112,10 +112,9 @@ def test_list_pending_requires_admin(client, seed, db_session):
     assert resp.status_code == 403
 
 
-def test_list_pending_returns_student_info(client, seed, db_session):
+def test_list_pending_returns_student_info(client, seed, db_session, ctsv_headers):
     _add_pending_embedding(db_session, seed["sv1_id"], 11)
-    admin_token = login(client, "admin@test.local", "admin123")
-    resp = client.get("/faces/pending", headers=auth_headers(admin_token))
+    resp = client.get("/faces/pending", headers=ctsv_headers)
     assert resp.status_code == 200
     body = resp.json()
     assert len(body) == 1
@@ -123,7 +122,7 @@ def test_list_pending_returns_student_info(client, seed, db_session):
     assert body[0]["duplicate_warning"] is False
 
 
-def test_list_pending_flags_duplicate_with_approved_embedding(client, seed, db_session):
+def test_list_pending_flags_duplicate_with_approved_embedding(client, seed, db_session, ctsv_headers):
     embedding = _unit_norm_embedding(12)
     db_session.add(models.FaceEmbedding(student_id=seed["sv2_id"], embedding=embedding.tolist(),
                                         status="approved"))
@@ -131,36 +130,32 @@ def test_list_pending_flags_duplicate_with_approved_embedding(client, seed, db_s
                                         status="pending"))
     db_session.commit()
 
-    admin_token = login(client, "admin@test.local", "admin123")
-    resp = client.get("/faces/pending", headers=auth_headers(admin_token))
+    resp = client.get("/faces/pending", headers=ctsv_headers)
     body = resp.json()
     assert body[0]["duplicate_warning"] is True
     assert body[0]["duplicate_student_code"] == "SV0002"
 
 
-def test_approve_face_sets_status(client, seed, db_session):
+def test_approve_face_sets_status(client, seed, db_session, ctsv_headers):
     emb = _add_pending_embedding(db_session, seed["sv1_id"], 13)
-    admin_token = login(client, "admin@test.local", "admin123")
-    resp = client.patch(f"/faces/{emb.id}/approve", headers=auth_headers(admin_token))
+    resp = client.patch(f"/faces/{emb.id}/approve", headers=ctsv_headers)
     assert resp.status_code == 200
 
     db_session.refresh(emb)
     assert emb.status == "approved"
+    assert emb.reviewed_by is not None and emb.reviewed_at is not None
 
 
-def test_reject_face_requires_reason(client, seed, db_session):
+def test_reject_face_requires_reason(client, seed, db_session, ctsv_headers):
     emb = _add_pending_embedding(db_session, seed["sv1_id"], 14)
-    admin_token = login(client, "admin@test.local", "admin123")
-    resp = client.patch(f"/faces/{emb.id}/reject", json={"reason": ""},
-                        headers=auth_headers(admin_token))
+    resp = client.patch(f"/faces/{emb.id}/reject", json={"reason": ""}, headers=ctsv_headers)
     assert resp.status_code == 400
 
 
-def test_reject_face_stores_reason(client, seed, db_session):
+def test_reject_face_stores_reason(client, seed, db_session, ctsv_headers):
     emb = _add_pending_embedding(db_session, seed["sv1_id"], 15)
-    admin_token = login(client, "admin@test.local", "admin123")
     resp = client.patch(f"/faces/{emb.id}/reject", json={"reason": "Anh mo, khong ro mat"},
-                        headers=auth_headers(admin_token))
+                        headers=ctsv_headers)
     assert resp.status_code == 200
 
     db_session.refresh(emb)
@@ -173,3 +168,43 @@ def test_approve_reject_requires_admin(client, seed, db_session):
     gv_token = login(client, "gv1@test.local", "gv123")
     resp = client.patch(f"/faces/{emb.id}/approve", headers=auth_headers(gv_token))
     assert resp.status_code == 403
+
+
+# ---------------- Quy trinh duyet moi: chi P.CTSV, gui ket qua cho SV, SV xac nhan ----------------
+
+def test_admin_no_longer_reviews_faces(client, seed, db_session):
+    """Gop y nghiep vu: bo quan tri vien khoi viec xet duyet khuon mat."""
+    emb = _add_pending_embedding(db_session, seed["sv1_id"], 17)
+    admin = auth_headers(login(client, "admin@test.local", "admin123"))
+    assert client.get("/faces/pending", headers=admin).status_code == 403
+    assert client.patch(f"/faces/{emb.id}/approve", headers=admin).status_code == 403
+    assert client.patch(f"/faces/{emb.id}/reject", json={"reason": "x"}, headers=admin).status_code == 403
+
+
+def test_result_is_sent_to_student_and_student_confirms(client, seed, db_session, ctsv_headers):
+    emb = _add_pending_embedding(db_session, seed["sv1_id"], 18)
+    sv = auth_headers(login(client, "sv1@test.local", "sv123"))
+    # Chua co ket qua thi chua xac nhan duoc.
+    assert client.post(f"/faces/mine/{emb.id}/acknowledge", headers=sv).status_code == 400
+
+    assert client.patch(f"/faces/{emb.id}/reject", json={"reason": "Anh nguoc sang"},
+                        headers=ctsv_headers).status_code == 200
+    inbox = client.get("/notifications", headers=sv).json()
+    assert inbox[0]["kind"] == "face_rejected" and "Anh nguoc sang" in inbox[0]["body"]
+
+    mine = client.get("/faces/mine", headers=sv).json()
+    assert mine[0]["student_ack_at"] is None and mine[0]["reviewed_at"] is not None
+    acked = client.post(f"/faces/mine/{emb.id}/acknowledge", headers=sv)
+    assert acked.status_code == 200 and acked.json()["student_ack_at"] is not None
+    # SV khac khong xac nhan ho duoc.
+    sv2 = auth_headers(login(client, "sv2@test.local", "sv123"))
+    assert client.post(f"/faces/mine/{emb.id}/acknowledge", headers=sv2).status_code == 404
+
+
+def test_decided_face_cannot_be_decided_again(client, seed, db_session, ctsv_headers):
+    emb = _add_pending_embedding(db_session, seed["sv1_id"], 19)
+    assert client.patch(f"/faces/{emb.id}/approve", headers=ctsv_headers).status_code == 200
+    assert client.patch(f"/faces/{emb.id}/reject", json={"reason": "x"},
+                        headers=ctsv_headers).status_code == 400
+    sv = auth_headers(login(client, "sv1@test.local", "sv123"))
+    assert client.get("/notifications", headers=sv).json()[0]["kind"] == "face_approved"

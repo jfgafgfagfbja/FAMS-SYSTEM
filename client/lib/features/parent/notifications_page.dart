@@ -9,8 +9,9 @@ import '../../models/models.dart';
 import '../../widgets/common.dart';
 import '../../api/api.dart';
 
-/// Hop thu thong bao cua phu huynh: moi lan con duoc ghi nhan diem danh (co mat, di muon,
-/// vang, co phep) co mot muc. Bam vao muc thi danh dau da doc va mo chuyen can cua con.
+/// Hop thu thong bao: phu huynh (con duoc ghi nhan diem danh, canh bao chuyen can), sinh vien
+/// (ket qua duyet khuon mat / don xin phep, canh bao chuyen can), giang vien (don xin phep moi).
+/// Bam vao muc thi danh dau da doc va mo trang lien quan.
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
 
@@ -49,7 +50,7 @@ class NotificationsPage extends StatelessWidget {
             if (items.isEmpty)
               const EmptyView(
                 icon: Icons.notifications_none,
-                message: 'Chưa có thông báo nào. Mỗi lần con được điểm danh, thông báo sẽ hiện ở đây.',
+                message: 'Chưa có thông báo nào.',
               )
             else
               Card(

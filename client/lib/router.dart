@@ -23,7 +23,6 @@ import 'features/auth/reset_password_page.dart';
 import 'features/auth/splash_page.dart';
 import 'features/home/home_page.dart';
 import 'features/lecturer/attendance_scan_page.dart';
-import 'features/lecturer/checkin_qr_page.dart';
 import 'features/lecturer/reports_page.dart';
 import 'features/lecturer/session_records_page.dart';
 import 'features/lecturer/sessions_page.dart';
@@ -31,6 +30,7 @@ import 'features/office/overview_page.dart';
 import 'features/parent/child_attendance_page.dart';
 import 'features/parent/children_page.dart';
 import 'features/parent/notifications_page.dart';
+import 'features/leave/leave_requests_page.dart';
 import 'features/schedule/week_schedule_page.dart';
 import 'features/student/enroll_face_page.dart';
 import 'features/student/enroll_for_student_page.dart';
@@ -46,7 +46,8 @@ const _routeRoles = <String, List<String>>{
   '/face': [Roles.student],
   '/self-checkin': [Roles.student],
   '/children': [Roles.parent],
-  '/notifications': [Roles.parent],
+  '/notifications': [Roles.parent, Roles.student, Roles.lecturer, Roles.facultyLeader],
+  '/leave-requests': [Roles.student, Roles.lecturer, Roles.facultyLeader, Roles.admin, Roles.affairs],
   '/schedule': [Roles.student, Roles.lecturer, Roles.admin, Roles.training, Roles.affairs, ...Roles.facultyRoles],
   '/sessions': [Roles.lecturer, Roles.admin, Roles.training, Roles.affairs, ...Roles.facultyRoles],
   '/reports': [Roles.lecturer, Roles.admin, Roles.training, Roles.affairs, ...Roles.facultyRoles],
@@ -55,7 +56,7 @@ const _routeRoles = <String, List<String>>{
   '/students': [Roles.admin, Roles.training, Roles.affairs, ...Roles.facultyRoles],
   '/lecturers': [Roles.admin, Roles.training, ...Roles.facultyRoles],
   '/class-schedules': [Roles.admin, Roles.training, Roles.affairs, ...Roles.facultyRoles],
-  '/face-review': [Roles.admin, Roles.affairs],
+  '/face-review': [Roles.affairs],
   '/parents': [Roles.admin, Roles.affairs, Roles.training],
   '/enroll-face': [Roles.admin, Roles.affairs, Roles.lecturer],
   '/locations': [Roles.admin, Roles.training],
@@ -121,6 +122,7 @@ GoRouter buildRouter(AuthController auth) {
           // Phu huynh
           GoRoute(path: '/children', builder: (context, state) => const ChildrenPage()),
           GoRoute(path: '/notifications', builder: (context, state) => const NotificationsPage()),
+          GoRoute(path: '/leave-requests', builder: (context, state) => const LeaveRequestsPage()),
           GoRoute(
             path: '/children/:studentId',
             builder: (context, state) => ChildAttendancePage(studentId: _id(state, 'studentId')),
@@ -134,10 +136,6 @@ GoRouter buildRouter(AuthController auth) {
           GoRoute(
             path: '/sessions/:sessionId/scan',
             builder: (context, state) => AttendanceScanPage(sessionId: _id(state, 'sessionId')),
-          ),
-          GoRoute(
-            path: '/sessions/:sessionId/qr',
-            builder: (context, state) => CheckinQrPage(sessionId: _id(state, 'sessionId')),
           ),
           GoRoute(
             path: '/reports',

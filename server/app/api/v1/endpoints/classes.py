@@ -3,12 +3,14 @@ from fastapi import APIRouter, Depends, Response
 
 from app import schemas
 from app.api.deps import CurrentUser, DbSession, require_roles
-from app.core.authz import CLASS_EDITORS, CLASS_VIEWERS
+from app.core.authz import CLASS_EDITORS, CLASS_VIEWERS, ENROLL_SCHEDULE_EDITORS
 from app.db import models
 from app.services import class_service, schedule_service
 
 router = APIRouter(prefix="/classes", tags=["classes"])
 Editors = Depends(require_roles(*CLASS_EDITORS))
+# Ghi danh + xep lich: chi admin/P.DT (Van phong Khoa khong ghi danh, xep lich).
+Planners = Depends(require_roles(*ENROLL_SCHEDULE_EDITORS))
 
 
 @router.post("", response_model=schemas.ClassOut)
@@ -40,18 +42,18 @@ def list_classes(
 
 # ---- Lich hoc cua lop (tao/sua/xoa theo id lich) ----
 @router.post("/schedules", response_model=schemas.ScheduleOut)
-def create_schedule(body: schemas.ScheduleCreate, db: DbSession, user: models.User = Editors):
+def create_schedule(body: schemas.ScheduleCreate, db: DbSession, user: models.User = Planners):
     return schedule_service.create_schedule(db, user, body)
 
 
 @router.patch("/schedules/{schedule_id}", response_model=schemas.ScheduleOut)
 def update_schedule(schedule_id: int, body: schemas.ScheduleUpdate, db: DbSession,
-                    user: models.User = Editors):
+                    user: models.User = Planners):
     return schedule_service.update_schedule(db, user, schedule_id, body)
 
 
 @router.delete("/schedules/{schedule_id}")
-def delete_schedule(schedule_id: int, db: DbSession, user: models.User = Editors):
+def delete_schedule(schedule_id: int, db: DbSession, user: models.User = Planners):
     return schedule_service.delete_schedule(db, user, schedule_id)
 
 
@@ -72,12 +74,12 @@ def delete_class(class_id: int, db: DbSession, user: models.User = Editors):
 
 
 @router.post("/{class_id}/enroll/{student_id}")
-def enroll_student(class_id: int, student_id: int, db: DbSession, user: models.User = Editors):
+def enroll_student(class_id: int, student_id: int, db: DbSession, user: models.User = Planners):
     return class_service.enroll_student(db, user, class_id, student_id)
 
 
 @router.delete("/{class_id}/enroll/{student_id}")
-def unenroll_student(class_id: int, student_id: int, db: DbSession, user: models.User = Editors):
+def unenroll_student(class_id: int, student_id: int, db: DbSession, user: models.User = Planners):
     return class_service.unenroll_student(db, user, class_id, student_id)
 
 

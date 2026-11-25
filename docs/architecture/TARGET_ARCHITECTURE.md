@@ -67,10 +67,11 @@ server/
 | classes, schedules | class_service, schedule_service | class, schedule, session, student | PH3 |
 | students | student_service, report_service | student | PH4/PH8 |
 | parents | parent_service | parent, student | PH4/PH7/PH8 |
-| faces | face_data_service (+ face_service, antispoof_service) | face, student | PH5 |
-| sessions | session_service, attendance_service (+ geo, checkin_code) | session, class, schedule, student | PH6 |
+| faces | face_data_service (+ face_service, antispoof_service, user_notify) | face, student | PH5 |
+| sessions | session_service, attendance_service (+ geo) | session, class, schedule, student, leave | PH6 |
+| leave_requests ★ | leave_service (+ user_notify) | leave, schedule, student | PH6 |
 | reports | report_service (+ attendance_stats) | report, session, class | PH8 |
-| notifications | notification_service (+ parent_notify) | notification | PH7 |
+| notifications | notification_service (+ parent_notify, user_notify) | notification | PH7 |
 | audit_logs | audit_log_service (+ audit) | audit_log | PH9 |
 | media | media_service | — (tệp) | PH1 |
 | health | — | — | vận hành |
@@ -135,6 +136,8 @@ client/lib/
 ## 4. Cơ sở dữ liệu
 
 Không đổi schema (21 bảng, 15 migration, head `d4f8a2c6e913`) — dữ liệu bản gốc khôi phục thẳng được.
+★ Sau góp ý 10/11/2026: 22 bảng, 16 migration, head `e2a7c4b91f6d` (bảng `leave_requests`, bỏ `require_qr`) — dữ
+liệu bản gốc vẫn khôi phục được rồi `alembic upgrade head`.
 `models.py` khai báo thêm 4 chỉ mục vốn đã có trong DB thật (do migration tạo) để `models` khớp DB:
 HNSW `face_embeddings.embedding`, chỉ mục một phần hàng đợi email, `rooms.location_id`, `schedules.room_id`.
 Chi tiết: [DATABASE_ANALYSIS.md](../DATABASE_ANALYSIS.md).

@@ -185,8 +185,10 @@ class Schedule(Base):
     weekday: Mapped[int] = mapped_column()  # 0 = thu 2
     start_time: Mapped[time] = mapped_column(Time)
     end_time: Mapped[time] = mapped_column(Time)
-    # Ten phong dang chu, giu lai cho du lieu cu va de hien thi khi chua gan room_id.
-    room: Mapped[str] = mapped_column(String(50))
+    # Ten phong TU NHAP - chi co gia tri khi KHONG chon phong trong danh muc (room_id rong).
+    # Khi da chon phong, ten/ma phong lay qua room_id (khong luu lai o day: room_id -> ma phong
+    # la phu thuoc bac cau, luu ca hai vi pham 3NF va de lech nhau khi doi ma phong).
+    room: Mapped[str | None] = mapped_column(String(50), nullable=True)
     room_id: Mapped[int | None] = mapped_column(ForeignKey("rooms.id"), nullable=True, index=True)
     location_id: Mapped[int | None] = mapped_column(ForeignKey("locations.id"), nullable=True)
 
@@ -206,9 +208,6 @@ class AttendanceSession(Base):
     opened_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     closed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     status: Mapped[str] = mapped_column(String(10), default="open")  # open | closed
-    # Bat thi SV phai quet ma QR dang chieu trong phong moi tu diem danh duoc - bang
-    # chung co mat trong phong manh hon GPS. Giang vien chon khi mo phien.
-    require_qr: Mapped[bool] = mapped_column(default=False)
 
     schedule: Mapped[Schedule] = relationship()
     records: Mapped[list["AttendanceRecord"]] = relationship(back_populates="session")
@@ -271,8 +270,43 @@ class FaceEmbedding(Base):
     status: Mapped[str] = mapped_column(String(10), default="pending")  # pending | approved | rejected
     reject_reason: Mapped[str] = mapped_column(String(500), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    # Quy trinh duyet: chi P.CTSV duyet / tu choi (kem ly do khong hop le) -> he thong gui ket
+    # qua cho SV -> SV xac nhan da nhan ket qua (student_ack_at).
+    reviewed_by: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    student_ack_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     student: Mapped[Student] = relationship(back_populates="embeddings")
+    reviewer: Mapped[User | None] = relationship()
+
+
+class LeaveRequest(Base):
+    """Don xin phep vang cua sinh vien cho mot buoi hoc (lich hoc + ngay).
+
+    Giang vien day lop hoac Lanh dao Khoa duyet / tu choi (bat buoc ly do khong hop le). He thong
+    gui ket qua cho SV; SV xac nhan da nhan (student_ack_at). Don duoc duyet => buoi do ghi
+    "vang co phep" (excused) thay vi "vang" khi dong phien, hoac doi ngay neu da ghi vang.
+    """
+    __tablename__ = "leave_requests"
+    __table_args__ = (UniqueConstraint("student_id", "schedule_id", "absence_date"),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), index=True)
+    schedule_id: Mapped[int] = mapped_column(ForeignKey("schedules.id"), index=True)
+    absence_date: Mapped[date] = mapped_column(Date)
+    reason: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(10), default="pending")  # pending | approved | rejected
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    reviewed_by: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # Ly do khong hop le khi tu choi (bat buoc), ghi chu tuy chon khi duyet.
+    review_note: Mapped[str] = mapped_column(String(500), default="")
+    student_ack_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    student: Mapped[Student] = relationship()
+    schedule: Mapped[Schedule] = relationship()
+    reviewer: Mapped[User | None] = relationship()
 
 
 class RevokedToken(Base):
@@ -342,8 +376,9 @@ class ParentStudent(Base):
 
 
 class Notification(Base):
-    """Thong bao gui toi mot nguoi dung - hien dung de bao phu huynh moi lan con duoc ghi
-    nhan diem danh (xem services/parent_notify.py).
+    """Thong bao gui toi mot nguoi dung: bao phu huynh moi lan con duoc ghi nhan diem danh
+    (services/parent_notify.py); bao SV ket qua duyet khuon mat / don xin phep, canh bao vang
+    sau thong ke cho SV va phu huynh; bao giang vien co don xin phep moi (services/user_notify.py).
 
     Mot dong vua la muc trong hop thu cua app, vua la hang doi gui email (cac cot email_*):
     viec diem danh chi ghi dong nay trong cung giao dich, con email do tac vu nen gui sau.

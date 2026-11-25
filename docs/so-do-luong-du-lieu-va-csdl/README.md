@@ -1,53 +1,63 @@
 # Sơ đồ luồng dữ liệu và CSDL - Hệ thống FAMS (Điểm danh bằng nhận diện khuôn mặt)
 
-Mở file bằng trình duyệt (bấm đúp), không cần cài gì. Nên mở `workflow_tong_quan.html` trước.
+Mở file bằng trình duyệt (bấm đúp), không cần cài gì. Nên mở `phan_ra_chuc_nang.html` hoặc `workflow_tong_quan.html` trước.
+Mọi trang có chung thanh điều hướng và liên kết chéo hai chiều.
+
+> ★ Cập nhật 10/11/2026 theo góp ý nghiệp vụ: bỏ mã QR; chỉ Phòng CTSV duyệt khuôn mặt, kết quả gửi SV và SV xác nhận; Văn phòng Khoa không còn ghi danh / xếp lịch; đơn xin phép vắng (GV lớp / Lãnh đạo Khoa duyệt, từ chối có lý do); cảnh báo vắng sau thống kê; CSDL chuẩn 4NF. Mọi trang sinh lại từ code và kết quả test sau khi sửa.
 
 | File | Nội dung |
 |---|---|
-| `workflow_tong_quan.html` | Sơ đồ quy trình tương tác: 2 chế độ (theo phân hệ PH1-PH9 + sơ đồ toàn cảnh, theo 9 vai trò). Mỗi bước ghi bảng CSDL đọc / ghi, bấm chip để mở chi tiết bảng |
-| `erd_csdl.html` | ERD 21 bảng (PK, FK, kiểu dữ liệu, 29 quan hệ 1:N / 1:1), có phóng to / thu nhỏ; bảng đối chiếu kho DFD (D1-D9) với bảng CSDL |
-| `csdl_chi_tiet.html` | Chi tiết từng bảng: cột, kiểu, khóa, quan hệ, quy trình dùng bảng, câu lệnh CREATE TABLE |
-| `chuc_nang_cay.html` | Cây chức năng con theo 9 vai trò (96 chức năng, mỗi chức năng ghi đầu vào / đầu ra) |
-| `schema.sql` | Script tạo CSDL PostgreSQL 16 + pgvector (21 bảng, 29 khóa ngoại, 45 chỉ mục, chú thích tiếng Việt cho mọi bảng và cột) |
-| `erd.png`, `erd.svg` | Hình ERD để chèn vào báo cáo |
+| `workflow_tong_quan.html` | Sơ đồ quy trình: 2 chế độ (theo phân hệ PH1–PH9 + toàn cảnh, theo 9 vai trò). Mỗi bước ghi bảng CSDL đọc / ghi; mỗi quy trình có liên kết sang DFD và đặc tả |
+| `phan_ra_chuc_nang.html` | **Sơ đồ phân rã chức năng (BFD)**: hệ thống → 10 phân hệ → 37 chức năng cấp 2 → **134 chức năng lá** (tận cùng), số hiệu chuẩn PTTK (vd 6.3.5) |
+| `dfd.html` | **DFD các mức** theo ký hiệu giáo trình PTTK: sơ đồ ngữ cảnh, mức 0, mức 1 (9 phân hệ), mức 2 (34 chức năng cấp 2) — 45 sơ đồ, bấm tiến trình để đi xuống mức sâu hơn; mỗi sơ đồ có bảng từ điển luồng |
+| `dac_ta_chuc_nang.html` | **Đặc tả & truy vết từng chức năng lá**: vào/ra, các bước xử lý, luồng mức lá, bảng đọc/ghi (đo khi chạy), API (tham số, thân, phản hồi, quyền), **chuỗi gọi controller → service → repository** (liên kết tới dòng code trên GitHub), lỗi có thể trả về, màn hình client, test. Trang mở đầu là **ma trận truy vết** 134 dòng |
+| `erd_csdl.html` | ERD 22 bảng (PK, FK, kiểu, 33 quan hệ), đối chiếu kho DFD D1–D10 với bảng |
+| `chuan_hoa_csdl.html` | ★ **Chuẩn hóa CSDL đến 4NF** theo 3 bước: (1) gom mọi thuộc tính vào **một bảng** (quan hệ phổ quát), (2) **tách bảng** theo phụ thuộc hàm / đa trị, (3) **phân rã** 1NF → 2NF → 3NF → BCNF → 4NF; ghi chú từng bảng và vi phạm 3NF đã sửa (`schedules.room`) |
+| `csdl_chi_tiet.html` | Chi tiết từng bảng: cột, kiểu, khóa, quan hệ, quy trình dùng bảng, **các chức năng lá đọc / ghi bảng** (liên kết), CREATE TABLE |
+| `chuc_nang_cay.html` | Cây chức năng theo 9 vai trò, **dựng từ quyền thật trong code** (require_roles, phạm vi Khoa/lớp); mỗi dòng dẫn tới đặc tả |
+| `schema.sql` | Script tạo CSDL PostgreSQL 16 + pgvector (22 bảng, 33 khóa ngoại, 49 chỉ mục, chú thích tiếng Việt) |
+| `erd.png`, `erd.svg`, `phan_ra_chuc_nang.png/.svg`, `dfd/*.png/.svg` | Hình để chèn vào báo cáo (mỗi DFD một file) |
 
-## 9 vai trò
+## Cách các phần nối với nhau
 
-Quản trị viên (`admin`), Phòng Đào tạo (`training_office`), Phòng Công tác sinh viên (`student_affairs`),
-Văn phòng Khoa (`faculty_office`), Lãnh đạo Khoa (`faculty_leader`), Ban ngành (`board`),
-Giảng viên (`lecturer`), Sinh viên (`student`), Phụ huynh (`parent`).
-
-## 9 phân hệ
-
-| Mã | Phân hệ |
-|---|---|
-| PH1 | Đăng nhập, token và mật khẩu |
-| PH2 | Đơn vị, cán bộ, địa điểm, phòng học |
-| PH3 | Giảng viên, lớp học phần, ghi danh, lịch học |
-| PH4 | Sinh viên, đồng ý sinh trắc, phụ huynh |
-| PH5 | Đăng ký và duyệt dữ liệu khuôn mặt |
-| PH6 | Phiên điểm danh và ghi nhận kết quả |
-| PH7 | Thông báo điểm danh cho phụ huynh |
-| PH8 | Chuyên cần, cảnh báo vắng, thống kê |
-| PH9 | Ghi và tra cứu nhật ký hệ thống |
-
-## Ghi chú
-
-- Khác với bộ mẫu (dữ liệu lưu tệp JSON, CSDL chỉ là thiết kế), CSDL ở đây là **CSDL thật** của FAMS-SYSTEM:
-  sinh trực tiếp từ các model SQLAlchemy trong `server/app/db/models.py`. Cột "Tên trường (code)" là tên cột thật.
-- `schema.sql` đã được kiểm tra bằng cách chạy trên một CSDL trống rồi so với CSDL do Alembic tạo:
-  147/147 cột (tên, kiểu, NULL), 45/45 chỉ mục và 29/29 khóa ngoại giống hệt nhau.
-- Hệ thống chạy thật bằng Alembic (`alembic upgrade head`). `schema.sql` dùng để đọc, đưa vào báo cáo, hoặc dựng nhanh một CSDL trống.
-  Dựng thử: `psql -U <user> -d <db_trong> -f schema.sql` (cần cài extension `vector`).
-- Kiểu `VECTOR(512)` lưu vector khuôn mặt ArcFace. Chỉ mục HNSW (`vector_cosine_ops`) dùng để tìm khuôn mặt gần nhất.
-
-## Sinh lại bộ tài liệu
-
-Khi đổi model hoặc nghiệp vụ, sửa mô tả trong `docs/tools/so_do_data.py` rồi chạy (từ thư mục gốc `FAMS-SYSTEM`):
-
-```bash
-./server/venv/Scripts/python.exe docs/tools/gen_so_do_csdl.py --png
+```
+Phân hệ (DFD mức 0) ── Chức năng cấp 2 (DFD mức 1) ── Chức năng lá (DFD mức 2, đặc tả)
+                                                          │
+          ┌──────────────┬───────────────┬────────────────┼──────────────┬─────────────┐
+     Màn hình client   Endpoint API   Chuỗi gọi code   Bảng CSDL / kho DFD   Test    Vai trò được dùng
 ```
 
-Script tự kiểm tra mô tả có khớp model không (thiếu hoặc thừa bảng / cột sẽ báo lỗi). Tùy chọn `--png` cần Microsoft Edge để xuất `erd.png`.
-Giao diện (CSS, cách vẽ) lấy từ bộ mẫu qua `docs/tools/make_so_do_templates.py`, lưu ở `docs/tools/so_do_templates/`.
+- **Luồng dữ liệu chỉ khai báo ở mức lá**, các mức trên được gộp tự động ⇒ các mức **luôn cân bằng** (bộ sinh kiểm tra: 44/44 sơ đồ).
+- **Bảng đọc/ghi không viết tay**: đo bằng cách chạy 277 test với plugin ghi SQL (`server/tools/sql_trace_plugin.py`), tách theo nguồn
+  (nghiệp vụ / xác thực–phân quyền / trình nghe thông báo / ghi nhật ký) nhờ ngăn xếp lời gọi.
+- **Chuỗi gọi, lỗi, quyền, tham số** đọc tĩnh từ mã nguồn (`docs/tools/trace_code.py`): AST + `require_roles` + OpenAPI.
+- Ghi "ngầm" qua trình nghe sự kiện được vẽ thành luồng tới tiến trình phụ trách: ghi nhật ký → 9.1.x, sinh thông báo phụ huynh → 7.1.1;
+  ★ thông báo cho SV / GV (kết quả duyệt, đơn xin phép mới, cảnh báo vắng sau thống kê) → 7.1.2.
+- Kiểm tra tự động khi sinh: 102/102 route, 3/3 tác vụ nền thuộc ít nhất một chức năng lá; 22/22 bảng có chức năng đọc/ghi;
+  127/127 chức năng lá (trừ PH10 hỗ trợ giao diện) có luồng dữ liệu; 0 liên kết hỏng.
+
+Kho trong DFD: **D1–D10** là nhóm bảng CSDL (★ D10 = `leave_requests`); **M1** bộ đếm tạm trong bộ nhớ tiến trình (đăng nhập sai, giới hạn tần suất,
+xác nhận 2 khung hình); **F1** thư mục ảnh `evidence/` (ảnh bằng chứng, ảnh khuôn mặt chờ duyệt).
+
+## Phát hiện khi truy vết (ghi trong đặc tả)
+
+- 7 endpoint không có màn hình nào gọi: `GET /`, `/health` (vận hành), `/rooms/buildings` (client tự tính),
+  `/students/me` (dùng `/auth/me`), `/sessions/{id}/records` (dùng roster), `/reports/my-attendance` (dùng chuyên cần chi tiết),
+  **`DELETE /faces/mine`** (giao diện chưa có nút; SV xóa dữ liệu khuôn mặt qua "Rút đồng ý").
+- Chống giả mạo khuôn mặt (5.1.2) đang tự tắt vì thiếu tệp model — giống bản gốc.
+
+## Sinh lại
+
+Từ thư mục gốc `FAMS-SYSTEM` (cần container `fams-system-db-1` đang chạy để có CSDL test):
+
+```bash
+cd server && PYTHONPATH=tools SQL_TRACE_OUT=../docs/tools/trace/sql_trace.json ./venv/Scripts/python.exe -m pytest -q -p sql_trace_plugin && cd ..
+./server/venv/Scripts/python.exe docs/tools/trace_code.py
+./server/venv/Scripts/python.exe docs/tools/gen_phan_ra.py --png-all
+```
+
+- Bước 1 đo bảng đọc/ghi thật; bước 2 truy vết code; bước 3 sinh 3 trang mới **và** gọi `gen_so_do_csdl.py` để sinh lại 4 trang cũ kèm liên kết, cùng trang `chuan_hoa_csdl.html` (`gen_chuan_hoa.py`).
+- Kiểm tra liên kết chéo: `./server/venv/Scripts/python.exe docs/tools/check_links.py` (hiện 0 hỏng / 1750).
+- Sửa nghiệp vụ / phân rã: `docs/tools/phan_ra_data.py`. Sửa mô tả bảng, quy trình: `docs/tools/so_do_data.py`.
+- `--png` xuất PNG cho sơ đồ ngữ cảnh, mức 0, mức 1 và BFD; `--png-all` thêm mức 2 (cần Microsoft Edge).
+- Liên kết tới code trỏ vào nhánh `main` trên GitHub (`jfgafgfagfbja/FAMS-SYSTEM`); đổi code thì chạy lại để số dòng khớp.

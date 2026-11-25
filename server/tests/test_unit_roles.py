@@ -151,17 +151,22 @@ def test_faculty_office_sees_only_own_faculty(client, seed, org):
 
 
 def test_faculty_office_edits_only_own_faculty_classes(client, seed, org):
-    """Van phong Khoa nhap lieu lop/lich/ghi danh - nhung chi trong Khoa minh."""
+    """Van phong Khoa nhap lieu lop hoc phan trong Khoa minh - nhung KHONG ghi danh, xep lich
+    (gop y nghiep vu: ghi danh, xep lich la viec cua P.DT / admin)."""
     h = _h(client, "khoa.cntt@test.local")
     assert client.patch(f"/classes/{seed['class1_id']}", json={"subject_name": "Doi"},
                         headers=h).status_code == 200                      # lop CNTT
     assert client.patch(f"/classes/{seed['class2_id']}", json={"subject_name": "Doi"},
                         headers=h).status_code == 403                      # lop Kien truc
-    assert client.post("/classes/schedules", json={
-        "class_id": seed["class2_id"], "weekday": 2, "room": "A1",
-        "start_time": "07:00:00", "end_time": "09:00:00"}, headers=h).status_code == 403
+    for class_id in (seed["class1_id"], seed["class2_id"]):               # ke ca lop Khoa minh
+        assert client.post("/classes/schedules", json={
+            "class_id": class_id, "weekday": 2, "room": "A1",
+            "start_time": "07:00:00", "end_time": "09:00:00"}, headers=h).status_code == 403
     assert client.post(f"/classes/{seed['class1_id']}/enroll/{seed['sv2_id']}",
-                       headers=h).status_code == 200
+                       headers=h).status_code == 403
+    assert client.delete(f"/classes/{seed['class1_id']}/enroll/{seed['sv1_id']}",
+                         headers=h).status_code == 403
+    assert client.delete(f"/classes/schedules/{seed['schedule1_id']}", headers=h).status_code == 403
     # Ho so sinh vien van la viec cua P.CTSV.
     assert client.patch(f"/students/{seed['sv1_id']}", json={"major": "Doi"},
                         headers=h).status_code == 403

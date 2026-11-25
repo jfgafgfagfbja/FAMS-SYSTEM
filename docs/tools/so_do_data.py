@@ -19,7 +19,7 @@ GROUPS = [
     ("Tổ chức & danh mục", "#475569", ["units", "staff", "locations", "rooms"]),
     ("Đào tạo", "#059669", ["lecturers", "classes", "enrollments", "schedules"]),
     ("Người học & sinh trắc", "#7c3aed", ["students", "parents", "parent_students", "face_embeddings"]),
-    ("Điểm danh", "#d97706", ["attendance_sessions", "attendance_records", "attendance_audits"]),
+    ("Điểm danh", "#d97706", ["attendance_sessions", "attendance_records", "attendance_audits", "leave_requests"]),
     ("Thông báo & nhật ký", "#db2777", ["notifications", "audit_logs"]),
 ]
 
@@ -34,6 +34,7 @@ STORES = [
     ("D7", "Lịch sử sửa điểm danh (Audits)", ["attendance_audits"]),
     ("D8", "Thông báo (Notifications)", ["notifications"]),
     ("D9", "Nhật ký hệ thống (Audit logs)", ["audit_logs"]),
+    ("D10", "Đơn xin phép vắng (Leave requests)", ["leave_requests"]),
 ]
 
 # Mo ta bang + tung cot. "title": ten tieng Viet; "model": lop SQLAlchemy trong app/db/models.py.
@@ -122,7 +123,8 @@ TABLES = {
         "desc": "Buổi học cố định trong tuần của lớp. Server chặn xếp hai lớp cùng phòng, cùng thứ, khung giờ giao nhau; giờ bắt đầu phải trước giờ kết thúc.",
         "cols": {"id": "Mã lịch", "class_id": "Lớp học phần", "weekday": "Thứ (0 = thứ Hai … 6 = Chủ nhật)",
                  "start_time": "Giờ bắt đầu", "end_time": "Giờ kết thúc",
-                 "room": "Tên phòng dạng chữ (dữ liệu cũ, hiển thị khi chưa gắn phòng)",
+                 "room": "Tên phòng TỰ NHẬP — chỉ có khi không chọn phòng trong danh mục (đã chọn phòng thì để trống: "
+                         "mã phòng lấy qua room_id, tránh phụ thuộc bắc cầu room_id → mã phòng)",
                  "room_id": "Phòng trong danh mục", "location_id": "Địa điểm gắn trực tiếp (dữ liệu cũ)"},
     },
     "students": {
@@ -147,18 +149,32 @@ TABLES = {
     },
     "face_embeddings": {
         "title": "Dữ liệu khuôn mặt", "model": "FaceEmbedding",
-        "desc": "Vector đặc trưng khuôn mặt 512 chiều (pgvector, chỉ mục HNSW cosine). Ảnh cắt chỉ lưu tạm để duyệt, xóa ngay khi duyệt / từ chối.",
+        "desc": "Vector đặc trưng khuôn mặt 512 chiều (pgvector, chỉ mục HNSW cosine). Ảnh cắt chỉ lưu tạm để duyệt, xóa ngay khi duyệt / từ chối. "
+                "Chỉ Phòng Công tác SV duyệt; kết quả được gửi cho sinh viên và sinh viên xác nhận đã nhận.",
         "cols": {"id": "Mã vector", "student_id": "Sinh viên", "embedding": "Vector ArcFace 512 chiều",
                  "source_image": "Ảnh khuôn mặt lưu tạm chờ duyệt (/evidence/faces/...)",
-                 "status": "pending | approved | rejected", "reject_reason": "Lý do từ chối", "created_at": "Ngày đăng ký"},
+                 "status": "pending | approved | rejected", "reject_reason": "Lý do không hợp lệ (khi từ chối)",
+                 "created_at": "Ngày đăng ký", "reviewed_by": "Cán bộ P.CTSV đã duyệt / từ chối",
+                 "reviewed_at": "Thời điểm duyệt / từ chối", "student_ack_at": "Thời điểm SV xác nhận đã nhận kết quả"},
     },
     "attendance_sessions": {
         "title": "Phiên điểm danh", "model": "AttendanceSession",
         "desc": "Một buổi điểm danh của một lịch học trong một ngày. Chỉ mở trong khung [giờ bắt đầu − 15 phút, giờ kết thúc]; "
                 "tự đóng sau giờ kết thúc 30 phút.",
         "cols": {"id": "Mã phiên", "schedule_id": "Lịch học", "session_date": "Ngày điểm danh",
-                 "opened_at": "Thời điểm mở", "closed_at": "Thời điểm đóng", "status": "open | closed",
-                 "require_qr": "Bắt buộc quét mã QR chiếu trong phòng khi tự điểm danh"},
+                 "opened_at": "Thời điểm mở", "closed_at": "Thời điểm đóng", "status": "open | closed"},
+    },
+    "leave_requests": {
+        "title": "Đơn xin phép vắng", "model": "LeaveRequest",
+        "desc": "Sinh viên xin phép vắng một buổi học (lịch học + ngày). Giảng viên lớp hoặc Lãnh đạo Khoa duyệt / từ chối "
+                "(bắt buộc lý do không hợp lệ); kết quả gửi cho sinh viên, sinh viên xác nhận đã nhận. Đơn đã duyệt ⇒ buổi đó "
+                "ghi vắng có phép.",
+        "cols": {"id": "Mã đơn", "student_id": "Sinh viên", "schedule_id": "Lịch học (lớp, thứ, giờ)",
+                 "absence_date": "Ngày vắng (đúng thứ của lịch)", "reason": "Lý do xin phép",
+                 "status": "pending | approved | rejected", "created_at": "Thời điểm nộp",
+                 "reviewed_by": "Người duyệt / từ chối (GV lớp, Lãnh đạo Khoa)", "reviewed_at": "Thời điểm duyệt / từ chối",
+                 "review_note": "Lý do không hợp lệ (khi từ chối) hoặc ghi chú khi duyệt",
+                 "student_ack_at": "Thời điểm SV xác nhận đã nhận kết quả"},
     },
     "attendance_records": {
         "title": "Kết quả điểm danh", "model": "AttendanceRecord",
@@ -178,10 +194,12 @@ TABLES = {
     },
     "notifications": {
         "title": "Thông báo", "model": "Notification",
-        "desc": "Hộp thư trong app và hàng đợi email. Sinh tự động khi bản ghi điểm danh của con được tạo / đổi trạng thái; "
-                "mỗi bản ghi chỉ báo một lần cho mỗi loại.",
-        "cols": {"id": "Mã thông báo", "user_id": "Người nhận (phụ huynh)",
-                 "kind": "attendance_present | attendance_late | attendance_absent | attendance_excused",
+        "desc": "Hộp thư trong app và hàng đợi email. Phụ huynh: khi bản ghi điểm danh của con được tạo / đổi trạng thái "
+                "(mỗi bản ghi chỉ báo một lần cho mỗi loại). Sinh viên: kết quả duyệt khuôn mặt / đơn xin phép, cảnh báo "
+                "chuyên cần sau thống kê. Giảng viên: đơn xin phép mới.",
+        "cols": {"id": "Mã thông báo", "user_id": "Người nhận (phụ huynh, sinh viên, giảng viên)",
+                 "kind": "attendance_present | _late | _absent | _excused | face_approved | face_rejected | leave_submitted "
+                         "| leave_approved | leave_rejected | absence_warning",
                  "title": "Tiêu đề", "body": "Nội dung", "link": "Đường dẫn trong app", "record_id": "Bản ghi điểm danh liên quan",
                  "created_at": "Thời điểm tạo", "read_at": "Thời điểm đọc (NULL = chưa đọc)",
                  "email_status": "pending | sent | failed | skipped", "email_attempts": "Số lần thử gửi",
@@ -219,14 +237,17 @@ FLOWS = [
          _s("step", "P.ĐT tạo lớp, lịch, ghi danh", "chặn trùng phòng cùng giờ", ["W:classes", "W:schedules", "W:enrollments"]),
          _s("dec", "SV đồng ý sinh trắc?", db=["W:students"], no=("Chỉ điểm danh tay", "GV xác nhận trực tiếp", [])),
          _s("step", "SV đăng ký khuôn mặt", "kiểm chất lượng, chống giả mạo", ["W:face_embeddings"]),
-         _s("dec", "P.CTSV duyệt khuôn mặt?", no=("Từ chối + lý do", "SV chụp lại", ["W:face_embeddings"])),
+         _s("dec", "P.CTSV duyệt khuôn mặt?", no=("Từ chối + lý do không hợp lệ", "gửi kết quả, SV xác nhận, chụp lại",
+                                                ["W:face_embeddings", "W:notifications"])),
+         _s("step", "Gửi kết quả cho SV, SV xác nhận", "thông báo trong app", ["W:notifications", "W:face_embeddings"]),
+         _s("step", "SV nộp đơn xin phép (nếu vắng)", "GV lớp / LĐ Khoa duyệt", ["W:leave_requests"]),
          _s("step", "GV mở phiên điểm danh", "từ 15 phút trước giờ học", ["R:schedules", "W:attendance_sessions"]),
-         _s("step", "Quét camera / SV tự điểm danh", "khuôn mặt + GPS + mã QR", ["R:face_embeddings", "W:attendance_records"]),
+         _s("step", "Quét camera / SV tự điểm danh", "khuôn mặt + GPS", ["R:face_embeddings", "W:attendance_records"]),
          _s("dec", "Nhận diện và kiểm tra đạt?", no=("GV xác nhận tay", "trạng thái manual", ["W:attendance_records"])),
          _s("step", "Báo phụ huynh", "trong app + email", ["R:parent_students", "W:notifications"]),
-         _s("step", "Đóng phiên, sinh vắng", "tự đóng sau giờ kết thúc 30 phút", ["W:attendance_sessions", "W:attendance_records"]),
-         _s("step", "Duyệt có phép / sửa kết quả", "bắt buộc lý do", ["W:attendance_records", "W:attendance_audits"]),
-         _s("end", "Báo cáo, cảnh báo vắng ≥ 20%", "Excel, thống kê theo Khoa", ["R:attendance_sessions", "R:attendance_records"]),
+         _s("step", "Đóng phiên, sinh vắng / có phép", "đơn đã duyệt ⇒ vắng có phép", ["R:leave_requests", "W:attendance_records"]),
+         _s("step", "Thống kê chuyên cần", "chỉ tính phiên đã đóng", ["R:attendance_sessions", "R:attendance_records"]),
+         _s("end", "Cảnh báo sau thống kê (≥ 20%)", "gửi SV + phụ huynh; báo cáo, Excel", ["W:notifications"]),
      ]},
     {"key": "ph1", "tab": "PH1. Xác thực & tài khoản", "func": True,
      "title": "Phân hệ PH1: Đăng nhập, token và mật khẩu",
@@ -258,12 +279,13 @@ FLOWS = [
      ]},
     {"key": "ph3", "tab": "PH3. Đào tạo", "func": True,
      "title": "Phân hệ PH3: Giảng viên, lớp học phần, ghi danh, lịch học",
-     "desc": "P. Đào tạo (toàn trường) và Văn phòng Khoa (Khoa mình) nhập lớp, ghi danh, xếp lịch; server chặn trùng phòng.",
+     "desc": "P. Đào tạo nhập lớp, ghi danh, xếp lịch toàn trường; Văn phòng Khoa chỉ nhập lớp học phần của Khoa mình "
+             "(không ghi danh, không xếp lịch); server chặn trùng phòng.",
      "steps": [
          _s("start", "Tạo hồ sơ giảng viên", "email, mã GV, bộ môn, Khoa", ["W:users", "W:lecturers"]),
          _s("step", "Tạo lớp học phần", "VP Khoa: lớp luôn thuộc Khoa mình", ["R:lecturers", "W:classes"]),
-         _s("step", "Ghi danh sinh viên", "", ["R:students", "W:enrollments"]),
-         _s("step", "Chọn thứ, giờ, phòng", "phòng đang sử dụng", ["R:rooms"]),
+         _s("step", "Ghi danh sinh viên", "chỉ QTV / P.ĐT", ["R:students", "W:enrollments"]),
+         _s("step", "Chọn thứ, giờ, phòng", "chỉ QTV / P.ĐT xếp lịch", ["R:rooms"]),
          _s("dec", "Phòng trống khung giờ?", db=["R:schedules"], no=("Từ chối: trùng phòng", "nêu lớp đang chiếm", [])),
          _s("step", "Lưu lịch học", "", ["W:schedules"]),
          _s("end", "Lịch tuần, lịch dạy hôm nay", "kèm trạng thái phiên", ["R:schedules", "R:attendance_sessions"]),
@@ -282,37 +304,45 @@ FLOWS = [
      ]},
     {"key": "ph5", "tab": "PH5. Sinh trắc khuôn mặt", "func": True,
      "title": "Phân hệ PH5: Đăng ký và duyệt dữ liệu khuôn mặt",
-     "desc": "Server kiểm chất lượng ảnh, chống giả mạo, chống trùng với sinh viên khác; P. CTSV duyệt; ảnh tạm xóa ngay sau quyết định.",
+     "desc": "Server kiểm chất lượng ảnh, chống giả mạo, chống trùng với sinh viên khác; CHỈ P. CTSV duyệt (từ chối phải ghi lý do "
+             "không hợp lệ); kết quả gửi cho sinh viên, sinh viên xác nhận đã nhận; ảnh tạm xóa ngay sau quyết định.",
      "steps": [
          _s("start", "Gửi một hoặc nhiều ảnh", "SV, P.CTSV hoặc GV lớp mình", ["R:students"]),
          _s("dec", "Đã đồng ý sinh trắc?", db=["R:students"], no=("Từ chối", "yêu cầu đồng ý trước", [])),
          _s("dec", "Ảnh đạt, là mặt thật?", no=("Loại ảnh + lý do", "mặt ≥ 112 px, đủ sáng, đủ nét", [])),
          _s("dec", "Không giống SV khác?", db=["R:face_embeddings"], no=("Loại ảnh", "độ giống > 0.60", [])),
          _s("step", "Lưu vector chờ duyệt", "ảnh cắt lưu tạm", ["W:face_embeddings"]),
-         _s("dec", "P.CTSV duyệt?", db=["R:face_embeddings"], no=("Từ chối + lý do", "xóa ảnh tạm", ["W:face_embeddings"])),
-         _s("end", "Approved, xóa ảnh tạm", "dùng để nhận diện", ["W:face_embeddings"]),
+         _s("dec", "P.CTSV duyệt?", db=["R:face_embeddings"],
+            no=("Từ chối + lý do không hợp lệ", "xóa ảnh tạm, SV chụp lại", ["W:face_embeddings"])),
+         _s("step", "Approved, xóa ảnh tạm", "dùng để nhận diện", ["W:face_embeddings"]),
+         _s("step", "Gửi kết quả duyệt cho SV", "thông báo trong app", ["W:notifications"]),
+         _s("end", "SV xác nhận đã nhận kết quả", "student_ack_at", ["W:face_embeddings"]),
      ]},
     {"key": "ph6", "tab": "PH6. Điểm danh", "func": True,
      "title": "Phân hệ PH6: Phiên điểm danh và ghi nhận kết quả",
-     "desc": "Quét camera cả lớp (xác nhận đủ 2 khung hình) hoặc sinh viên tự điểm danh (QR + GPS + khuôn mặt chính mình); "
-             "đóng phiên thì sinh bản ghi vắng.",
+     "desc": "Quét camera cả lớp (xác nhận đủ 2 khung hình) hoặc sinh viên tự điểm danh (GPS + khuôn mặt chính mình); "
+             "sinh viên nộp đơn xin phép, GV lớp / Lãnh đạo Khoa duyệt; đóng phiên thì sinh bản ghi vắng hoặc vắng có phép.",
      "steps": [
          _s("start", "GV mở phiên", "đúng ngày, đúng thứ", ["R:schedules"]),
          _s("dec", "Trong khung giờ, chưa có phiên?", db=["R:attendance_sessions"],
             no=("Từ chối mở phiên", "chưa đến giờ / đã kết thúc", [])),
-         _s("step", "Phiên đang mở", "bật / tắt yêu cầu QR", ["W:attendance_sessions"]),
-         _s("step", "Quét camera / SV tự chụp", "kiểm QR, GPS trước nhận diện", ["R:enrollments", "R:rooms", "R:locations"]),
+         _s("step", "Phiên đang mở", "nhận điểm danh tới giờ kết thúc + 30'", ["W:attendance_sessions"]),
+         _s("step", "Quét camera / SV tự chụp", "kiểm GPS trước nhận diện", ["R:enrollments", "R:rooms", "R:locations"]),
          _s("dec", "Khớp khuôn mặt, ảnh thật?", db=["R:face_embeddings"],
             no=("Không ghi nhận", "giả mạo: lưu ảnh bằng chứng", [])),
          _s("step", "Ghi present / late", "nguồn camera / selfie", ["W:attendance_records"]),
          _s("step", "Xác nhận tay (khi cần)", "trạng thái manual", ["W:attendance_records"]),
+         _s("step", "SV nộp đơn xin phép", "đúng thứ của lịch, có lý do", ["R:enrollments", "W:leave_requests"]),
+         _s("dec", "GV lớp / LĐ Khoa duyệt đơn?", db=["R:leave_requests"],
+            no=("Từ chối + lý do không hợp lệ", "gửi kết quả, SV xác nhận", ["W:leave_requests", "W:notifications"])),
          _s("step", "Đóng phiên", "GV đóng hoặc tự đóng +30 phút", ["W:attendance_sessions"]),
-         _s("step", "Sinh bản ghi vắng", "SV chưa có bản ghi", ["R:enrollments", "W:attendance_records"]),
-         _s("end", "Sửa / duyệt có phép", "bắt buộc lý do, lưu lịch sử", ["W:attendance_records", "W:attendance_audits"]),
+         _s("step", "Sinh vắng / vắng có phép", "đơn đã duyệt ⇒ excused", ["R:leave_requests", "W:attendance_records"]),
+         _s("end", "Sửa kết quả (có lý do)", "lưu lịch sử sửa", ["W:attendance_records", "W:attendance_audits"]),
      ]},
     {"key": "ph7", "tab": "PH7. Thông báo", "func": True,
-     "title": "Phân hệ PH7: Thông báo điểm danh cho phụ huynh",
-     "desc": "Sinh tự động trong cùng giao dịch ghi điểm danh; email gửi sau bằng tác vụ nền nên mạng chậm không làm chậm việc điểm danh.",
+     "title": "Phân hệ PH7: Thông báo cho phụ huynh, sinh viên, giảng viên",
+     "desc": "Phụ huynh: sinh tự động trong cùng giao dịch ghi điểm danh. Sinh viên: kết quả duyệt khuôn mặt / đơn, cảnh báo chuyên cần. "
+             "Giảng viên: đơn xin phép mới. Email gửi sau bằng tác vụ nền nên mạng chậm không làm chậm nghiệp vụ.",
      "steps": [
          _s("start", "Bản ghi điểm danh tạo / đổi", "sự kiện before_flush", ["R:attendance_records"]),
          _s("dec", "SV có phụ huynh liên kết?", db=["R:parent_students"], no=("Không tạo thông báo", "", [])),
@@ -329,8 +359,9 @@ FLOWS = [
          _s("start", "Chọn lớp / học kỳ", "theo phạm vi xem", ["R:classes"]),
          _s("step", "Đếm phiên đã đóng", "", ["R:attendance_sessions"]),
          _s("step", "Gom bản ghi theo SV", "present, late, absent, excused, manual", ["R:attendance_records"]),
-         _s("dec", "Tỉ lệ vắng ≥ 20%?", no=("Không cảnh báo", "", [])),
-         _s("step", "Đánh dấu cảnh báo", "báo cho GV, cán bộ"),
+         _s("step", "Thống kê theo lớp", "tỉ lệ vắng, có phép không tính", ["R:attendance_records"]),
+         _s("dec", "Sau thống kê: tỉ lệ vắng ≥ 20%?", no=("Không cảnh báo", "", [])),
+         _s("step", "Gửi cảnh báo cho SV + phụ huynh", "SV vừa vượt ngưỡng khi đóng phiên", ["R:parent_students", "W:notifications"]),
          _s("step", "Xuất Excel", "ghi nhật ký report.exported", ["R:students", "W:audit_logs"]),
          _s("end", "Thống kê tổng hợp theo Khoa", "chỉ số liệu, không tên / ảnh", ["R:units", "R:enrollments"]),
      ]},
@@ -349,14 +380,15 @@ FLOWS = [
     # ---- theo vai tro ----
     {"key": "qt", "tab": "1. Quản trị viên", "func": False,
      "title": "Quy trình nghiệp vụ của Quản trị viên",
-     "desc": "Quản lý đơn vị, tài khoản cán bộ, danh mục; có toàn quyền điểm danh và xem nhật ký toàn trường.",
+     "desc": "Quản lý đơn vị, tài khoản cán bộ, danh mục; có toàn quyền điểm danh, xem đơn xin phép và nhật ký toàn trường. "
+             "Không xét duyệt khuôn mặt (việc của P. CTSV).",
      "steps": [
          _s("start", "Đăng nhập", "", ["R:users"]),
          _s("step", "Quản lý đơn vị", "", ["W:units"]),
          _s("step", "Tạo, sửa tài khoản cán bộ", "", ["W:users", "W:staff"]),
          _s("step", "Địa điểm, phòng học", "", ["W:locations", "W:rooms"]),
-         _s("step", "Duyệt khuôn mặt", "", ["W:face_embeddings"]),
          _s("step", "Mở phiên, sửa điểm danh", "mọi lớp", ["W:attendance_sessions", "W:attendance_records"]),
+         _s("step", "Xem đơn xin phép", "chỉ xem, không duyệt", ["R:leave_requests"]),
          _s("step", "Xem thống kê toàn trường", "", ["R:attendance_records"]),
          _s("end", "Xem nhật ký hệ thống", "", ["R:audit_logs"]),
      ]},
@@ -374,24 +406,27 @@ FLOWS = [
      ]},
     {"key": "ctsv", "tab": "3. Phòng CTSV", "func": False,
      "title": "Quy trình nghiệp vụ của Phòng Công tác sinh viên",
-     "desc": "Quản lý hồ sơ sinh viên, phụ huynh, đồng ý sinh trắc; duyệt khuôn mặt; duyệt vắng có phép toàn trường.",
+     "desc": "Quản lý hồ sơ sinh viên, phụ huynh, đồng ý sinh trắc; là đơn vị DUY NHẤT duyệt khuôn mặt (gửi kết quả cho sinh viên); "
+             "duyệt vắng có phép toàn trường.",
      "steps": [
          _s("start", "Hồ sơ sinh viên", "", ["W:students"]),
          _s("step", "Ghi nhận đồng ý bản giấy", "method = paper", ["W:students"]),
          _s("step", "Phụ huynh, liên kết con", "", ["W:parents", "W:parent_students"]),
          _s("step", "Xem khuôn mặt chờ duyệt", "kèm cảnh báo trùng", ["R:face_embeddings"]),
-         _s("dec", "Ảnh hợp lệ, không trùng?", no=("Từ chối + lý do", "", ["W:face_embeddings"])),
-         _s("step", "Duyệt khuôn mặt", "", ["W:face_embeddings"]),
+         _s("dec", "Ảnh hợp lệ, không trùng?", no=("Từ chối + lý do không hợp lệ", "gửi kết quả cho SV",
+                                                   ["W:face_embeddings", "W:notifications"])),
+         _s("step", "Duyệt khuôn mặt, gửi kết quả", "SV xác nhận đã nhận", ["W:face_embeddings", "W:notifications"]),
          _s("step", "Duyệt vắng có phép", "toàn trường", ["W:attendance_records", "W:attendance_audits"]),
          _s("end", "Xem báo cáo, cảnh báo vắng", "", ["R:attendance_records"]),
      ]},
     {"key": "vpk", "tab": "4. Văn phòng Khoa", "func": False,
      "title": "Quy trình nghiệp vụ của Văn phòng Khoa",
-     "desc": "Nhập liệu trong phạm vi Khoa mình: lớp học phần, ghi danh, lịch học, phân công giảng viên; xem dữ liệu của Khoa.",
+     "desc": "Nhập liệu trong phạm vi Khoa mình: lớp học phần, phân công giảng viên; KHÔNG ghi danh, KHÔNG xếp lịch (việc của "
+             "P. Đào tạo); xem dữ liệu của Khoa.",
      "steps": [
          _s("start", "Đăng nhập (gắn Khoa)", "", ["R:staff"]),
          _s("step", "Lớp học phần của Khoa", "lớp luôn thuộc Khoa mình", ["W:classes"]),
-         _s("step", "Ghi danh, xếp lịch", "chặn trùng phòng", ["W:enrollments", "W:schedules"]),
+         _s("step", "Xem lịch, danh sách ghi danh", "do P. Đào tạo nhập", ["R:enrollments", "R:schedules"]),
          _s("step", "Phân công GV dạy lớp", "", ["R:lecturers", "W:classes"]),
          _s("step", "Xem SV, GV của Khoa", "", ["R:students", "R:lecturers"]),
          _s("end", "Xem điểm danh, báo cáo Khoa", "", ["R:attendance_records"]),
@@ -403,8 +438,10 @@ FLOWS = [
          _s("start", "Đăng nhập (gắn Khoa)", "", ["R:staff"]),
          _s("step", "Giám sát điểm danh Khoa", "", ["R:attendance_sessions", "R:attendance_records"]),
          _s("step", "Xem cảnh báo vắng", "", ["R:attendance_records"]),
-         _s("dec", "Đơn xin phép hợp lệ?", no=("Giữ trạng thái vắng", "", [])),
-         _s("step", "Duyệt có phép", "bắt buộc lý do", ["W:attendance_records", "W:attendance_audits"]),
+         _s("step", "Xem đơn xin phép của Khoa", "", ["R:leave_requests"]),
+         _s("dec", "Đơn xin phép hợp lệ?", no=("Từ chối + lý do không hợp lệ", "gửi kết quả, SV xác nhận",
+                                             ["W:leave_requests", "W:notifications"])),
+         _s("step", "Duyệt đơn ⇒ vắng có phép", "gửi kết quả cho SV", ["W:leave_requests", "W:attendance_records"]),
          _s("step", "Thống kê tổng hợp Khoa", "", ["R:classes"]),
          _s("end", "Xem nhật ký của Khoa", "", ["R:audit_logs"]),
      ]},
@@ -419,11 +456,11 @@ FLOWS = [
      ]},
     {"key": "gv", "tab": "7. Giảng viên", "func": False,
      "title": "Quy trình nghiệp vụ của Giảng viên",
-     "desc": "Mở phiên, quét camera, chiếu mã QR, xác nhận tay, đóng phiên và sửa kết quả cho lớp mình dạy.",
+     "desc": "Mở phiên, quét camera, xác nhận tay, đóng phiên, sửa kết quả và duyệt đơn xin phép cho lớp mình dạy.",
      "steps": [
          _s("start", "Xem lịch dạy hôm nay", "", ["R:schedules"]),
          _s("step", "Mở phiên", "", ["W:attendance_sessions"]),
-         _s("step", "Bật QR, chiếu mã", "mã đổi sau 30 giây", ["W:attendance_sessions"]),
+         _s("step", "Duyệt / từ chối đơn xin phép", "lý do không hợp lệ khi từ chối", ["W:leave_requests", "W:notifications"]),
          _s("step", "Quét camera cả lớp", "", ["R:face_embeddings", "W:attendance_records"]),
          _s("dec", "SV được nhận diện?", no=("Xác nhận tay", "", ["W:attendance_records"])),
          _s("step", "Đóng phiên, sinh vắng", "", ["W:attendance_sessions", "W:attendance_records"]),
@@ -432,17 +469,20 @@ FLOWS = [
      ]},
     {"key": "sv", "tab": "8. Sinh viên", "func": False,
      "title": "Quy trình nghiệp vụ của Sinh viên",
-     "desc": "Đồng ý sinh trắc → đăng ký khuôn mặt → tự điểm danh (QR + GPS + ảnh) → xem chuyên cần.",
+     "desc": "Đồng ý sinh trắc → đăng ký khuôn mặt → nhận và xác nhận kết quả duyệt → tự điểm danh (GPS + ảnh) → "
+             "nộp đơn xin phép khi vắng → xem chuyên cần, cảnh báo.",
      "steps": [
          _s("start", "Đăng nhập, xem lịch tuần", "", ["R:schedules"]),
          _s("step", "Đồng ý sinh trắc", "", ["W:students"]),
          _s("step", "Đăng ký khuôn mặt", "", ["W:face_embeddings"]),
-         _s("dec", "Được duyệt?", no=("Chụp lại ảnh khác", "xem lý do từ chối", ["W:face_embeddings"])),
+         _s("dec", "Được duyệt?", no=("Chụp lại ảnh khác", "xem lý do không hợp lệ", ["W:face_embeddings"])),
+         _s("step", "Xác nhận đã nhận kết quả", "", ["R:notifications", "W:face_embeddings"]),
          _s("step", "Vào buổi học đang mở", "", ["R:attendance_sessions"]),
-         _s("step", "Quét QR, bật GPS, chụp ảnh", "", ["R:rooms", "R:locations"]),
+         _s("step", "Bật GPS, chụp ảnh", "", ["R:rooms", "R:locations"]),
          _s("dec", "Đạt kiểm tra?", no=("Báo lý do, thử lại", "hoặc nhờ GV xác nhận tay", [])),
          _s("step", "Ghi điểm danh", "present / late", ["W:attendance_records"]),
-         _s("end", "Xem chuyên cần, cảnh báo", "", ["R:attendance_records"]),
+         _s("step", "Nộp đơn xin phép (khi vắng)", "nhận kết quả, xác nhận", ["W:leave_requests"]),
+         _s("end", "Xem chuyên cần, cảnh báo", "", ["R:attendance_records", "R:notifications"]),
      ]},
     {"key": "ph", "tab": "9. Phụ huynh", "func": False,
      "title": "Quy trình nghiệp vụ của Phụ huynh",
@@ -450,7 +490,7 @@ FLOWS = [
      "steps": [
          _s("start", "Đăng nhập", "", ["R:users"]),
          _s("step", "Xem danh sách con", "", ["R:parent_students"]),
-         _s("step", "Nhận thông báo điểm danh", "chuông + email", ["R:notifications"]),
+         _s("step", "Nhận thông báo điểm danh, cảnh báo", "chuông + email", ["R:notifications"]),
          _s("step", "Xem chuyên cần của con", "chi tiết từng buổi", ["R:attendance_records"]),
          _s("step", "Đánh dấu đã đọc", "", ["W:notifications"]),
          _s("end", "Tùy chọn nhận email", "", ["W:parents"]),
@@ -461,7 +501,7 @@ FLOWS = [
 # Moi vai tro: groups[menu, rows[[chuc nang, input, output]], readonly?]
 ROLES = [
     {"id": "qt", "name": "Quản trị viên", "role": "admin", "color": "#DC2626", "letter": "QT",
-     "desc": "Quản trị đơn vị, tài khoản cán bộ và danh mục; toàn quyền thao tác điểm danh; xem nhật ký toàn trường.",
+     "desc": "Quản trị đơn vị, tài khoản cán bộ và danh mục; toàn quyền thao tác điểm danh; xem đơn xin phép, nhật ký toàn trường; không xét duyệt khuôn mặt.",
      "groups": [
          {"menu": "Quản lý\nđơn vị", "rows": [
              ["Xem danh sách đơn vị", "Loại đơn vị (tùy chọn)", "Danh sách: mã, tên, loại"],
@@ -515,7 +555,7 @@ ROLES = [
          ]},
      ]},
     {"id": "ctsv", "name": "Phòng Công tác SV", "role": "student_affairs", "color": "#0891B2", "letter": "CT",
-     "desc": "Quản lý hồ sơ sinh viên, phụ huynh, đồng ý sinh trắc; duyệt dữ liệu khuôn mặt; duyệt vắng có phép toàn trường.",
+     "desc": "Quản lý hồ sơ sinh viên, phụ huynh, đồng ý sinh trắc; DUY NHẤT duyệt dữ liệu khuôn mặt và gửi kết quả cho sinh viên; duyệt vắng có phép toàn trường.",
      "groups": [
          {"menu": "Hồ sơ\nsinh viên", "rows": [
              ["Tra cứu sinh viên", "Từ khóa (MSSV, họ tên), Khoa, phân trang", "Danh sách SV kèm trạng thái khuôn mặt, đồng ý"],
@@ -543,7 +583,7 @@ ROLES = [
          ]},
      ]},
     {"id": "vpk", "name": "Văn phòng Khoa", "role": "faculty_office", "color": "#059669", "letter": "VK",
-     "desc": "Giáo vụ Khoa: nhập lớp học phần, ghi danh, lịch học, phân công giảng viên trong Khoa mình.",
+     "desc": "Giáo vụ Khoa: nhập lớp học phần, phân công giảng viên trong Khoa mình; không ghi danh, không xếp lịch.",
      "groups": [
          {"menu": "Lớp học phần\ncủa Khoa", "rows": [
              ["Tra cứu lớp của Khoa", "Từ khóa, học kỳ", "Danh sách lớp thuộc Khoa"],
@@ -561,7 +601,7 @@ ROLES = [
          ]},
      ]},
     {"id": "ldk", "name": "Lãnh đạo Khoa", "role": "faculty_leader", "color": "#D97706", "letter": "LK",
-     "desc": "Trưởng / Phó khoa: giám sát và phê duyệt trong Khoa mình, không nhập liệu.",
+     "desc": "Trưởng / Phó khoa: giám sát, duyệt đơn xin phép và vắng có phép trong Khoa mình, không nhập liệu.",
      "groups": [
          {"menu": "Giám sát\nđiểm danh", "readonly": True, "rows": [
              ["Xem phiên và kết quả các lớp Khoa", "Lớp, phiên", "Danh sách SV, trạng thái, ảnh bằng chứng"],
@@ -587,7 +627,7 @@ ROLES = [
          ]},
      ]},
     {"id": "gv", "name": "Giảng viên", "role": "lecturer", "color": "#7C3AED", "letter": "GV",
-     "desc": "Điểm danh lớp mình dạy: mở phiên, quét camera, chiếu mã QR, xác nhận tay, sửa kết quả, xem báo cáo lớp.",
+     "desc": "Điểm danh lớp mình dạy: mở phiên, quét camera, xác nhận tay, sửa kết quả, duyệt đơn xin phép, xem báo cáo lớp.",
      "groups": [
          {"menu": "Lịch dạy", "rows": [
              ["Lịch dạy hôm nay", "Tài khoản giảng viên", "Buổi dạy, giờ được mở phiên, phiên đang có"],
@@ -596,8 +636,6 @@ ROLES = [
          ]},
          {"menu": "Phiên\nđiểm danh", "rows": [
              ["Mở phiên", "Lịch học, ngày", "Phiên đang mở; ngoài khung giờ thì từ chối"],
-             ["Bật / tắt yêu cầu QR", "Mã phiên", "Phiên đã cập nhật"],
-             ["Chiếu mã QR", "Mã phiên", "Mã QR + 6 chữ số, đổi sau 30 giây"],
              ["Đóng phiên", "Mã phiên", "SV chưa có bản ghi bị ghi vắng; SV vừa vượt ngưỡng cảnh báo"],
          ]},
          {"menu": "Ghi nhận\nđiểm danh", "rows": [
@@ -613,7 +651,7 @@ ROLES = [
          ]},
      ]},
     {"id": "sv", "name": "Sinh viên", "role": "student", "color": "#0E9594", "letter": "SV",
-     "desc": "Tự điểm danh bằng khuôn mặt, mã QR và GPS; quản lý dữ liệu khuôn mặt của mình; xem chuyên cần.",
+     "desc": "Tự điểm danh bằng khuôn mặt và GPS; nộp đơn xin phép; nhận và xác nhận kết quả duyệt; xem chuyên cần, cảnh báo.",
      "groups": [
          {"menu": "Tài khoản\n(mọi vai trò)", "rows": [
              ["Đăng nhập", "Email, mật khẩu", "Access token, refresh token, vai trò"],
@@ -632,8 +670,7 @@ ROLES = [
              ["Xóa dữ liệu / rút đồng ý", "Xác nhận", "Toàn bộ vector và ảnh bị xóa"],
          ]},
          {"menu": "Tự\nđiểm danh", "rows": [
-             ["Xem yêu cầu buổi học", "Mã phiên", "Có cần quét QR không, tên phòng"],
-             ["Quét mã QR / nhập 6 chữ số", "Mã chiếu trong phòng", "Mã hợp lệ hoặc hết hạn"],
+             ["Xem phòng học của buổi", "Mã phiên", "Tên phòng"],
              ["Chụp ảnh + gửi vị trí", "Ảnh, vĩ độ, kinh độ, sai số GPS, cờ giả lập", "present / late hoặc lý do từ chối, khoảng cách"],
          ]},
          {"menu": "Chuyên cần", "rows": [

@@ -1,0 +1,4628 @@
+{
+ "DELETE /api/v1/classes/schedules/{schedule_id}": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": [
+    "audit_logs",
+    "schedules"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403,
+   409
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_delete_schedule_blocked_when_has_session",
+   "tests/test_admin_crud.py::test_delete_schedule_succeeds_when_unused",
+   "tests/test_unit_roles.py::test_faculty_office_edits_only_own_faculty_classes"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/classes/{class_id}": {
+  "ok": {
+   "R": [
+    "classes",
+    "enrollments",
+    "schedules"
+   ],
+   "W": [
+    "audit_logs",
+    "classes"
+   ]
+  },
+  "err": {
+   "R": [
+    "classes",
+    "enrollments",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403,
+   409
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_delete_class_blocked_when_enrolled",
+   "tests/test_admin_crud.py::test_delete_class_blocked_when_has_schedule",
+   "tests/test_admin_management.py::test_lecturer_cannot_delete_class",
+   "tests/test_coverage_gaps.py::test_get_class_detail_and_delete_empty_class"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/classes/{class_id}/enroll/{student_id}": {
+  "ok": {
+   "R": [
+    "classes",
+    "enrollments"
+   ],
+   "W": [
+    "audit_logs",
+    "enrollments"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_management.py::test_enroll_and_unenroll_roundtrip",
+   "tests/test_unit_roles.py::test_faculty_office_edits_only_own_faculty_classes"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/faces/mine": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "face_embeddings",
+    "students"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_tokens_and_media.py::test_student_views_and_deletes_own_face_data"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/lecturers/{lecturer_id}": {
+  "ok": {
+   "R": [
+    "attendance_audits",
+    "classes",
+    "lecturers",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "lecturers",
+    "password_resets",
+    "refresh_tokens",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "classes",
+    "lecturers"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   409
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_delete_lecturer_blocked_when_has_class",
+   "tests/test_admin_crud.py::test_delete_lecturer_succeeds_when_no_class"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/locations/{location_id}": {
+  "ok": {
+   "R": [
+    "locations",
+    "schedules"
+   ],
+   "W": [
+    "audit_logs",
+    "locations"
+   ]
+  },
+  "err": {
+   "R": [
+    "locations",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   409
+  ],
+  "tests": [
+   "tests/test_location_checkin.py::test_training_office_manages_locations_single_default"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/parents/{parent_id}": {
+  "ok": {
+   "R": [
+    "lecturers",
+    "parent_students",
+    "parents",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "parent_students",
+    "parents",
+    "password_resets",
+    "refresh_tokens",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_delete_parent_with_linked_child"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/parents/{parent_id}/children/{student_id}": {
+  "ok": {
+   "R": [
+    "parent_students"
+   ],
+   "W": [
+    "audit_logs",
+    "parent_students"
+   ]
+  },
+  "err": {
+   "R": [
+    "parent_students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   404
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_unlink_child"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/rooms/{room_id}": {
+  "ok": {
+   "R": [
+    "schedules"
+   ],
+   "W": [
+    "audit_logs",
+    "rooms"
+   ]
+  },
+  "err": {
+   "R": [
+    "rooms",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   404
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_delete_unused_room",
+   "tests/test_rooms.py::test_cannot_delete_room_in_use"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/staff/{staff_id}": {
+  "ok": {
+   "R": [
+    "attendance_audits",
+    "lecturers",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "password_resets",
+    "refresh_tokens",
+    "staff",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_audits",
+    "staff",
+    "users"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   404,
+   409
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_list_and_delete_staff"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/students/{student_id}": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "enrollments",
+    "face_embeddings",
+    "lecturers",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "parent_students",
+    "password_resets",
+    "refresh_tokens",
+    "students",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_records",
+    "enrollments",
+    "face_embeddings",
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   409
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_delete_student_linked_to_parent",
+   "tests/test_flow_fixes.py::test_delete_student_with_attendance_history_returns_409"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "DELETE /api/v1/units/{unit_id}": {
+  "ok": {
+   "R": [
+    "classes",
+    "lecturers",
+    "staff",
+    "students",
+    "units"
+   ],
+   "W": [
+    "audit_logs",
+    "units"
+   ]
+  },
+  "err": {
+   "R": [
+    "staff",
+    "units"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   409
+  ],
+  "tests": [
+   "tests/test_unit_roles.py::test_delete_unit_in_use_returns_409"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /": {
+  "ok": {
+   "R": [],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_infrastructure.py::test_root_health_outside_version_prefix"
+  ]
+ },
+ "GET /api/v1/audit-logs": {
+  "ok": {
+   "R": [
+    "audit_logs"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_admin_reads_logs_with_filters",
+   "tests/test_audit_log.py::test_faculty_leader_sees_only_own_faculty",
+   "tests/test_audit_log.py::test_students_and_lecturers_cannot_read_logs"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/auth/me": {
+  "ok": {
+   "R": [
+    "classes",
+    "enrollments",
+    "face_embeddings",
+    "lecturers",
+    "staff",
+    "students",
+    "units"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   401
+  ],
+  "tests": [
+   "tests/test_change_password.py::test_current_session_continues_other_sessions_revoked",
+   "tests/test_consent.py::test_self_consent_records_version_and_method",
+   "tests/test_infrastructure.py::test_error_format_unauthorized",
+   "tests/test_tokens_and_media.py::test_student_views_and_deletes_own_face_data",
+   "tests/test_unit_roles.py::test_me_returns_unit_for_staff"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/classes": {
+  "ok": {
+   "R": [
+    "classes",
+    "enrollments",
+    "lecturers",
+    "units",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_list_classes_search_by_code",
+   "tests/test_session_detail_and_records.py::test_classes_mine_filters_for_lecturer",
+   "tests/test_session_detail_and_records.py::test_classes_without_mine_still_scoped_to_own_classes",
+   "tests/test_unit_roles.py::test_board_only_sees_aggregated_overview",
+   "tests/test_unit_roles.py::test_faculty_leader_supervises_but_does_not_enter_data",
+   "tests/test_unit_roles.py::test_faculty_office_sees_only_own_faculty",
+   "tests/test_unit_roles.py::test_student_affairs_manages_students_but_not_classes"
+  ],
+  "ok_auth": {
+   "R": [
+    "lecturers",
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/classes/{class_id}": {
+  "ok": {
+   "R": [
+    "enrollments",
+    "lecturers",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403,
+   404
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_get_class_detail_and_delete_empty_class",
+   "tests/test_flow_fixes.py::test_student_cannot_read_class_detail",
+   "tests/test_infrastructure.py::test_error_format_business_errors_keep_detail",
+   "tests/test_unit_roles.py::test_faculty_leader_supervises_but_does_not_enter_data"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/classes/{class_id}/schedules": {
+  "ok": {
+   "R": [
+    "classes",
+    "enrollments",
+    "schedules",
+    "students"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [
+    "classes",
+    "enrollments",
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_management.py::test_class_students_and_schedules_listing",
+   "tests/test_flow_fixes.py::test_student_cannot_read_class_detail"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/classes/{class_id}/students": {
+  "ok": {
+   "R": [
+    "enrollments",
+    "face_embeddings",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_management.py::test_class_students_and_schedules_listing",
+   "tests/test_admin_management.py::test_enroll_and_unenroll_roundtrip",
+   "tests/test_flow_fixes.py::test_lecturer_cannot_read_other_class_students",
+   "tests/test_unit_roles.py::test_faculty_office_sees_only_own_faculty"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/evidence/{file_path:path}": {
+  "ok": {
+   "R": [],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_tokens_and_media.py::test_expired_media_url_rejected",
+   "tests/test_tokens_and_media.py::test_review_image_saved_then_deleted_on_approve",
+   "tests/test_tokens_and_media.py::test_signed_media_url_served",
+   "tests/test_tokens_and_media.py::test_unsigned_or_tampered_media_rejected"
+  ]
+ },
+ "GET /api/v1/faces/mine": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_face_approval.py::test_result_is_sent_to_student_and_student_confirms",
+   "tests/test_tokens_and_media.py::test_student_views_and_deletes_own_face_data"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/faces/pending": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_face_approval.py::test_admin_no_longer_reviews_faces",
+   "tests/test_face_approval.py::test_list_pending_flags_duplicate_with_approved_embedding",
+   "tests/test_face_approval.py::test_list_pending_requires_admin",
+   "tests/test_face_approval.py::test_list_pending_returns_student_info",
+   "tests/test_tokens_and_media.py::test_review_image_saved_then_deleted_on_approve",
+   "tests/test_unit_roles.py::test_admin_creates_staff_with_role_from_unit",
+   "tests/test_unit_roles.py::test_student_affairs_manages_students_but_not_classes",
+   "tests/test_unit_roles.py::test_training_office_cannot_manage_students_or_faces"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/health": {
+  "ok": {
+   "R": [],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_infrastructure.py::test_access_log_has_request_id",
+   "tests/test_infrastructure.py::test_request_id_generated_and_echoed",
+   "tests/test_infrastructure.py::test_versioned_health_checks_database"
+  ]
+ },
+ "GET /api/v1/leave-requests": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "leave_requests",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_approved_leave_makes_absence_excused_when_session_closes",
+   "tests/test_leave_and_warnings.py::test_only_class_lecturer_or_faculty_leader_reviews",
+   "tests/test_leave_and_warnings.py::test_reject_requires_invalid_reason_and_student_confirms"
+  ],
+  "ok_auth": {
+   "R": [
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/lecturers": {
+  "ok": {
+   "R": [
+    "lecturers",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_delete_lecturer_blocked_when_has_class",
+   "tests/test_admin_crud.py::test_list_lecturers_search_and_pagination",
+   "tests/test_admin_crud.py::test_update_lecturer",
+   "tests/test_admin_crud.py::test_update_lecturer_requires_admin",
+   "tests/test_flow_fixes.py::test_duplicate_codes_return_400",
+   "tests/test_unit_roles.py::test_board_only_sees_aggregated_overview",
+   "tests/test_unit_roles.py::test_training_office_manages_classes_and_schedules"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/lecturers/me/today-schedules": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "lecturers",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_today_schedules_include_opened_session",
+   "tests/test_open_session_rules.py::test_today_schedules_include_open_from"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/locations": {
+  "ok": {
+   "R": [
+    "locations"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_location_checkin.py::test_students_cannot_manage_locations",
+   "tests/test_location_checkin.py::test_training_office_manages_locations_single_default"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/notifications": {
+  "ok": {
+   "R": [
+    "notifications"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_face_approval.py::test_decided_face_cannot_be_decided_again",
+   "tests/test_face_approval.py::test_result_is_sent_to_student_and_student_confirms",
+   "tests/test_leave_and_warnings.py::test_reject_requires_invalid_reason_and_student_confirms",
+   "tests/test_parent_notifications.py::test_cannot_touch_someone_elses_notification",
+   "tests/test_parent_notifications.py::test_inbox_read_flow",
+   "tests/test_parent_notifications.py::test_read_all"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/notifications/unread-count": {
+  "ok": {
+   "R": [
+    "notifications"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_parent_notifications.py::test_inbox_read_flow",
+   "tests/test_parent_notifications.py::test_read_all"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/parents": {
+  "ok": {
+   "R": [
+    "parent_students",
+    "parents",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_list_and_update_parents"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/parents/me/children": {
+  "ok": {
+   "R": [
+    "classes",
+    "enrollments",
+    "face_embeddings",
+    "parent_students",
+    "parents",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_parent_sees_children_and_child_attendance"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/parents/me/children/{student_id}/attendance": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "lecturers",
+    "parent_students",
+    "parents",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [
+    "parent_students",
+    "parents"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_parent_sees_children_and_child_attendance"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/parents/me/preferences": {
+  "ok": {
+   "R": [
+    "parents"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_parent_notifications.py::test_only_parents_have_preferences",
+   "tests/test_parent_notifications.py::test_parent_preferences"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/parents/{parent_id}/children": {
+  "ok": {
+   "R": [
+    "parent_students",
+    "parents"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_unlink_child",
+   "tests/test_flow_fixes.py::test_delete_student_linked_to_parent"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/reports/attendance/export": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_report_export_is_logged",
+   "tests/test_reports_export_and_warnings.py::test_export_denied_for_other_lecturer",
+   "tests/test_reports_export_and_warnings.py::test_export_rejects_mismatched_semester",
+   "tests/test_reports_export_and_warnings.py::test_export_returns_valid_xlsx"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "lecturers"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/reports/attendance/warnings": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_reports_export_and_warnings.py::test_attendance_warnings_denied_for_other_lecturer",
+   "tests/test_reports_export_and_warnings.py::test_attendance_warnings_excludes_excused",
+   "tests/test_reports_export_and_warnings.py::test_attendance_warnings_lists_students_over_threshold"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/reports/attendance/{class_id}": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_authorization.py::test_admin_can_view_any_class_report",
+   "tests/test_authorization.py::test_lecturer_cannot_view_other_lecturers_class_report",
+   "tests/test_unit_roles.py::test_board_only_sees_aggregated_overview",
+   "tests/test_unit_roles.py::test_faculty_leader_supervises_but_does_not_enter_data",
+   "tests/test_unit_roles.py::test_faculty_office_sees_only_own_faculty"
+  ],
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "classes",
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/reports/my-attendance": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "schedules",
+    "students"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_reports.py::test_lecturer_cannot_call_my_attendance",
+   "tests/test_reports.py::test_my_attendance_empty_when_not_enrolled",
+   "tests/test_reports.py::test_my_attendance_only_shows_own_enrolled_classes"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/reports/overview": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "schedules",
+    "students",
+    "units",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_unit_roles.py::test_board_only_sees_aggregated_overview",
+   "tests/test_unit_roles.py::test_faculty_leader_supervises_but_does_not_enter_data",
+   "tests/test_unit_roles.py::test_faculty_overview_limited_to_own_faculty",
+   "tests/test_unit_roles.py::test_student_and_parent_cannot_see_overview"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/rooms": {
+  "ok": {
+   "R": [
+    "rooms",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_rooms.py::test_create_and_list_room",
+   "tests/test_rooms.py::test_inactive_room_hidden_by_default"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/rooms/buildings": {
+  "ok": {
+   "R": [
+    "rooms"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_rooms.py::test_buildings_list"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/schedules": {
+  "ok": {
+   "R": [
+    "classes",
+    "rooms",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_list_all_schedules_admin_only",
+   "tests/test_admin_crud.py::test_list_all_schedules_search_by_room"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/schedules/week": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "locations",
+    "schedules",
+    "students"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_location_checkin.py::test_week_schedule_shows_effective_location",
+   "tests/test_week_schedule.py::test_week_schedule_lecturer_sees_present_count_after_close",
+   "tests/test_week_schedule.py::test_week_schedule_normalizes_non_monday_start_to_that_week",
+   "tests/test_week_schedule.py::test_week_schedule_other_lecturer_does_not_see_class_not_theirs",
+   "tests/test_week_schedule.py::test_week_schedule_slot_with_no_session_yet_has_null_status",
+   "tests/test_week_schedule.py::test_week_schedule_student_sees_own_class_and_manual_status"
+  ],
+  "ok_auth": {
+   "R": [
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/sessions": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_lecturer_session_list_scoped_to_own_classes",
+   "tests/test_unit_roles.py::test_board_only_sees_aggregated_overview"
+  ],
+  "ok_auth": {
+   "R": [
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/sessions/{session_id}": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "lecturers",
+    "locations",
+    "rooms",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_session_detail_datetimes_include_offset",
+   "tests/test_rooms.py::test_session_detail_shows_room_name",
+   "tests/test_session_detail_and_records.py::test_get_session_detail_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_get_session_detail_returns_class_info"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/sessions/{session_id}/checkin-info": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "enrollments",
+    "schedules",
+    "students"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_qr_endpoints_and_fields_are_gone"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/sessions/{session_id}/records": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_antispoof.py::test_real_face_creates_attendance_record_after_confirm_frames",
+   "tests/test_antispoof.py::test_spoof_does_not_create_attendance_record",
+   "tests/test_confirm_frames.py::test_below_threshold_frames_do_not_create_record",
+   "tests/test_confirm_frames.py::test_reaching_threshold_creates_exactly_one_record",
+   "tests/test_flow_fixes.py::test_update_record_requires_reason_and_rejects_manual_status",
+   "tests/test_location_checkin.py::test_checkin_outside_radius_rejected",
+   "tests/test_open_session_rules.py::test_checkin_after_late_threshold_is_late",
+   "tests/test_open_session_rules.py::test_checkin_before_start_time_is_present",
+   "tests/test_session_detail_and_records.py::test_update_record_still_works_after_session_closed",
+   "tests/test_session_lifecycle.py::test_full_session_lifecycle_manual_then_absent"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/sessions/{session_id}/records/{record_id}/audits": {
+  "ok": {
+   "R": [
+    "attendance_audits",
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_leave_approved_after_close_turns_absent_into_excused",
+   "tests/test_session_detail_and_records.py::test_audits_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_update_record_creates_audit_with_old_and_new_status"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/sessions/{session_id}/roster": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "enrollments",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_location_checkin.py::test_checkin_inside_radius_records_distance"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/staff": {
+  "ok": {
+   "R": [
+    "staff",
+    "units",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_list_and_delete_staff",
+   "tests/test_unit_roles.py::test_non_admin_cannot_manage_units_or_staff"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/students": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students",
+    "units",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   401,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_list_students_pagination_header_and_limit",
+   "tests/test_admin_crud.py::test_list_students_search_by_code",
+   "tests/test_admin_crud.py::test_list_students_without_limit_returns_all",
+   "tests/test_auth.py::test_logout_revokes_token",
+   "tests/test_authorization.py::test_admin_can_list_students",
+   "tests/test_authorization.py::test_student_cannot_list_students",
+   "tests/test_unit_roles.py::test_board_only_sees_aggregated_overview",
+   "tests/test_unit_roles.py::test_faculty_office_sees_only_own_faculty",
+   "tests/test_unit_roles.py::test_training_office_cannot_manage_students_or_faces"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/students/consent-policy": {
+  "ok": {
+   "R": [],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_consent.py::test_policy_text_comes_from_server_with_version"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/students/me": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   401
+  ],
+  "tests": [
+   "tests/test_consent.py::test_self_consent_records_version_and_method",
+   "tests/test_consent.py::test_student_can_consent_for_self",
+   "tests/test_password_reset.py::test_reset_password_revokes_previously_issued_tokens",
+   "tests/test_tokens_and_media.py::test_refresh_rotates_and_old_token_reuse_revokes_all",
+   "tests/test_tokens_and_media.py::test_student_views_and_deletes_own_face_data"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/students/me/attendance": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "lecturers",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_my_attendance_detail.py::test_my_attendance_denied_for_non_student",
+   "tests/test_my_attendance_detail.py::test_my_attendance_empty_when_not_enrolled_anywhere",
+   "tests/test_my_attendance_detail.py::test_my_attendance_filters_by_wrong_semester_returns_empty",
+   "tests/test_my_attendance_detail.py::test_my_attendance_includes_lecturer_contact",
+   "tests/test_my_attendance_detail.py::test_my_attendance_returns_class_with_session_detail",
+   "tests/test_my_attendance_detail.py::test_my_attendance_warn_ratio_matches_settings"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/students/{student_id}": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_consent.py::test_staff_can_only_record_a_signed_paper_form",
+   "tests/test_flow_fixes.py::test_delete_parent_with_linked_child",
+   "tests/test_tokens_and_media.py::test_face_enrolled_only_counts_approved",
+   "tests/test_unit_roles.py::test_faculty_office_sees_only_own_faculty"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "students"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/students/{student_id}/attendance": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "lecturers",
+    "schedules",
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_unit_roles.py::test_staff_can_view_student_attendance_detail"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "students",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "GET /api/v1/units": {
+  "ok": {
+   "R": [
+    "units"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_infrastructure.py::test_error_format_business_errors_keep_detail",
+   "tests/test_unit_roles.py::test_non_admin_cannot_manage_units_or_staff"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "JOB auto_close_expired_sessions": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "leave_requests",
+    "parent_students",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "attendance_records",
+    "attendance_sessions",
+    "audit_logs",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [],
+  "tests": [
+   "tests/test_flow_fixes.py::test_auto_close_expired_sessions_marks_absent",
+   "tests/test_flow_fixes.py::test_auto_close_keeps_sessions_within_deadline"
+  ],
+  "ok_notify": {
+   "R": [
+    "parent_students"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes"
+   ],
+   "W": []
+  }
+ },
+ "JOB cleanup_expired_evidence": {
+  "ok": {
+   "R": [],
+   "W": [
+    "attendance_records"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [],
+  "tests": [
+   "tests/test_evidence_cleanup.py::test_cleanup_deletes_old_files_and_clears_db_reference",
+   "tests/test_evidence_cleanup.py::test_cleanup_keeps_recent_files"
+  ]
+ },
+ "JOB send_pending_emails": {
+  "ok": {
+   "R": [],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [],
+  "tests": [
+   "tests/test_parent_notifications.py::test_failed_email_retried_then_given_up",
+   "tests/test_parent_notifications.py::test_parent_can_turn_off_email",
+   "tests/test_parent_notifications.py::test_pending_email_is_sent",
+   "tests/test_parent_notifications.py::test_smtp_down_does_not_lose_mail"
+  ],
+  "ok_notify": {
+   "R": [
+    "notifications",
+    "users"
+   ],
+   "W": [
+    "notifications"
+   ]
+  }
+ },
+ "PATCH /api/v1/classes/schedules/{schedule_id}": {
+  "ok": {
+   "R": [
+    "locations",
+    "rooms",
+    "schedules"
+   ],
+   "W": [
+    "audit_logs",
+    "schedules"
+   ]
+  },
+  "err": {
+   "R": [
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_update_schedule",
+   "tests/test_flow_fixes.py::test_schedule_validation",
+   "tests/test_leave_and_warnings.py::test_schedule_room_is_not_duplicated_when_room_selected",
+   "tests/test_location_checkin.py::test_training_office_manages_locations_single_default",
+   "tests/test_rooms.py::test_cannot_delete_room_in_use",
+   "tests/test_rooms.py::test_schedule_takes_room_name"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/classes/{class_id}": {
+  "ok": {
+   "R": [
+    "classes",
+    "lecturers",
+    "units",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "classes"
+   ]
+  },
+  "err": {
+   "R": [
+    "classes"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_faculty_leader_sees_only_own_faculty",
+   "tests/test_audit_log.py::test_update_records_old_and_new_values",
+   "tests/test_unit_roles.py::test_faculty_leader_supervises_but_does_not_enter_data",
+   "tests/test_unit_roles.py::test_faculty_office_edits_only_own_faculty_classes"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/faces/{embedding_id}/approve": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "face_embeddings",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_face_approval_and_consent_have_readable_names",
+   "tests/test_face_approval.py::test_admin_no_longer_reviews_faces",
+   "tests/test_face_approval.py::test_approve_face_sets_status",
+   "tests/test_face_approval.py::test_approve_reject_requires_admin",
+   "tests/test_face_approval.py::test_decided_face_cannot_be_decided_again",
+   "tests/test_tokens_and_media.py::test_review_image_saved_then_deleted_on_approve"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/faces/{embedding_id}/reject": {
+  "ok": {
+   "R": [
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "face_embeddings",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_face_approval.py::test_admin_no_longer_reviews_faces",
+   "tests/test_face_approval.py::test_decided_face_cannot_be_decided_again",
+   "tests/test_face_approval.py::test_reject_face_requires_reason",
+   "tests/test_face_approval.py::test_reject_face_stores_reason",
+   "tests/test_face_approval.py::test_result_is_sent_to_student_and_student_confirms"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/leave-requests/{leave_id}/approve": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "leave_requests",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "attendance_audits",
+    "attendance_records",
+    "audit_logs",
+    "leave_requests",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [
+    "leave_requests"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_approved_leave_makes_absence_excused_when_session_closes",
+   "tests/test_leave_and_warnings.py::test_leave_approved_after_close_turns_absent_into_excused",
+   "tests/test_leave_and_warnings.py::test_only_class_lecturer_or_faculty_leader_reviews"
+  ],
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "schedules",
+    "staff",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "schedules",
+    "staff",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "lecturers"
+   ],
+   "W": []
+  },
+  "ok_notify": {
+   "R": [
+    "parent_students"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/leave-requests/{leave_id}/reject": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "leave_requests",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "leave_requests",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [
+    "leave_requests"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400
+  ],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_only_class_lecturer_or_faculty_leader_reviews",
+   "tests/test_leave_and_warnings.py::test_reject_requires_invalid_reason_and_student_confirms"
+  ],
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "schedules",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "schedules"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "lecturers"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/lecturers/{lecturer_id}": {
+  "ok": {
+   "R": [
+    "lecturers",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "lecturers"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_update_lecturer",
+   "tests/test_admin_crud.py::test_update_lecturer_requires_admin"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/locations/{location_id}": {
+  "ok": {
+   "R": [
+    "locations"
+   ],
+   "W": [
+    "audit_logs",
+    "locations"
+   ]
+  },
+  "err": {
+   "R": [
+    "locations"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   404,
+   422
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_update_location_and_single_default"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/parents/me/preferences": {
+  "ok": {
+   "R": [
+    "parents"
+   ],
+   "W": [
+    "audit_logs",
+    "parents"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_parent_notifications.py::test_parent_preferences"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/parents/{parent_id}": {
+  "ok": {
+   "R": [
+    "parent_students",
+    "parents",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "parents",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_list_and_update_parents"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/rooms/{room_id}": {
+  "ok": {
+   "R": [
+    "locations",
+    "rooms"
+   ],
+   "W": [
+    "audit_logs",
+    "rooms"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_rooms.py::test_inactive_room_hidden_by_default"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/sessions/{session_id}": {
+  "ok": {
+   "R": [],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_qr_endpoints_and_fields_are_gone"
+  ]
+ },
+ "PATCH /api/v1/sessions/{session_id}/close": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "leave_requests",
+    "parent_students",
+    "parents",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "attendance_records",
+    "attendance_sessions",
+    "audit_logs",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400
+  ],
+  "tests": [
+   "tests/test_confirm_frames.py::test_confirm_counts_are_isolated_per_session",
+   "tests/test_confirm_frames.py::test_confirm_counts_cleared_on_close",
+   "tests/test_flow_fixes.py::test_close_session_twice_rejected",
+   "tests/test_flow_fixes.py::test_manual_check_rejected_after_close",
+   "tests/test_flow_fixes.py::test_update_record_requires_reason_and_rejects_manual_status",
+   "tests/test_leave_and_warnings.py::test_absence_warning_after_statistics",
+   "tests/test_leave_and_warnings.py::test_approved_leave_makes_absence_excused_when_session_closes",
+   "tests/test_leave_and_warnings.py::test_leave_approved_after_close_turns_absent_into_excused",
+   "tests/test_my_attendance_detail.py::test_my_attendance_filters_by_wrong_semester_returns_empty",
+   "tests/test_my_attendance_detail.py::test_my_attendance_includes_lecturer_contact",
+   "tests/test_my_attendance_detail.py::test_my_attendance_returns_class_with_session_detail",
+   "tests/test_my_attendance_detail.py::test_my_attendance_warn_ratio_matches_settings",
+   "tests/test_parent_notifications.py::test_closing_session_notifies_absence",
+   "tests/test_parent_notifications.py::test_flipping_back_does_not_duplicate",
+   "tests/test_parent_notifications.py::test_parent_can_mute_present_but_still_gets_absences",
+   "tests/test_parent_notifications.py::test_status_correction_sends_update",
+   "tests/test_reports_export_and_warnings.py::test_close_session_no_newly_warned_when_no_one_crosses",
+   "tests/test_reports_export_and_warnings.py::test_close_session_returns_newly_warned",
+   "tests/test_session_detail_and_records.py::test_update_record_still_works_after_session_closed",
+   "tests/test_session_lifecycle.py::test_full_session_lifecycle_manual_then_absent",
+   "tests/test_week_schedule.py::test_week_schedule_lecturer_sees_present_count_after_close"
+  ],
+  "ok_notify": {
+   "R": [
+    "classes",
+    "parent_students",
+    "parents",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes",
+    "lecturers"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/sessions/{session_id}/records/{record_id}": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": [
+    "attendance_audits",
+    "attendance_records",
+    "audit_logs",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403,
+   422
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_normal_checkin_not_logged_but_edits_are",
+   "tests/test_flow_fixes.py::test_update_record_requires_reason_and_rejects_manual_status",
+   "tests/test_parent_notifications.py::test_flipping_back_does_not_duplicate",
+   "tests/test_parent_notifications.py::test_read_all",
+   "tests/test_parent_notifications.py::test_status_correction_sends_update",
+   "tests/test_session_detail_and_records.py::test_audits_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_update_record_creates_audit_with_old_and_new_status",
+   "tests/test_session_detail_and_records.py::test_update_record_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_update_record_rejects_invalid_status",
+   "tests/test_session_detail_and_records.py::test_update_record_requires_reason",
+   "tests/test_session_detail_and_records.py::test_update_record_status",
+   "tests/test_session_detail_and_records.py::test_update_record_still_works_after_session_closed",
+   "tests/test_unit_roles.py::test_faculty_leader_excuse_scoped_to_faculty",
+   "tests/test_unit_roles.py::test_faculty_office_no_longer_approves_excuses",
+   "tests/test_unit_roles.py::test_student_affairs_can_excuse_but_not_mark_present"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "schedules",
+    "staff",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "lecturers",
+    "students"
+   ],
+   "W": []
+  },
+  "ok_notify": {
+   "R": [
+    "classes",
+    "notifications",
+    "parent_students",
+    "parents",
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "schedules",
+    "staff",
+    "students",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/staff/{staff_id}": {
+  "ok": {
+   "R": [
+    "staff",
+    "units",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "staff",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_unit_roles.py::test_admin_creates_staff_with_role_from_unit"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/students/{student_id}": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "students",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_update_student_profile",
+   "tests/test_unit_roles.py::test_faculty_office_edits_only_own_faculty_classes",
+   "tests/test_unit_roles.py::test_invalid_faculty_id_rejected"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "units",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "PATCH /api/v1/units/{unit_id}": {
+  "ok": {
+   "R": [
+    "units"
+   ],
+   "W": [
+    "audit_logs",
+    "units"
+   ]
+  },
+  "err": {
+   "R": [
+    "units"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   404
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_update_unit_renames_but_keeps_type"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/auth/change-password": {
+  "ok": {
+   "R": [
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   401,
+   422,
+   429
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_password_change_never_stores_the_hash",
+   "tests/test_change_password.py::test_change_password_then_login_with_new_one",
+   "tests/test_change_password.py::test_current_session_continues_other_sessions_revoked",
+   "tests/test_change_password.py::test_old_refresh_tokens_revoked",
+   "tests/test_change_password.py::test_repeated_wrong_attempts_locked",
+   "tests/test_change_password.py::test_requires_login",
+   "tests/test_change_password.py::test_same_as_current_rejected",
+   "tests/test_change_password.py::test_too_short_rejected",
+   "tests/test_change_password.py::test_wrong_current_password_rejected"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": [
+    "refresh_tokens"
+   ]
+  },
+  "ok_audit": {
+   "R": [
+    "lecturers"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/auth/forgot-password": {
+  "ok": {
+   "R": [
+    "users"
+   ],
+   "W": [
+    "password_resets"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   429
+  ],
+  "tests": [
+   "tests/test_password_reset.py::test_forgot_password_creates_hashed_reset_row",
+   "tests/test_password_reset.py::test_forgot_password_rate_limited_after_3_per_hour",
+   "tests/test_password_reset.py::test_forgot_password_returns_generic_message_for_existing_email",
+   "tests/test_password_reset.py::test_forgot_password_returns_same_generic_message_for_unknown_email"
+  ]
+ },
+ "POST /api/v1/auth/login": {
+  "ok": {
+   "R": [
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [
+    "users"
+   ],
+   "W": [
+    "audit_logs"
+   ]
+  },
+  "status": [
+   200,
+   401,
+   429
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_delete_class_blocked_when_enrolled",
+   "tests/test_admin_crud.py::test_delete_class_blocked_when_has_schedule",
+   "tests/test_admin_crud.py::test_delete_lecturer_blocked_when_has_class",
+   "tests/test_admin_crud.py::test_delete_lecturer_succeeds_when_no_class",
+   "tests/test_admin_crud.py::test_delete_schedule_blocked_when_has_session",
+   "tests/test_admin_crud.py::test_delete_schedule_succeeds_when_unused",
+   "tests/test_admin_crud.py::test_list_all_schedules_admin_only",
+   "tests/test_admin_crud.py::test_list_all_schedules_search_by_room",
+   "tests/test_admin_crud.py::test_list_classes_search_by_code",
+   "tests/test_admin_crud.py::test_list_lecturers_search_and_pagination",
+   "tests/test_admin_crud.py::test_list_students_pagination_header_and_limit",
+   "tests/test_admin_crud.py::test_list_students_search_by_code",
+   "tests/test_admin_crud.py::test_list_students_without_limit_returns_all",
+   "tests/test_admin_crud.py::test_update_lecturer",
+   "tests/test_admin_crud.py::test_update_lecturer_requires_admin",
+   "tests/test_admin_crud.py::test_update_schedule",
+   "tests/test_admin_management.py::test_admin_can_create_lecturer",
+   "tests/test_admin_management.py::test_class_students_and_schedules_listing",
+   "tests/test_admin_management.py::test_enroll_and_unenroll_roundtrip",
+   "tests/test_admin_management.py::test_lecturer_cannot_create_lecturer",
+   "tests/test_admin_management.py::test_lecturer_cannot_delete_class",
+   "tests/test_antispoof.py::test_real_face_creates_attendance_record_after_confirm_frames",
+   "tests/test_antispoof.py::test_spoof_does_not_create_attendance_record",
+   "tests/test_audit_log.py::test_admin_reads_logs_with_filters",
+   "tests/test_audit_log.py::test_create_is_logged_with_actor",
+   "tests/test_audit_log.py::test_face_approval_and_consent_have_readable_names",
+   "tests/test_audit_log.py::test_faculty_leader_sees_only_own_faculty",
+   "tests/test_audit_log.py::test_failed_login_logged_without_password",
+   "tests/test_audit_log.py::test_login_success_is_logged",
+   "tests/test_audit_log.py::test_logout_is_logged",
+   "tests/test_audit_log.py::test_normal_checkin_not_logged_but_edits_are",
+   "tests/test_audit_log.py::test_password_change_never_stores_the_hash",
+   "tests/test_audit_log.py::test_report_export_is_logged",
+   "tests/test_audit_log.py::test_students_and_lecturers_cannot_read_logs",
+   "tests/test_audit_log.py::test_update_records_old_and_new_values",
+   "tests/test_auth.py::test_login_rate_limited_after_five_attempts",
+   "tests/test_auth.py::test_login_success",
+   "tests/test_auth.py::test_login_wrong_password",
+   "tests/test_auth.py::test_logout_revokes_token",
+   "tests/test_authorization.py::test_admin_can_list_students",
+   "tests/test_authorization.py::test_admin_can_view_any_class_report",
+   "tests/test_authorization.py::test_lecturer_can_open_session_for_own_class",
+   "tests/test_authorization.py::test_lecturer_cannot_open_session_for_other_lecturers_class",
+   "tests/test_authorization.py::test_lecturer_cannot_view_other_lecturers_class_report",
+   "tests/test_authorization.py::test_student_cannot_list_students",
+   "tests/test_change_password.py::test_change_password_then_login_with_new_one",
+   "tests/test_change_password.py::test_current_session_continues_other_sessions_revoked",
+   "tests/test_change_password.py::test_old_refresh_tokens_revoked",
+   "tests/test_change_password.py::test_repeated_wrong_attempts_locked",
+   "tests/test_change_password.py::test_same_as_current_rejected",
+   "tests/test_change_password.py::test_too_short_rejected",
+   "tests/test_change_password.py::test_wrong_current_password_rejected",
+   "tests/test_confirm_frames.py::test_below_threshold_frames_do_not_create_record",
+   "tests/test_confirm_frames.py::test_confirm_counts_are_isolated_per_session",
+   "tests/test_confirm_frames.py::test_confirm_counts_cleared_on_close",
+   "tests/test_confirm_frames.py::test_reaching_threshold_creates_exactly_one_record",
+   "tests/test_consent.py::test_consent_requires_ticking_and_current_version",
+   "tests/test_consent.py::test_enroll_blocked_without_consent",
+   "tests/test_consent.py::test_lecturer_can_enroll_after_consent",
+   "tests/test_consent.py::test_policy_text_comes_from_server_with_version",
+   "tests/test_consent.py::test_self_checkin_refused_without_consent",
+   "tests/test_consent.py::test_self_consent_records_version_and_method",
+   "tests/test_consent.py::test_staff_can_only_record_a_signed_paper_form",
+   "tests/test_consent.py::test_student_can_consent_for_self",
+   "tests/test_consent.py::test_student_cannot_consent_for_another_student",
+   "tests/test_consent.py::test_student_cannot_enroll_another_students_face",
+   "tests/test_consent.py::test_withdraw_deletes_all_face_data",
+   "tests/test_coverage_gaps.py::test_delete_unused_room",
+   "tests/test_coverage_gaps.py::test_get_class_detail_and_delete_empty_class",
+   "tests/test_coverage_gaps.py::test_list_and_delete_staff",
+   "tests/test_coverage_gaps.py::test_list_and_update_parents",
+   "tests/test_coverage_gaps.py::test_parent_sees_children_and_child_attendance",
+   "tests/test_coverage_gaps.py::test_unlink_child",
+   "tests/test_coverage_gaps.py::test_update_location_and_single_default",
+   "tests/test_coverage_gaps.py::test_update_student_profile",
+   "tests/test_coverage_gaps.py::test_update_unit_renames_but_keeps_type",
+   "tests/test_face_approval.py::test_admin_no_longer_reviews_faces",
+   "tests/test_face_approval.py::test_approve_face_sets_status",
+   "tests/test_face_approval.py::test_approve_reject_requires_admin",
+   "tests/test_face_approval.py::test_decided_face_cannot_be_decided_again",
+   "tests/test_face_approval.py::test_list_pending_flags_duplicate_with_approved_embedding",
+   "tests/test_face_approval.py::test_list_pending_requires_admin",
+   "tests/test_face_approval.py::test_list_pending_returns_student_info",
+   "tests/test_face_approval.py::test_reject_face_requires_reason",
+   "tests/test_face_approval.py::test_reject_face_stores_reason",
+   "tests/test_face_approval.py::test_result_is_sent_to_student_and_student_confirms",
+   "tests/test_flow_fixes.py::test_checkin_rejected_after_deadline",
+   "tests/test_flow_fixes.py::test_close_session_twice_rejected",
+   "tests/test_flow_fixes.py::test_delete_parent_with_linked_child",
+   "tests/test_flow_fixes.py::test_delete_student_linked_to_parent",
+   "tests/test_flow_fixes.py::test_delete_student_with_attendance_history_returns_409",
+   "tests/test_flow_fixes.py::test_duplicate_codes_return_400",
+   "tests/test_flow_fixes.py::test_enroll_nonexistent_student_or_class_returns_404",
+   "tests/test_flow_fixes.py::test_lecturer_cannot_enroll_face_for_student_outside_classes",
+   "tests/test_flow_fixes.py::test_lecturer_cannot_read_other_class_students",
+   "tests/test_flow_fixes.py::test_lecturer_session_list_scoped_to_own_classes",
+   "tests/test_flow_fixes.py::test_login_limit_is_per_account",
+   "tests/test_flow_fixes.py::test_manual_check_rejected_after_close",
+   "tests/test_flow_fixes.py::test_manual_check_rejects_student_outside_class",
+   "tests/test_flow_fixes.py::test_schedule_validation",
+   "tests/test_flow_fixes.py::test_session_detail_datetimes_include_offset",
+   "tests/test_flow_fixes.py::test_student_cannot_read_class_detail",
+   "tests/test_flow_fixes.py::test_today_schedules_include_opened_session",
+   "tests/test_flow_fixes.py::test_update_record_requires_reason_and_rejects_manual_status",
+   "tests/test_infrastructure.py::test_business_endpoints_only_under_version_prefix",
+   "tests/test_infrastructure.py::test_error_format_business_errors_keep_detail",
+   "tests/test_infrastructure.py::test_validation_error_keeps_field_list",
+   "tests/test_leave_and_warnings.py::test_absence_warning_after_statistics",
+   "tests/test_leave_and_warnings.py::test_approved_leave_makes_absence_excused_when_session_closes",
+   "tests/test_leave_and_warnings.py::test_cannot_request_leave_for_lesson_already_attended",
+   "tests/test_leave_and_warnings.py::test_leave_approved_after_close_turns_absent_into_excused",
+   "tests/test_leave_and_warnings.py::test_leave_validation_rules",
+   "tests/test_leave_and_warnings.py::test_only_class_lecturer_or_faculty_leader_reviews",
+   "tests/test_leave_and_warnings.py::test_qr_endpoints_and_fields_are_gone",
+   "tests/test_leave_and_warnings.py::test_reject_requires_invalid_reason_and_student_confirms",
+   "tests/test_leave_and_warnings.py::test_schedule_room_is_not_duplicated_when_room_selected",
+   "tests/test_leave_and_warnings.py::test_student_submits_leave_and_lecturer_is_notified",
+   "tests/test_location_checkin.py::test_accuracy_counts_in_student_favor",
+   "tests/test_location_checkin.py::test_check_can_be_disabled",
+   "tests/test_location_checkin.py::test_checkin_inside_radius_records_distance",
+   "tests/test_location_checkin.py::test_checkin_outside_radius_rejected",
+   "tests/test_location_checkin.py::test_inaccurate_location_rejected",
+   "tests/test_location_checkin.py::test_missing_location_rejected",
+   "tests/test_location_checkin.py::test_mocked_location_rejected",
+   "tests/test_location_checkin.py::test_no_location_configured_skips_check",
+   "tests/test_location_checkin.py::test_schedule_specific_location_overrides_default",
+   "tests/test_location_checkin.py::test_students_cannot_manage_locations",
+   "tests/test_location_checkin.py::test_training_office_manages_locations_single_default",
+   "tests/test_location_checkin.py::test_week_schedule_shows_effective_location",
+   "tests/test_my_attendance_detail.py::test_my_attendance_denied_for_non_student",
+   "tests/test_my_attendance_detail.py::test_my_attendance_empty_when_not_enrolled_anywhere",
+   "tests/test_my_attendance_detail.py::test_my_attendance_filters_by_wrong_semester_returns_empty",
+   "tests/test_my_attendance_detail.py::test_my_attendance_includes_lecturer_contact",
+   "tests/test_my_attendance_detail.py::test_my_attendance_returns_class_with_session_detail",
+   "tests/test_my_attendance_detail.py::test_my_attendance_warn_ratio_matches_settings",
+   "tests/test_open_session_rules.py::test_checkin_after_late_threshold_is_late",
+   "tests/test_open_session_rules.py::test_checkin_before_start_time_is_present",
+   "tests/test_open_session_rules.py::test_open_session_ok_during_class",
+   "tests/test_open_session_rules.py::test_open_session_ok_within_early_window",
+   "tests/test_open_session_rules.py::test_open_session_rejects_after_end_time",
+   "tests/test_open_session_rules.py::test_open_session_rejects_before_early_window",
+   "tests/test_open_session_rules.py::test_open_session_rejects_duplicate_same_schedule_and_date",
+   "tests/test_open_session_rules.py::test_open_session_rejects_future_date",
+   "tests/test_open_session_rules.py::test_open_session_rejects_past_date",
+   "tests/test_open_session_rules.py::test_open_session_rejects_wrong_weekday",
+   "tests/test_open_session_rules.py::test_today_schedules_include_open_from",
+   "tests/test_parent_notifications.py::test_cannot_touch_someone_elses_notification",
+   "tests/test_parent_notifications.py::test_checkin_notifies_parent",
+   "tests/test_parent_notifications.py::test_closing_session_notifies_absence",
+   "tests/test_parent_notifications.py::test_email_skipped_when_smtp_not_configured",
+   "tests/test_parent_notifications.py::test_every_parent_of_the_student_is_notified",
+   "tests/test_parent_notifications.py::test_failed_email_retried_then_given_up",
+   "tests/test_parent_notifications.py::test_flipping_back_does_not_duplicate",
+   "tests/test_parent_notifications.py::test_inbox_read_flow",
+   "tests/test_parent_notifications.py::test_only_parents_have_preferences",
+   "tests/test_parent_notifications.py::test_parent_can_mute_present_but_still_gets_absences",
+   "tests/test_parent_notifications.py::test_parent_can_turn_off_email",
+   "tests/test_parent_notifications.py::test_parent_preferences",
+   "tests/test_parent_notifications.py::test_pending_email_is_sent",
+   "tests/test_parent_notifications.py::test_read_all",
+   "tests/test_parent_notifications.py::test_smtp_down_does_not_lose_mail",
+   "tests/test_parent_notifications.py::test_status_correction_sends_update",
+   "tests/test_parent_notifications.py::test_student_without_parent_is_fine",
+   "tests/test_password_reset.py::test_reset_password_revokes_previously_issued_tokens",
+   "tests/test_password_reset.py::test_reset_password_success_changes_password",
+   "tests/test_reports.py::test_lecturer_cannot_call_my_attendance",
+   "tests/test_reports.py::test_my_attendance_empty_when_not_enrolled",
+   "tests/test_reports.py::test_my_attendance_only_shows_own_enrolled_classes",
+   "tests/test_reports_export_and_warnings.py::test_attendance_warnings_denied_for_other_lecturer",
+   "tests/test_reports_export_and_warnings.py::test_attendance_warnings_excludes_excused",
+   "tests/test_reports_export_and_warnings.py::test_attendance_warnings_lists_students_over_threshold",
+   "tests/test_reports_export_and_warnings.py::test_close_session_no_newly_warned_when_no_one_crosses",
+   "tests/test_reports_export_and_warnings.py::test_close_session_returns_newly_warned",
+   "tests/test_reports_export_and_warnings.py::test_export_denied_for_other_lecturer",
+   "tests/test_reports_export_and_warnings.py::test_export_rejects_mismatched_semester",
+   "tests/test_reports_export_and_warnings.py::test_export_returns_valid_xlsx",
+   "tests/test_rooms.py::test_back_to_back_slots_allowed",
+   "tests/test_rooms.py::test_buildings_list",
+   "tests/test_rooms.py::test_cannot_delete_room_in_use",
+   "tests/test_rooms.py::test_checkin_far_from_room_rejected",
+   "tests/test_rooms.py::test_checkin_uses_room_coordinates",
+   "tests/test_rooms.py::test_create_and_list_room",
+   "tests/test_rooms.py::test_duplicate_room_code_rejected",
+   "tests/test_rooms.py::test_inactive_room_hidden_by_default",
+   "tests/test_rooms.py::test_latitude_without_longitude_rejected",
+   "tests/test_rooms.py::test_other_weekday_same_room_allowed",
+   "tests/test_rooms.py::test_room_radius_has_floor",
+   "tests/test_rooms.py::test_same_room_overlapping_time_rejected",
+   "tests/test_rooms.py::test_schedule_needs_a_room",
+   "tests/test_rooms.py::test_schedule_takes_room_name",
+   "tests/test_rooms.py::test_session_detail_shows_room_name",
+   "tests/test_rooms.py::test_students_cannot_manage_rooms",
+   "tests/test_session_detail_and_records.py::test_audits_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_classes_mine_filters_for_lecturer",
+   "tests/test_session_detail_and_records.py::test_classes_without_mine_still_scoped_to_own_classes",
+   "tests/test_session_detail_and_records.py::test_get_session_detail_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_get_session_detail_returns_class_info",
+   "tests/test_session_detail_and_records.py::test_update_record_creates_audit_with_old_and_new_status",
+   "tests/test_session_detail_and_records.py::test_update_record_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_update_record_rejects_invalid_status",
+   "tests/test_session_detail_and_records.py::test_update_record_requires_reason",
+   "tests/test_session_detail_and_records.py::test_update_record_status",
+   "tests/test_session_detail_and_records.py::test_update_record_still_works_after_session_closed",
+   "tests/test_session_lifecycle.py::test_full_session_lifecycle_manual_then_absent",
+   "tests/test_session_lifecycle.py::test_manual_check_twice_rejected_with_400",
+   "tests/test_tokens_and_media.py::test_face_enrolled_only_counts_approved",
+   "tests/test_tokens_and_media.py::test_login_returns_refresh_token",
+   "tests/test_tokens_and_media.py::test_logout_revokes_refresh_token",
+   "tests/test_tokens_and_media.py::test_refresh_rotates_and_old_token_reuse_revokes_all",
+   "tests/test_tokens_and_media.py::test_reset_password_revokes_refresh_tokens",
+   "tests/test_tokens_and_media.py::test_review_image_saved_then_deleted_on_approve",
+   "tests/test_tokens_and_media.py::test_student_views_and_deletes_own_face_data",
+   "tests/test_unit_roles.py::test_admin_creates_faculty_leader_account",
+   "tests/test_unit_roles.py::test_admin_creates_staff_with_role_from_unit",
+   "tests/test_unit_roles.py::test_board_only_sees_aggregated_overview",
+   "tests/test_unit_roles.py::test_delete_unit_in_use_returns_409",
+   "tests/test_unit_roles.py::test_faculty_leader_excuse_scoped_to_faculty",
+   "tests/test_unit_roles.py::test_faculty_leader_supervises_but_does_not_enter_data",
+   "tests/test_unit_roles.py::test_faculty_office_edits_only_own_faculty_classes",
+   "tests/test_unit_roles.py::test_faculty_office_new_class_always_in_own_faculty",
+   "tests/test_unit_roles.py::test_faculty_office_no_longer_approves_excuses",
+   "tests/test_unit_roles.py::test_faculty_office_sees_only_own_faculty",
+   "tests/test_unit_roles.py::test_faculty_overview_limited_to_own_faculty",
+   "tests/test_unit_roles.py::test_invalid_faculty_id_rejected",
+   "tests/test_unit_roles.py::test_me_returns_unit_for_staff",
+   "tests/test_unit_roles.py::test_non_admin_cannot_manage_units_or_staff",
+   "tests/test_unit_roles.py::test_staff_can_view_student_attendance_detail",
+   "tests/test_unit_roles.py::test_student_affairs_can_excuse_but_not_mark_present",
+   "tests/test_unit_roles.py::test_student_affairs_manages_students_but_not_classes",
+   "tests/test_unit_roles.py::test_student_and_parent_cannot_see_overview",
+   "tests/test_unit_roles.py::test_training_office_cannot_manage_students_or_faces",
+   "tests/test_unit_roles.py::test_training_office_manages_classes_and_schedules",
+   "tests/test_week_schedule.py::test_week_schedule_lecturer_sees_present_count_after_close",
+   "tests/test_week_schedule.py::test_week_schedule_normalizes_non_monday_start_to_that_week",
+   "tests/test_week_schedule.py::test_week_schedule_other_lecturer_does_not_see_class_not_theirs",
+   "tests/test_week_schedule.py::test_week_schedule_slot_with_no_session_yet_has_null_status",
+   "tests/test_week_schedule.py::test_week_schedule_student_sees_own_class_and_manual_status"
+  ],
+  "ok_auth": {
+   "R": [],
+   "W": [
+    "audit_logs",
+    "refresh_tokens"
+   ]
+  },
+  "ok_audit": {
+   "R": [
+    "lecturers",
+    "staff"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/auth/logout": {
+  "ok": {
+   "R": [
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_logout_is_logged",
+   "tests/test_auth.py::test_logout_revokes_token",
+   "tests/test_tokens_and_media.py::test_logout_revokes_refresh_token"
+  ],
+  "ok_auth": {
+   "R": [
+    "refresh_tokens",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "refresh_tokens",
+    "revoked_tokens"
+   ]
+  }
+ },
+ "POST /api/v1/auth/refresh": {
+  "ok": {
+   "R": [
+    "users"
+   ],
+   "W": []
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   401
+  ],
+  "tests": [
+   "tests/test_change_password.py::test_old_refresh_tokens_revoked",
+   "tests/test_tokens_and_media.py::test_logout_revokes_refresh_token",
+   "tests/test_tokens_and_media.py::test_refresh_rotates_and_old_token_reuse_revokes_all",
+   "tests/test_tokens_and_media.py::test_refresh_with_garbage_token",
+   "tests/test_tokens_and_media.py::test_reset_password_revokes_refresh_tokens"
+  ],
+  "err_auth": {
+   "R": [
+    "refresh_tokens"
+   ],
+   "W": [
+    "refresh_tokens"
+   ]
+  },
+  "ok_auth": {
+   "R": [
+    "refresh_tokens",
+    "users"
+   ],
+   "W": [
+    "refresh_tokens"
+   ]
+  }
+ },
+ "POST /api/v1/auth/reset-password": {
+  "ok": {
+   "R": [
+    "password_resets",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "password_resets",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "password_resets",
+    "users"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   422
+  ],
+  "tests": [
+   "tests/test_password_reset.py::test_reset_password_already_used_otp_rejected",
+   "tests/test_password_reset.py::test_reset_password_expired_otp_rejected",
+   "tests/test_password_reset.py::test_reset_password_otp_cannot_be_reused",
+   "tests/test_password_reset.py::test_reset_password_rejects_password_shorter_than_8_chars",
+   "tests/test_password_reset.py::test_reset_password_revokes_previously_issued_tokens",
+   "tests/test_password_reset.py::test_reset_password_success_changes_password",
+   "tests/test_password_reset.py::test_reset_password_unknown_email_rejected",
+   "tests/test_password_reset.py::test_reset_password_wrong_otp_rejected",
+   "tests/test_tokens_and_media.py::test_reset_password_revokes_refresh_tokens"
+  ],
+  "ok_auth": {
+   "R": [],
+   "W": [
+    "refresh_tokens"
+   ]
+  }
+ },
+ "POST /api/v1/classes": {
+  "ok": {
+   "R": [
+    "classes",
+    "lecturers",
+    "units",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "classes"
+   ]
+  },
+  "err": {
+   "R": [
+    "classes",
+    "lecturers"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_coverage_gaps.py::test_get_class_detail_and_delete_empty_class",
+   "tests/test_flow_fixes.py::test_duplicate_codes_return_400",
+   "tests/test_unit_roles.py::test_faculty_leader_supervises_but_does_not_enter_data",
+   "tests/test_unit_roles.py::test_faculty_office_new_class_always_in_own_faculty",
+   "tests/test_unit_roles.py::test_student_affairs_manages_students_but_not_classes",
+   "tests/test_unit_roles.py::test_training_office_manages_classes_and_schedules"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "units",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "staff",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/classes/schedules": {
+  "ok": {
+   "R": [
+    "classes",
+    "rooms",
+    "schedules"
+   ],
+   "W": [
+    "audit_logs",
+    "schedules"
+   ]
+  },
+  "err": {
+   "R": [
+    "classes",
+    "rooms",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403,
+   422
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_schedule_validation",
+   "tests/test_leave_and_warnings.py::test_schedule_room_is_not_duplicated_when_room_selected",
+   "tests/test_rooms.py::test_back_to_back_slots_allowed",
+   "tests/test_rooms.py::test_other_weekday_same_room_allowed",
+   "tests/test_rooms.py::test_same_room_overlapping_time_rejected",
+   "tests/test_rooms.py::test_schedule_needs_a_room",
+   "tests/test_unit_roles.py::test_faculty_office_edits_only_own_faculty_classes",
+   "tests/test_unit_roles.py::test_training_office_manages_classes_and_schedules"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/classes/{class_id}/enroll/{student_id}": {
+  "ok": {
+   "R": [
+    "classes",
+    "enrollments",
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "enrollments"
+   ]
+  },
+  "err": {
+   "R": [
+    "classes",
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   403,
+   404
+  ],
+  "tests": [
+   "tests/test_admin_management.py::test_enroll_and_unenroll_roundtrip",
+   "tests/test_flow_fixes.py::test_enroll_nonexistent_student_or_class_returns_404",
+   "tests/test_unit_roles.py::test_faculty_office_edits_only_own_faculty_classes",
+   "tests/test_unit_roles.py::test_training_office_manages_classes_and_schedules"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/faces/enroll/{student_id}": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "face_embeddings"
+   ]
+  },
+  "err": {
+   "R": [
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_consent.py::test_enroll_blocked_without_consent",
+   "tests/test_consent.py::test_lecturer_can_enroll_after_consent",
+   "tests/test_consent.py::test_student_cannot_enroll_another_students_face",
+   "tests/test_flow_fixes.py::test_lecturer_cannot_enroll_face_for_student_outside_classes",
+   "tests/test_tokens_and_media.py::test_face_enrolled_only_counts_approved",
+   "tests/test_tokens_and_media.py::test_review_image_saved_then_deleted_on_approve",
+   "tests/test_tokens_and_media.py::test_student_views_and_deletes_own_face_data"
+  ],
+  "err_auth": {
+   "R": [
+    "classes",
+    "enrollments",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "classes",
+    "enrollments",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/faces/mine/{embedding_id}/acknowledge": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "face_embeddings"
+   ]
+  },
+  "err": {
+   "R": [
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   404
+  ],
+  "tests": [
+   "tests/test_face_approval.py::test_result_is_sent_to_student_and_student_confirms"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/leave-requests": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "classes",
+    "enrollments",
+    "leave_requests",
+    "lecturers",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "leave_requests",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "enrollments",
+    "leave_requests",
+    "schedules",
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403,
+   404
+  ],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_approved_leave_makes_absence_excused_when_session_closes",
+   "tests/test_leave_and_warnings.py::test_cannot_request_leave_for_lesson_already_attended",
+   "tests/test_leave_and_warnings.py::test_leave_approved_after_close_turns_absent_into_excused",
+   "tests/test_leave_and_warnings.py::test_leave_validation_rules",
+   "tests/test_leave_and_warnings.py::test_only_class_lecturer_or_faculty_leader_reviews",
+   "tests/test_leave_and_warnings.py::test_reject_requires_invalid_reason_and_student_confirms",
+   "tests/test_leave_and_warnings.py::test_student_submits_leave_and_lecturer_is_notified"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/leave-requests/{leave_id}/acknowledge": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "classes",
+    "leave_requests",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "leave_requests"
+   ]
+  },
+  "err": {
+   "R": [
+    "leave_requests",
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   404
+  ],
+  "tests": [
+   "tests/test_leave_and_warnings.py::test_reject_requires_invalid_reason_and_student_confirms"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/lecturers": {
+  "ok": {
+   "R": [
+    "lecturers",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "lecturers",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "lecturers",
+    "users"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_admin_crud.py::test_delete_lecturer_succeeds_when_no_class",
+   "tests/test_admin_management.py::test_admin_can_create_lecturer",
+   "tests/test_admin_management.py::test_lecturer_cannot_create_lecturer",
+   "tests/test_flow_fixes.py::test_duplicate_codes_return_400"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/locations": {
+  "ok": {
+   "R": [
+    "locations"
+   ],
+   "W": [
+    "audit_logs",
+    "locations"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403,
+   422
+  ],
+  "tests": [
+   "tests/test_location_checkin.py::test_students_cannot_manage_locations",
+   "tests/test_location_checkin.py::test_training_office_manages_locations_single_default"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/notifications/read-all": {
+  "ok": {
+   "R": [],
+   "W": [
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_parent_notifications.py::test_read_all"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/notifications/{notification_id}/read": {
+  "ok": {
+   "R": [
+    "notifications"
+   ],
+   "W": [
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [
+    "notifications"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   404
+  ],
+  "tests": [
+   "tests/test_parent_notifications.py::test_cannot_touch_someone_elses_notification",
+   "tests/test_parent_notifications.py::test_inbox_read_flow"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/parents": {
+  "ok": {
+   "R": [
+    "parent_students",
+    "parents",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "parents",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_delete_parent_with_linked_child",
+   "tests/test_flow_fixes.py::test_delete_student_linked_to_parent"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/parents/{parent_id}/children": {
+  "ok": {
+   "R": [
+    "parent_students",
+    "parents",
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "parent_students"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_delete_parent_with_linked_child",
+   "tests/test_flow_fixes.py::test_delete_student_linked_to_parent"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/rooms": {
+  "ok": {
+   "R": [
+    "locations",
+    "rooms"
+   ],
+   "W": [
+    "audit_logs",
+    "rooms"
+   ]
+  },
+  "err": {
+   "R": [
+    "rooms"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403,
+   422
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_create_is_logged_with_actor",
+   "tests/test_rooms.py::test_back_to_back_slots_allowed",
+   "tests/test_rooms.py::test_buildings_list",
+   "tests/test_rooms.py::test_cannot_delete_room_in_use",
+   "tests/test_rooms.py::test_create_and_list_room",
+   "tests/test_rooms.py::test_duplicate_room_code_rejected",
+   "tests/test_rooms.py::test_inactive_room_hidden_by_default",
+   "tests/test_rooms.py::test_latitude_without_longitude_rejected",
+   "tests/test_rooms.py::test_other_weekday_same_room_allowed",
+   "tests/test_rooms.py::test_room_radius_has_floor",
+   "tests/test_rooms.py::test_same_room_overlapping_time_rejected",
+   "tests/test_rooms.py::test_schedule_takes_room_name",
+   "tests/test_rooms.py::test_students_cannot_manage_rooms"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/sessions": {
+  "ok": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": [
+    "attendance_sessions",
+    "audit_logs"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_antispoof.py::test_real_face_creates_attendance_record_after_confirm_frames",
+   "tests/test_antispoof.py::test_spoof_does_not_create_attendance_record",
+   "tests/test_audit_log.py::test_normal_checkin_not_logged_but_edits_are",
+   "tests/test_authorization.py::test_lecturer_can_open_session_for_own_class",
+   "tests/test_authorization.py::test_lecturer_cannot_open_session_for_other_lecturers_class",
+   "tests/test_confirm_frames.py::test_below_threshold_frames_do_not_create_record",
+   "tests/test_confirm_frames.py::test_confirm_counts_are_isolated_per_session",
+   "tests/test_confirm_frames.py::test_confirm_counts_cleared_on_close",
+   "tests/test_confirm_frames.py::test_reaching_threshold_creates_exactly_one_record",
+   "tests/test_consent.py::test_self_checkin_refused_without_consent",
+   "tests/test_flow_fixes.py::test_checkin_rejected_after_deadline",
+   "tests/test_flow_fixes.py::test_close_session_twice_rejected",
+   "tests/test_flow_fixes.py::test_lecturer_session_list_scoped_to_own_classes",
+   "tests/test_flow_fixes.py::test_manual_check_rejected_after_close",
+   "tests/test_flow_fixes.py::test_manual_check_rejects_student_outside_class",
+   "tests/test_flow_fixes.py::test_session_detail_datetimes_include_offset",
+   "tests/test_flow_fixes.py::test_today_schedules_include_opened_session",
+   "tests/test_flow_fixes.py::test_update_record_requires_reason_and_rejects_manual_status",
+   "tests/test_leave_and_warnings.py::test_absence_warning_after_statistics",
+   "tests/test_leave_and_warnings.py::test_approved_leave_makes_absence_excused_when_session_closes",
+   "tests/test_leave_and_warnings.py::test_cannot_request_leave_for_lesson_already_attended",
+   "tests/test_leave_and_warnings.py::test_leave_approved_after_close_turns_absent_into_excused",
+   "tests/test_leave_and_warnings.py::test_qr_endpoints_and_fields_are_gone",
+   "tests/test_location_checkin.py::test_accuracy_counts_in_student_favor",
+   "tests/test_location_checkin.py::test_check_can_be_disabled",
+   "tests/test_location_checkin.py::test_checkin_inside_radius_records_distance",
+   "tests/test_location_checkin.py::test_checkin_outside_radius_rejected",
+   "tests/test_location_checkin.py::test_inaccurate_location_rejected",
+   "tests/test_location_checkin.py::test_missing_location_rejected",
+   "tests/test_location_checkin.py::test_mocked_location_rejected",
+   "tests/test_location_checkin.py::test_no_location_configured_skips_check",
+   "tests/test_location_checkin.py::test_schedule_specific_location_overrides_default",
+   "tests/test_my_attendance_detail.py::test_my_attendance_filters_by_wrong_semester_returns_empty",
+   "tests/test_my_attendance_detail.py::test_my_attendance_includes_lecturer_contact",
+   "tests/test_my_attendance_detail.py::test_my_attendance_returns_class_with_session_detail",
+   "tests/test_my_attendance_detail.py::test_my_attendance_warn_ratio_matches_settings",
+   "tests/test_open_session_rules.py::test_checkin_after_late_threshold_is_late",
+   "tests/test_open_session_rules.py::test_checkin_before_start_time_is_present",
+   "tests/test_open_session_rules.py::test_open_session_ok_during_class",
+   "tests/test_open_session_rules.py::test_open_session_ok_within_early_window",
+   "tests/test_open_session_rules.py::test_open_session_rejects_after_end_time",
+   "tests/test_open_session_rules.py::test_open_session_rejects_before_early_window",
+   "tests/test_open_session_rules.py::test_open_session_rejects_duplicate_same_schedule_and_date",
+   "tests/test_open_session_rules.py::test_open_session_rejects_future_date",
+   "tests/test_open_session_rules.py::test_open_session_rejects_past_date",
+   "tests/test_open_session_rules.py::test_open_session_rejects_wrong_weekday",
+   "tests/test_parent_notifications.py::test_cannot_touch_someone_elses_notification",
+   "tests/test_parent_notifications.py::test_checkin_notifies_parent",
+   "tests/test_parent_notifications.py::test_closing_session_notifies_absence",
+   "tests/test_parent_notifications.py::test_email_skipped_when_smtp_not_configured",
+   "tests/test_parent_notifications.py::test_every_parent_of_the_student_is_notified",
+   "tests/test_parent_notifications.py::test_failed_email_retried_then_given_up",
+   "tests/test_parent_notifications.py::test_flipping_back_does_not_duplicate",
+   "tests/test_parent_notifications.py::test_inbox_read_flow",
+   "tests/test_parent_notifications.py::test_parent_can_mute_present_but_still_gets_absences",
+   "tests/test_parent_notifications.py::test_parent_can_turn_off_email",
+   "tests/test_parent_notifications.py::test_pending_email_is_sent",
+   "tests/test_parent_notifications.py::test_read_all",
+   "tests/test_parent_notifications.py::test_smtp_down_does_not_lose_mail",
+   "tests/test_parent_notifications.py::test_status_correction_sends_update",
+   "tests/test_parent_notifications.py::test_student_without_parent_is_fine",
+   "tests/test_reports_export_and_warnings.py::test_close_session_no_newly_warned_when_no_one_crosses",
+   "tests/test_reports_export_and_warnings.py::test_close_session_returns_newly_warned",
+   "tests/test_rooms.py::test_checkin_far_from_room_rejected",
+   "tests/test_rooms.py::test_checkin_uses_room_coordinates",
+   "tests/test_rooms.py::test_session_detail_shows_room_name",
+   "tests/test_session_detail_and_records.py::test_audits_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_get_session_detail_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_get_session_detail_returns_class_info",
+   "tests/test_session_detail_and_records.py::test_update_record_creates_audit_with_old_and_new_status",
+   "tests/test_session_detail_and_records.py::test_update_record_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_update_record_rejects_invalid_status",
+   "tests/test_session_detail_and_records.py::test_update_record_requires_reason",
+   "tests/test_session_detail_and_records.py::test_update_record_status",
+   "tests/test_session_detail_and_records.py::test_update_record_still_works_after_session_closed",
+   "tests/test_session_lifecycle.py::test_full_session_lifecycle_manual_then_absent",
+   "tests/test_session_lifecycle.py::test_manual_check_twice_rejected_with_400",
+   "tests/test_week_schedule.py::test_week_schedule_lecturer_sees_present_count_after_close",
+   "tests/test_week_schedule.py::test_week_schedule_student_sees_own_class_and_manual_status"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_audit": {
+   "R": [
+    "classes",
+    "lecturers"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/sessions/{session_id}/manual": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "enrollments",
+    "schedules"
+   ],
+   "W": [
+    "attendance_records"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "enrollments",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_manual_check_rejected_after_close",
+   "tests/test_flow_fixes.py::test_manual_check_rejects_student_outside_class",
+   "tests/test_leave_and_warnings.py::test_cannot_request_leave_for_lesson_already_attended",
+   "tests/test_my_attendance_detail.py::test_my_attendance_filters_by_wrong_semester_returns_empty",
+   "tests/test_my_attendance_detail.py::test_my_attendance_includes_lecturer_contact",
+   "tests/test_my_attendance_detail.py::test_my_attendance_returns_class_with_session_detail",
+   "tests/test_my_attendance_detail.py::test_my_attendance_warn_ratio_matches_settings",
+   "tests/test_session_detail_and_records.py::test_audits_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_update_record_creates_audit_with_old_and_new_status",
+   "tests/test_session_detail_and_records.py::test_update_record_denied_for_other_lecturer",
+   "tests/test_session_detail_and_records.py::test_update_record_rejects_invalid_status",
+   "tests/test_session_detail_and_records.py::test_update_record_requires_reason",
+   "tests/test_session_detail_and_records.py::test_update_record_status",
+   "tests/test_session_lifecycle.py::test_full_session_lifecycle_manual_then_absent",
+   "tests/test_session_lifecycle.py::test_manual_check_twice_rejected_with_400",
+   "tests/test_week_schedule.py::test_week_schedule_lecturer_sees_present_count_after_close",
+   "tests/test_week_schedule.py::test_week_schedule_student_sees_own_class_and_manual_status"
+  ],
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_notify": {
+   "R": [
+    "parent_students"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/sessions/{session_id}/recognize": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "schedules",
+    "students",
+    "users"
+   ],
+   "W": [
+    "attendance_records"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400
+  ],
+  "tests": [
+   "tests/test_antispoof.py::test_real_face_creates_attendance_record_after_confirm_frames",
+   "tests/test_antispoof.py::test_spoof_does_not_create_attendance_record",
+   "tests/test_confirm_frames.py::test_below_threshold_frames_do_not_create_record",
+   "tests/test_confirm_frames.py::test_confirm_counts_are_isolated_per_session",
+   "tests/test_confirm_frames.py::test_confirm_counts_cleared_on_close",
+   "tests/test_confirm_frames.py::test_reaching_threshold_creates_exactly_one_record",
+   "tests/test_flow_fixes.py::test_checkin_rejected_after_deadline",
+   "tests/test_open_session_rules.py::test_checkin_after_late_threshold_is_late",
+   "tests/test_open_session_rules.py::test_checkin_before_start_time_is_present"
+  ],
+  "ok_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_notify": {
+   "R": [
+    "parent_students"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "classes",
+    "lecturers",
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/sessions/{session_id}/self-checkin": {
+  "ok": {
+   "R": [
+    "attendance_records",
+    "attendance_sessions",
+    "enrollments",
+    "locations",
+    "rooms",
+    "schedules",
+    "students"
+   ],
+   "W": [
+    "attendance_records",
+    "notifications"
+   ]
+  },
+  "err": {
+   "R": [
+    "attendance_sessions",
+    "schedules"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_normal_checkin_not_logged_but_edits_are",
+   "tests/test_consent.py::test_self_checkin_refused_without_consent",
+   "tests/test_flow_fixes.py::test_checkin_rejected_after_deadline",
+   "tests/test_location_checkin.py::test_accuracy_counts_in_student_favor",
+   "tests/test_location_checkin.py::test_check_can_be_disabled",
+   "tests/test_location_checkin.py::test_checkin_inside_radius_records_distance",
+   "tests/test_location_checkin.py::test_checkin_outside_radius_rejected",
+   "tests/test_location_checkin.py::test_inaccurate_location_rejected",
+   "tests/test_location_checkin.py::test_missing_location_rejected",
+   "tests/test_location_checkin.py::test_mocked_location_rejected",
+   "tests/test_location_checkin.py::test_no_location_configured_skips_check",
+   "tests/test_location_checkin.py::test_schedule_specific_location_overrides_default",
+   "tests/test_parent_notifications.py::test_cannot_touch_someone_elses_notification",
+   "tests/test_parent_notifications.py::test_checkin_notifies_parent",
+   "tests/test_parent_notifications.py::test_email_skipped_when_smtp_not_configured",
+   "tests/test_parent_notifications.py::test_every_parent_of_the_student_is_notified",
+   "tests/test_parent_notifications.py::test_failed_email_retried_then_given_up",
+   "tests/test_parent_notifications.py::test_inbox_read_flow",
+   "tests/test_parent_notifications.py::test_parent_can_mute_present_but_still_gets_absences",
+   "tests/test_parent_notifications.py::test_parent_can_turn_off_email",
+   "tests/test_parent_notifications.py::test_pending_email_is_sent",
+   "tests/test_parent_notifications.py::test_read_all",
+   "tests/test_parent_notifications.py::test_smtp_down_does_not_lose_mail",
+   "tests/test_parent_notifications.py::test_student_without_parent_is_fine",
+   "tests/test_rooms.py::test_checkin_far_from_room_rejected",
+   "tests/test_rooms.py::test_checkin_uses_room_coordinates"
+  ],
+  "ok_notify": {
+   "R": [
+    "classes",
+    "parent_students",
+    "parents",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/staff": {
+  "ok": {
+   "R": [
+    "staff",
+    "units",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "staff",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "units",
+    "users"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400
+  ],
+  "tests": [
+   "tests/test_unit_roles.py::test_admin_creates_faculty_leader_account",
+   "tests/test_unit_roles.py::test_admin_creates_staff_with_role_from_unit"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/students": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students",
+    "units",
+    "users"
+   ],
+   "W": [
+    "audit_logs",
+    "students",
+    "users"
+   ]
+  },
+  "err": {
+   "R": [
+    "students",
+    "users"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403
+  ],
+  "tests": [
+   "tests/test_flow_fixes.py::test_duplicate_codes_return_400",
+   "tests/test_unit_roles.py::test_student_affairs_manages_students_but_not_classes",
+   "tests/test_unit_roles.py::test_training_office_cannot_manage_students_or_faces"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "units",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/students/{student_id}/consent": {
+  "ok": {
+   "R": [
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "students"
+   ]
+  },
+  "err": {
+   "R": [
+    "students"
+   ],
+   "W": []
+  },
+  "status": [
+   200,
+   400,
+   403,
+   409
+  ],
+  "tests": [
+   "tests/test_audit_log.py::test_face_approval_and_consent_have_readable_names",
+   "tests/test_consent.py::test_consent_requires_ticking_and_current_version",
+   "tests/test_consent.py::test_lecturer_can_enroll_after_consent",
+   "tests/test_consent.py::test_self_consent_records_version_and_method",
+   "tests/test_consent.py::test_staff_can_only_record_a_signed_paper_form",
+   "tests/test_consent.py::test_student_can_consent_for_self",
+   "tests/test_consent.py::test_student_cannot_consent_for_another_student",
+   "tests/test_consent.py::test_student_cannot_enroll_another_students_face",
+   "tests/test_consent.py::test_withdraw_deletes_all_face_data",
+   "tests/test_flow_fixes.py::test_lecturer_cannot_enroll_face_for_student_outside_classes",
+   "tests/test_tokens_and_media.py::test_face_enrolled_only_counts_approved",
+   "tests/test_tokens_and_media.py::test_review_image_saved_then_deleted_on_approve",
+   "tests/test_tokens_and_media.py::test_student_views_and_deletes_own_face_data"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/students/{student_id}/consent/withdraw": {
+  "ok": {
+   "R": [
+    "face_embeddings",
+    "students"
+   ],
+   "W": [
+    "audit_logs",
+    "face_embeddings",
+    "students"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200
+  ],
+  "tests": [
+   "tests/test_consent.py::test_withdraw_deletes_all_face_data"
+  ],
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ },
+ "POST /api/v1/units": {
+  "ok": {
+   "R": [
+    "units"
+   ],
+   "W": [
+    "audit_logs",
+    "units"
+   ]
+  },
+  "err": {
+   "R": [],
+   "W": []
+  },
+  "status": [
+   200,
+   403,
+   422
+  ],
+  "tests": [
+   "tests/test_infrastructure.py::test_validation_error_keeps_field_list",
+   "tests/test_unit_roles.py::test_delete_unit_in_use_returns_409",
+   "tests/test_unit_roles.py::test_non_admin_cannot_manage_units_or_staff"
+  ],
+  "err_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  },
+  "ok_auth": {
+   "R": [
+    "revoked_tokens",
+    "users"
+   ],
+   "W": []
+  }
+ }
+}

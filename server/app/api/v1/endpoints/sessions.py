@@ -38,22 +38,10 @@ def get_session(session_id: int, db: DbSession, user: models.User = Viewers):
     return session_service.get_session(db, user, session_id)
 
 
-@router.patch("/{session_id}", response_model=schemas.SessionDetail)
-def update_session(session_id: int, body: schemas.SessionUpdate, db: DbSession,
-                   user: models.User = Operators):
-    """Bat/tat yeu cau quet ma QR cho buoi dang dien ra."""
-    return session_service.update_session(db, user, session_id, body)
-
-
 @router.get("/{session_id}/checkin-info", response_model=schemas.CheckinInfoOut)
 def checkin_info(session_id: int, db: DbSession, user: models.User = StudentOnly):
+    """SV xem phong hoc cua buoi truoc khi tu diem danh (anh khuon mat + GPS)."""
     return session_service.checkin_info(db, user, session_id)
-
-
-@router.get("/{session_id}/checkin-code", response_model=schemas.CheckinCodeOut)
-def session_checkin_code(session_id: int, db: DbSession, user: models.User = Viewers):
-    """Ma QR dang hieu luc de giang vien chieu trong phong (chi nguoi day/quan ly lop)."""
-    return session_service.checkin_code(db, user, session_id)
 
 
 @router.get("/{session_id}/roster", response_model=list[schemas.RosterEntryOut])
@@ -92,13 +80,12 @@ async def self_checkin(
     longitude: float | None = Form(None),
     accuracy: float | None = Form(None),
     is_mocked: bool = Form(False),
-    checkin_code: str | None = Form(None),
     user: models.User = StudentOnly,
 ):
-    """SV tu diem danh: anh tu chup + GPS (+ ma QR neu buoi hoc yeu cau)."""
+    """SV tu diem danh: anh tu chup + GPS."""
     return await attendance_service.self_checkin(
         db, user, session_id, frame=frame, latitude=latitude, longitude=longitude,
-        accuracy=accuracy, is_mocked=is_mocked, checkin_code=checkin_code)
+        accuracy=accuracy, is_mocked=is_mocked)
 
 
 @router.get("/{session_id}/records", response_model=list[schemas.RecordOut])
