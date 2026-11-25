@@ -202,7 +202,8 @@ Students nếu cả nhóm có email sinh viên.
 | 25/11/2026 | Khung `server/app/modules/` + MOD-01 làm mẫu (models, repository, schemas, service, controller, README, test riêng `tests/m01_auth/`); client `lib/modules/m01_auth/{controllers,views}`, `m10_shell/views`; bộ truy vết tài liệu nhận thư mục mô-đun | TV1 | ✅ 277 test server, 43 test client đạt |
 | 25/11/2026 | `.github/CODEOWNERS`, mẫu Pull Request | TV1 | ✅ (các TV tự thêm dòng của mình) |
 | 25/11/2026 | `render.yaml`, `deploy/render/Dockerfile`, `.dockerignore`, `SEED_ON_START` trong `entrypoint.sh` | TV1 | ✅ |
-| — | Đăng ký Render, deploy, ghi link | TV1 | đang làm |
+| 25/11/2026 | Đăng ký Render (kết nối GitHub, Blueprint `fams-system`), deploy: **https://fams-system-ug8s.onrender.com** – tự deploy lại mỗi lần push `main` | TV1 | ✅ |
+| 25/11/2026 | Sửa lỗi build trên Render: `TAR_OPTIONS=--no-same-owner` (tar không đổi được chủ sở hữu tệp trong user namespace) | TV1 | ✅ |
 | — | MOD-02 … MOD-09 | TV2 – TV5 | chưa |
 
 ## Nguồn tham khảo (tra ngày 25/11/2026)

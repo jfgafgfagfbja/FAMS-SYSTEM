@@ -62,7 +62,7 @@ Chi tiết (Linux/macOS, production HTTPS, biến môi trường, log): [docs/de
 
 ## Triển khai cloud (Render)
 
-Bản chạy trên cloud: **(cập nhật link sau khi deploy)**. `render.yaml` khai báo 1 PostgreSQL 16 (pgvector) + 1 web
+Bản chạy trên cloud: **https://fams-system-ug8s.onrender.com** (Render, máy chủ Singapore; API: `/api/v1`, kiểm tra: `/api/v1/health`). `render.yaml` khai báo 1 PostgreSQL 16 (pgvector) + 1 web
 service Docker (`deploy/render/Dockerfile`: build Flutter web + server, chạy `server/single_port.py` ⇒ giao diện và
 `/api/v1` cùng một link). Mỗi lần push nhánh `main`, Render tự build và deploy lại; lần khởi động đầu tự nạp dữ liệu
 mẫu (`SEED_ON_START=1`). Cách làm + giới hạn gói miễn phí: [docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md](docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md).
