@@ -16,7 +16,7 @@ mXX_<ten>/
 | `m02_catalog/`, `m03_training/` | TV2 @nguyenthai9351-code | chưa – đang ở `lib/features/admin/`, `lib/features/schedule/` |
 | `m04_learners/`, `m05_faces/` | TV3 @YNCoder205 | chưa – `lib/features/admin/`, `lib/features/student/`, `lib/features/parent/` |
 | `m06_attendance/` | TV4 @vuong557 | chưa – `lib/features/lecturer/`, `lib/features/student/`, `lib/features/leave/` |
-| `m07_notifications/`, `m08_reports/`, `m09_audit/` | TV5 | chưa – `lib/features/parent/`, `lib/features/lecturer/`, `lib/features/office/`, `lib/features/admin/` |
+| `m07_notifications/`, `m08_reports/`, `m09_audit/` | TV5 @dphu05 | chưa – `lib/features/parent/`, `lib/features/lecturer/`, `lib/features/office/`, `lib/features/admin/` |
 
 Danh sách trang của từng người: `docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md` mục 3. Lớp dữ liệu hiện vẫn nằm chung trong
 `lib/models/models.dart`; mỗi người tách phần của mình sang `models/` của mô-đun và `export` lại trong `models.dart`.
