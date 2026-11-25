@@ -1,0 +1,33 @@
+# Chi dung cho cac image build tu THU MUC GOC repo (deploy/render/Dockerfile).
+# docker-compose build server/client tu thu muc con, dung server/.dockerignore va client/.dockerignore.
+.git
+.github
+.tmp
+.claude
+docs
+baocao
+backups
+scripts
+deploy/.env
+**/__pycache__
+**/*.pyc
+
+server/venv
+server/.env
+server/evidence
+server/.pytest_cache
+server/route_coverage*.json
+server/junit*.xml
+server/models/*.onnx
+
+client/build
+client/.dart_tool
+client/.idea
+client/android/.gradle
+client/android/app/build
+client/ios/Pods
+client/ios/.symlinks
+client/*.iml
+client/flutter_machine*.jsonl
+client/flutter_results*.json
+client/*.err

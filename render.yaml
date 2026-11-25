@@ -1,0 +1,40 @@
+# Trien khai FAMS-SYSTEM len Render bang Blueprint: Render -> New -> Blueprint -> chon repo nay -> Apply.
+# Gom 1 CSDL PostgreSQL 16 (co pgvector) + 1 web service Docker (giao dien web + API cung mot link).
+# Moi lan push len nhanh main, Render tu build va deploy lai (autoDeployTrigger: commit).
+# Gioi han goi mien phi: web 512 MB RAM, ngu sau 15 phut khong truy cap; CSDL mien phi het han sau 30 ngay.
+# Huong dan + rui ro: docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md (muc 6).
+
+databases:
+  - name: fams-db
+    plan: free
+    region: singapore
+    postgresMajorVersion: "16"
+    databaseName: fams_system
+    user: fams_system
+    ipAllowList: []          # chan ket noi tu ngoai Render; server ket noi qua mang noi bo
+
+services:
+  - type: web
+    name: fams-system
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fams-db
+          property: connectionString
+      - key: SECRET_KEY          # ky JWT, URL anh - Render tu sinh chuoi ngau nhien
+        generateValue: true
+      - key: SEED_ON_START       # nap tai khoan / du lieu mau lan dau (bo qua khi CSDL da co du lieu)
+        value: "1"
+      - key: PORT
+        value: "10000"
+      - key: TZ
+        value: Asia/Ho_Chi_Minh
+      - key: LOG_LEVEL
+        value: INFO
