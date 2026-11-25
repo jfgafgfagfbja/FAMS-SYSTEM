@@ -11,17 +11,17 @@
 /render.yaml                             @jfgafgfagfbja
 /deploy/                                 @jfgafgfagfbja
 
-# MOD-02 Danh mục, MOD-03 Đào tạo – TV2
-# /server/app/modules/m02_catalog/       @tv2-github
-# /server/app/modules/m03_training/      @tv2-github
-# /client/lib/modules/m02_catalog/       @tv2-github
-# /client/lib/modules/m03_training/      @tv2-github
+# MOD-02 Danh mục, MOD-03 Đào tạo – TV2 (@nguyenthai9351-code): bỏ dấu # trong PR đầu tiên
+# /server/app/modules/m02_catalog/       @nguyenthai9351-code
+# /server/app/modules/m03_training/      @nguyenthai9351-code
+# /client/lib/modules/m02_catalog/       @nguyenthai9351-code
+# /client/lib/modules/m03_training/      @nguyenthai9351-code
 
-# MOD-04 Người học, MOD-05 Khuôn mặt – TV3
-# /server/app/modules/m04_learners/      @tv3-github
-# /server/app/modules/m05_faces/         @tv3-github
-# /client/lib/modules/m04_learners/      @tv3-github
-# /client/lib/modules/m05_faces/         @tv3-github
+# MOD-04 Người học, MOD-05 Khuôn mặt – TV3 (@YNCoder205): bỏ dấu # trong PR đầu tiên
+# /server/app/modules/m04_learners/      @YNCoder205
+# /server/app/modules/m05_faces/         @YNCoder205
+# /client/lib/modules/m04_learners/      @YNCoder205
+# /client/lib/modules/m05_faces/         @YNCoder205
 
 # MOD-06 Điểm danh, đơn xin phép – TV4
 # /server/app/modules/m06_attendance/    @tv4-github

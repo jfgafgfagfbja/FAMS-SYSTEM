@@ -72,9 +72,9 @@ Khối lượng tính theo số dòng code **đang có** (server: controller + s
 
 | TV | Mô-đun | Thư mục server | Màn hình client chuyển vào `modules/` | Bảng CSDL | API | Code server hiện có |
 |---|---|---|---|---|---|---|
-| **TV1** (trưởng nhóm) | MOD-01 Xác thực, MOD-10 Giao diện chung, hạ tầng | `core/`, `db/`, `main.py`, `modules/m01_auth/` | `auth/*` (đăng nhập, quên / đặt lại mật khẩu, tài khoản, splash), `home/home_page`, `app_shell`, `router`, `core/*`, widget dùng chung | users, refresh_tokens, revoked_tokens, password_resets | 10 | ≈ 520 dòng + phần dùng chung ≈ 1 300 dòng |
-| **TV2** | MOD-02 Danh mục, MOD-03 Đào tạo | `m02_catalog/`, `m03_training/` | `admin/units, staff, locations, rooms, lecturers, classes, class_detail, schedules`; `schedule/week_schedule_page, schedule_pdf` | units, staff, locations, rooms, lecturers, classes, enrollments, schedules | 36 | ≈ 1 800 dòng |
-| **TV3** | MOD-04 Người học, MOD-05 Khuôn mặt | `m04_learners/`, `m05_faces/` | `admin/students, student_detail, parents, face_review`; `student/enroll_face, enroll_for_student`; `parent/children_page`; widget `consent_form, camera_capture` | students, parents, parent_students, face_embeddings | 29 | ≈ 1 350 dòng |
+| **TV1** (trưởng nhóm) [@jfgafgfagfbja](https://github.com/jfgafgfagfbja) | MOD-01 Xác thực, MOD-10 Giao diện chung, hạ tầng | `core/`, `db/`, `main.py`, `modules/m01_auth/` | `auth/*` (đăng nhập, quên / đặt lại mật khẩu, tài khoản, splash), `home/home_page`, `app_shell`, `router`, `core/*`, widget dùng chung | users, refresh_tokens, revoked_tokens, password_resets | 10 | ≈ 520 dòng + phần dùng chung ≈ 1 300 dòng |
+| **TV2** [@nguyenthai9351-code](https://github.com/nguyenthai9351-code) | MOD-02 Danh mục, MOD-03 Đào tạo | `m02_catalog/`, `m03_training/` | `admin/units, staff, locations, rooms, lecturers, classes, class_detail, schedules`; `schedule/week_schedule_page, schedule_pdf` | units, staff, locations, rooms, lecturers, classes, enrollments, schedules | 36 | ≈ 1 800 dòng |
+| **TV3** [@YNCoder205](https://github.com/YNCoder205) | MOD-04 Người học, MOD-05 Khuôn mặt | `m04_learners/`, `m05_faces/` | `admin/students, student_detail, parents, face_review`; `student/enroll_face, enroll_for_student`; `parent/children_page`; widget `consent_form, camera_capture` | students, parents, parent_students, face_embeddings | 29 | ≈ 1 350 dòng |
 | **TV4** | MOD-06 Điểm danh, đơn xin phép | `m06_attendance/` | `lecturer/attendance_scan, sessions, session_records`; `student/self_checkin`; `leave/leave_requests`; widget `attendance_views, evidence_image` | attendance_sessions, attendance_records, leave_requests | 17 | ≈ 1 300 dòng (nhiều quy tắc nghiệp vụ nhất) |
 | **TV5** | MOD-07 Thông báo, MOD-08 Báo cáo, MOD-09 Nhật ký | `m07_notifications/`, `m08_reports/`, `m09_audit/` | `parent/notifications_page, child_attendance_page`; `lecturer/reports_page`; `office/overview_page`; `student/my_attendance_page`; `admin/audit_logs_page` | notifications, audit_logs, attendance_audits | 10 + 3 tác vụ nền | ≈ 1 400 dòng |
 
@@ -112,17 +112,17 @@ người khác.
    đăng ký router) chỉ thêm 1–2 dòng, xung đột nếu có rất dễ gộp.
 5. **`.github/CODEOWNERS`** (điền tên tài khoản thật):
    ```
-   /server/app/core/                    @tv1-github
-   /server/app/modules/m01_auth/        @tv1-github
-   /server/app/modules/m02_catalog/     @tv2-github
-   /server/app/modules/m03_training/    @tv2-github
-   /server/app/modules/m04_learners/    @tv3-github
-   /server/app/modules/m05_faces/       @tv3-github
+   /server/app/core/                    @jfgafgfagfbja
+   /server/app/modules/m01_auth/        @jfgafgfagfbja
+   /server/app/modules/m02_catalog/     @nguyenthai9351-code
+   /server/app/modules/m03_training/    @nguyenthai9351-code
+   /server/app/modules/m04_learners/    @YNCoder205
+   /server/app/modules/m05_faces/       @YNCoder205
    /server/app/modules/m06_attendance/  @tv4-github
    /server/app/modules/m07_notifications/ @tv5-github
    /server/app/modules/m08_reports/     @tv5-github
    /server/app/modules/m09_audit/       @tv5-github
-   /client/lib/modules/m02_*/           @tv2-github
+   /client/lib/modules/m02_*/           @nguyenthai9351-code
    # ... tương tự cho client
    ```
 6. **Quy ước commit:** `feat(m06): ...`, `fix(m04): ...`, `docs(m07): ...`, `test(m02): ...`.
@@ -204,6 +204,7 @@ Students nếu cả nhóm có email sinh viên.
 | 25/11/2026 | `render.yaml`, `deploy/render/Dockerfile`, `.dockerignore`, `SEED_ON_START` trong `entrypoint.sh` | TV1 | ✅ |
 | 25/11/2026 | Đăng ký Render (kết nối GitHub, Blueprint `fams-system`), deploy: **https://fams-system-ug8s.onrender.com** – tự deploy lại mỗi lần push `main` | TV1 | ✅ |
 | 25/11/2026 | Sửa lỗi build trên Render: `TAR_OPTIONS=--no-same-owner` (tar không đổi được chủ sở hữu tệp trong user namespace) | TV1 | ✅ |
+| 25/11/2026 | Mời collaborator quyền Write: TV2 @nguyenthai9351-code, TV3 @YNCoder205 | TV1 | ✅ (chờ 2 bạn chấp nhận) |
 | — | MOD-02 … MOD-09 | TV2 – TV5 | chưa |
 
 ## Nguồn tham khảo (tra ngày 25/11/2026)
