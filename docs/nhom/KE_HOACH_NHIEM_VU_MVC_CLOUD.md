@@ -45,13 +45,13 @@ FAMS-SYSTEM/
 │       │   ├── tests/             #   test của mô-đun
 │       │   └── README.md          #   người phụ trách, phạm vi, API, bảng CSDL
 │       ├── m02_catalog/           # MOD-02 Danh mục: đơn vị, cán bộ, địa điểm, phòng          – TV2
-│       ├── m03_training/          # MOD-03 Đào tạo: giảng viên, lớp, ghi danh, lịch           – TV2
+│       ├── m03_training/          # MOD-03 Đào tạo: giảng viên, lớp, ghi danh, lịch           – TV5
 │       ├── m04_learners/          # MOD-04 Người học: sinh viên, đồng ý sinh trắc, phụ huynh  – TV3
 │       ├── m05_faces/             # MOD-05 Sinh trắc khuôn mặt                                 – TV3
 │       ├── m06_attendance/        # MOD-06 Điểm danh + đơn xin phép                            – TV4
-│       ├── m07_notifications/     # MOD-07 Thông báo                                           – TV5
+│       ├── m07_notifications/     # MOD-07 Thông báo                                           – TV2
 │       ├── m08_reports/           # MOD-08 Báo cáo, thống kê                                   – TV5
-│       └── m09_audit/             # MOD-09 Nhật ký hệ thống                                    – TV5
+│       └── m09_audit/             # MOD-09 Nhật ký hệ thống                                    – TV2
 └── client/lib/
     ├── core/  widgets/  app.dart  router.dart   # MOD-10 Khung giao diện chung                  – TV1
     └── modules/
@@ -65,28 +65,136 @@ Quy ước: mô-đun chỉ gọi mô-đun khác qua **service** (không truy v�
 các mô-đun khai báo bằng tên lớp dạng chuỗi. `server/app/db/models.py` giữ lại làm nơi **gom** (import lại) mọi model
 để Alembic và code cũ vẫn chạy trong lúc chuyển dần.
 
-## 3. Phân công 5 thành viên
+## 3. Phân công 5 thành viên (chia lại ngày 26/11/2026)
 
-Khối lượng tính theo số dòng code **đang có** (server: controller + service + repository + schema) và số API, để chia
-đều. TV1 ít code nghiệp vụ hơn nhưng giữ phần dùng chung, tích hợp và **triển khai cloud**.
+**Vì sao chia lại:** ngày 26/11 nhóm đo lại lượng code thực tế phải chuyển của từng mô-đun. Phía server gồm controller,
+service, repository và schema; phía client gồm các trang và widget riêng. Bản chia ngày 25/11 bị lệch:
 
-| TV | Mô-đun | Thư mục server | Màn hình client chuyển vào `modules/` | Bảng CSDL | API | Code server hiện có |
+- TV2 (MOD-02 + MOD-03) khoảng **3 790 dòng, 36 API**;
+- TV5 (MOD-07, 08, 09) chỉ khoảng **2 420 dòng, 10 API**.
+
+Bản mới đổi chéo giữa TV2 và TV5: **MOD-03 Đào tạo chuyển sang TV5**, **MOD-07 Thông báo và MOD-09 Nhật ký chuyển
+sang TV2**. TV1, TV3, TV4 giữ nguyên. Chênh lệch giữa TV2–TV5 giảm từ khoảng 1 370 dòng xuống khoảng 340 dòng.
+
+### 3.1 Khối lượng từng mô-đun (đo ngày 26/11/2026)
+
+| Mô-đun | Server (dòng) | Client (dòng) | API | Bảng CSDL | Người |
+|---|---|---|---|---|---|
+| MOD-02 Danh mục | ≈ 770 | ≈ 950 | 17 | units, staff, locations, rooms | TV2 |
+| MOD-07 Thông báo | ≈ 430 | ≈ 230 | 4 + tác vụ gửi email | notifications | TV2 |
+| MOD-09 Nhật ký hệ thống | ≈ 360 | ≈ 300 | 1 + ghi nhật ký tự động | audit_logs, attendance_audits | TV2 |
+| MOD-04 Người học | ≈ 690 | ≈ 610 | 22 | students, parents, parent_students | TV3 |
+| MOD-05 Khuôn mặt | ≈ 680 | ≈ 870 | 7 | face_embeddings | TV3 |
+| MOD-06 Điểm danh, đơn xin phép | ≈ 1 350 | ≈ 1 580 | 17 + 2 tác vụ nền | attendance_sessions, attendance_records, leave_requests | TV4 |
+| MOD-03 Đào tạo | ≈ 1 050 | ≈ 1 020 | 19 | lecturers, classes, enrollments, schedules | TV5 |
+| MOD-08 Báo cáo, thống kê | ≈ 570 | ≈ 550 | 5 | không có bảng riêng (đọc dữ liệu điểm danh) | TV5 |
+
+### 3.2 Bảng phân công
+
+| TV | Tài khoản GitHub | Phụ trách | Code phải chuyển | API | Tệp test server | Trạng thái 26/11 |
 |---|---|---|---|---|---|---|
-| **TV1** (trưởng nhóm) [@jfgafgfagfbja](https://github.com/jfgafgfagfbja) | MOD-01 Xác thực, MOD-10 Giao diện chung, hạ tầng | `core/`, `db/`, `main.py`, `modules/m01_auth/` | `auth/*` (đăng nhập, quên / đặt lại mật khẩu, tài khoản, splash), `home/home_page`, `app_shell`, `router`, `core/*`, widget dùng chung | users, refresh_tokens, revoked_tokens, password_resets | 10 | ≈ 520 dòng + phần dùng chung ≈ 1 300 dòng |
-| **TV2** [@nguyenthai9351-code](https://github.com/nguyenthai9351-code) | MOD-02 Danh mục, MOD-03 Đào tạo | `m02_catalog/`, `m03_training/` | `admin/units, staff, locations, rooms, lecturers, classes, class_detail, schedules`; `schedule/week_schedule_page, schedule_pdf` | units, staff, locations, rooms, lecturers, classes, enrollments, schedules | 36 | ≈ 1 800 dòng |
-| **TV3** [@YNCoder205](https://github.com/YNCoder205) | MOD-04 Người học, MOD-05 Khuôn mặt | `m04_learners/`, `m05_faces/` | `admin/students, student_detail, parents, face_review`; `student/enroll_face, enroll_for_student`; `parent/children_page`; widget `consent_form, camera_capture` | students, parents, parent_students, face_embeddings | 29 | ≈ 1 350 dòng |
-| **TV4** [@vuong557](https://github.com/vuong557) | MOD-06 Điểm danh, đơn xin phép | `m06_attendance/` | `lecturer/attendance_scan, sessions, session_records`; `student/self_checkin`; `leave/leave_requests`; widget `attendance_views, evidence_image` | attendance_sessions, attendance_records, leave_requests | 17 | ≈ 1 300 dòng (nhiều quy tắc nghiệp vụ nhất) |
-| **TV5** [@dphu05](https://github.com/dphu05) | MOD-07 Thông báo, MOD-08 Báo cáo, MOD-09 Nhật ký | `m07_notifications/`, `m08_reports/`, `m09_audit/` | `parent/notifications_page, child_attendance_page`; `lecturer/reports_page`; `office/overview_page`; `student/my_attendance_page`; `admin/audit_logs_page` | notifications, audit_logs, attendance_audits | 10 + 3 tác vụ nền | ≈ 1 400 dòng |
+| **TV1** (trưởng nhóm) | [@jfgafgfagfbja](https://github.com/jfgafgfagfbja) | MOD-01 Xác thực, MOD-10 Giao diện chung, phần dùng chung, **Nhiệm vụ 2 (cloud)**, review và gộp PR | đã chuyển (≈ 520 dòng + phần dùng chung ≈ 1 300 dòng) | 10 | 4 | ✅ phần code và cloud xong; còn các việc ở 3.3 |
+| **TV2** | [@nguyenthai9351-code](https://github.com/nguyenthai9351-code) | MOD-02 Danh mục, MOD-07 Thông báo, MOD-09 Nhật ký | ≈ 3 030 dòng | 22 | 3 | đã vào repo, chưa có PR |
+| **TV3** | [@YNCoder205](https://github.com/YNCoder205) | MOD-04 Người học, MOD-05 Khuôn mặt | ≈ 2 840 dòng | 29 | 3 | đã vào repo, chưa có PR |
+| **TV4** | [@vuong557](https://github.com/vuong557) | MOD-06 Điểm danh, đơn xin phép | ≈ 2 930 dòng (nhiều quy tắc nghiệp vụ nhất) | 17 | 7 | **chưa chấp nhận lời mời vào repo** |
+| **TV5** | [@dphu05](https://github.com/dphu05) | MOD-03 Đào tạo, MOD-08 Báo cáo | ≈ 3 180 dòng | 24 | 6 | đã vào repo, chưa có PR |
 
-### Việc cụ thể của từng người (mỗi việc = 1 pull request từ tài khoản của chính người đó)
+### 3.3 Việc cụ thể của từng người
 
-| TV | Việc |
+Mỗi mô-đun làm trên 1 nhánh riêng và mở 1 pull request **từ tài khoản của chính người phụ trách**. Đường dẫn server
+tính từ `server/app/`, client tính từ `client/lib/`, test tính từ `server/tests/`. Mẫu để làm theo:
+`server/app/modules/m01_auth/README.md`. Mô-đun có nhiều tài nguyên thì đặt tên tệp `<tài nguyên>_controller.py`,
+`<tài nguyên>_service.py`, `<tài nguyên>_repository.py` (công cụ truy vết tài liệu nhận diện theo hậu tố tên tệp).
+
+**Việc chung cho TV2–TV5, lặp lại với mỗi mô-đun:**
+
+1. **Chuyển tệp server.** Dùng `git mv` để giữ lịch sử commit, sau đó sửa import.
+   - Model chuyển từ `db/models.py` sang `models.py` của mô-đun, rồi import lại trong `db/models.py` (xem khối MOD-01).
+   - Hàm mapper của mô-đun trong `services/mappers.py` chuyển theo.
+2. **Chuyển tệp client.**
+   - Các trang chuyển vào `views/`.
+   - Lớp gọi API của mô-đun (tách khỏi `api/*.dart`) chuyển vào `controllers/`.
+   - Lớp dữ liệu (tách khỏi `models/models.dart`) chuyển vào `models/`, rồi `export` lại để code cũ vẫn chạy.
+3. **Chuyển test và chạy lại.**
+   - Test của mô-đun chuyển vào `tests/mXX_<tên>/`.
+   - `pytest -q` (277 test), `flutter analyze` và `flutter test -j 1` đều phải sạch.
+4. **Viết `README.md` của mô-đun:** người phụ trách, bảng M–V–C, API, bảng CSDL, quy tắc nghiệp vụ.
+5. **Cập nhật `.github/CODEOWNERS`:** bỏ dấu `#` ở các dòng của mình.
+6. **Trước khi mở PR, đồng bộ với `main`:** chạy `git pull --rebase origin main`.
+   - Xung đột thường chỉ nằm ở các tệp gom: `db/models.py`, `api/v1/router.py`, `schemas/__init__.py`, `services/mappers.py`, `lib/models/models.dart`, `lib/api/api.dart`.
+   - Khi gộp các tệp này, giữ dòng của cả hai phía.
+7. **Kiểm tra trên cloud:** sau khi PR được gộp, Render tự deploy lại; kiểm tra mô-đun của mình trên
+   https://fams-system-ug8s.onrender.com.
+
+#### TV1 – @jfgafgfagfbja (trưởng nhóm)
+
+| Việc | Trạng thái |
 |---|---|
-| TV1 | (1) Tạo GitHub Organization / mời thành viên, bảo vệ nhánh `main`, `CODEOWNERS`, mẫu PR. (2) Tạo khung `modules/`, chuyển `core/`, `db/`, MOD-01 trước để làm mẫu cho cả nhóm. (3) Chuyển khung client (`router`, `app_shell`, `core`). (4) Nhiệm vụ 2: viết `render.yaml` + Dockerfile triển khai, nạp dữ liệu mẫu khi khởi động lần đầu, đăng ký Render, gắn link vào README và báo cáo. (5) Review và gộp PR của cả nhóm. |
-| TV2 | (1) Chuyển MOD-02, MOD-03 (server + client) vào thư mục mô-đun, chạy test. (2) README cho 2 mô-đun (API, bảng, quy tắc: chống trùng phòng, chỉ QTV / P.ĐT ghi danh – xếp lịch). (3) Bổ sung: client dùng API `GET /rooms/buildings` (đang có ở server nhưng chưa màn hình nào gọi). |
-| TV3 | (1) Chuyển MOD-04, MOD-05. (2) README. (3) Cho phép chọn mô hình khuôn mặt bằng biến môi trường (`buffalo_l` trên máy, `buffalo_s` nhẹ hơn trên cloud 512 MB). (4) Thêm nút "Xóa dữ liệu khuôn mặt của tôi" (API `DELETE /faces/mine` đã có, giao diện chưa có). |
-| TV4 | (1) Chuyển MOD-06. (2) README (luật mở / đóng phiên, đi muộn, GPS, đơn xin phép). (3) Kiểm thử luồng điểm danh trên bản cloud (tự điểm danh bằng GPS cần HTTPS – Render có sẵn). |
-| TV5 | (1) Chuyển MOD-07, MOD-08, MOD-09 + 3 tác vụ nền. (2) README. (3) Client dùng API `GET /reports/my-attendance` (chưa màn hình nào gọi) hoặc bỏ API thừa. (4) Cấu hình email thông báo trên cloud (SMTP, có thể để trống ở bản demo). |
+| Khung `modules/`, MOD-01, MOD-10, `CODEOWNERS`, mẫu PR, mời 4 thành viên | ✅ 25/11 |
+| Nhiệm vụ 2: `render.yaml`, `deploy/render/Dockerfile`, tự nạp dữ liệu mẫu, đăng ký Render, link trong README | ✅ 25/11 |
+| Chuyển `AuthApi` từ `api/catalog_api.dart` sang `modules/m01_auth/controllers/` (để TV2 tách tệp này gọn) | chưa |
+| Bật bảo vệ nhánh `main` (bắt buộc qua PR, CI đạt) | chưa |
+| Review và gộp PR của TV2–TV5; giữ các test dùng chung ở `tests/`: `test_authorization`, `test_infrastructure`, `test_migrations`, `test_flow_fixes`, `test_coverage_gaps`, `test_unit_roles` | khi có PR |
+| Trước buổi chấm: CSDL Render còn hạn (hết hạn khoảng 25/12/2026), đổi mật khẩu mẫu, ghi link và tài khoản demo vào báo cáo cuối kỳ | trước buổi chấm |
+
+#### TV2 – @nguyenthai9351-code: MOD-02 Danh mục, MOD-07 Thông báo, MOD-09 Nhật ký
+
+| Mô-đun / nhánh | Server → `modules/…` | Client → `modules/…` | Test → `tests/…` |
+|---|---|---|---|
+| MOD-02 · `tv2/m02-catalog` → `m02_catalog/` | `api/v1/endpoints/{units,staff,locations,rooms}.py`, `services/{unit,staff,location,room}_service.py`, `repositories/{unit,staff,location,room}_repository.py`, `schemas/{organization,locations}.py`; model `Unit`, `Staff`, `Location`, `Room` | `features/admin/{units,staff,locations,rooms}_page.dart`; `UnitsApi`, `StaffApi`, `LocationsApi`, `RoomsApi` (trong `api/catalog_api.dart`) | `test_rooms.py` → `m02_catalog/` |
+| MOD-07 · `tv2/m07-notifications` → `m07_notifications/` | `endpoints/notifications.py`, `services/{notification_service,parent_notify,user_notify,email_service}.py`, `repositories/notification_repository.py`, `schemas/notifications.py`; model `Notification`; vòng gửi email trong `jobs/scheduler.py` chỉ sửa import | `features/parent/notifications_page.dart`, `widgets/notification_bell.dart`; `NotificationsApi` (trong `api/report_api.dart`) | `test_parent_notifications.py` → `m07_notifications/` |
+| MOD-09 · `tv2/m09-audit` → `m09_audit/` | `endpoints/audit_logs.py`, `services/{audit,audit_log_service}.py`, `repositories/audit_log_repository.py`, `schemas/audit_logs.py`; model `AuditLog`, `AttendanceAudit` | `features/admin/audit_logs_page.dart`; `AuditLogsApi` (trong `api/report_api.dart`) | `test_audit_log.py` → `m09_audit/` |
+
+**Việc thêm của TV2:**
+
+- **(a) Lọc phòng theo tòa nhà.** Trang Phòng dùng API `GET /rooms/buildings` để lọc. Client đã có hàm `RoomsApi.buildings()` nhưng chưa trang nào gọi.
+- **(b) Email trên cloud.** Ghi trong README mô-đun các biến SMTP cần đặt trên Render. Bản demo có thể để trống; khi đó chỉ gửi thông báo trong app.
+- **(c) Chuyển `services/audit.py` cuối cùng.** Tệp này gắn vào sự kiện `after_flush` của SQLAlchemy và được nhiều nơi gọi: `main.py`, `core/security.py`, MOD-01, MOD-08. Chuyển xong thì chạy lại toàn bộ test.
+
+#### TV3 – @YNCoder205: MOD-04 Người học, MOD-05 Khuôn mặt (giữ nguyên)
+
+| Mô-đun / nhánh | Server → `modules/…` | Client → `modules/…` | Test → `tests/…` |
+|---|---|---|---|
+| MOD-04 · `tv3/m04-learners` → `m04_learners/` | `api/v1/endpoints/{students,parents}.py`, `services/{student_service,parent_service,consent_service}.py`, `repositories/{student,parent}_repository.py`, `schemas/{students,parents}.py`; model `Student`, `Parent`, `ParentStudent` | `features/admin/{students,student_detail,parents}_page.dart`, `features/parent/children_page.dart`, `widgets/consent_form.dart`; `StudentsApi`, `ParentsApi` (trong `api/people_api.dart`) | `test_consent.py` → `m04_learners/` |
+| MOD-05 · `tv3/m05-faces` → `m05_faces/` | `endpoints/faces.py`, `services/{face_service,face_data_service,antispoof_service}.py`, `repositories/face_repository.py`, `schemas/faces.py`; model `FaceEmbedding` | `features/admin/face_review_page.dart`, `features/student/{enroll_face,enroll_for_student}_page.dart`, `widgets/camera_capture.dart`; `FacesApi` (trong `api/people_api.dart`) | `test_face_approval.py`, `test_antispoof.py` → `m05_faces/` |
+
+**Việc thêm của TV3:**
+
+- **(a) Chọn mô hình khuôn mặt bằng biến môi trường `FACE_MODEL`.** Dùng `buffalo_l` trên máy, `buffalo_s` trên cloud 512 MB. Hiện code chưa có biến này.
+- **(b) Tải sẵn mô hình trong bước build.** Sửa `deploy/render/Dockerfile`; đây là tệp của TV1 nên PR cần TV1 duyệt.
+- **(c) Nút "Xóa dữ liệu khuôn mặt của tôi" cho sinh viên.** Client đã có `FacesApi.deleteMine()` gọi `DELETE /faces/mine`, nhưng chưa trang nào dùng.
+
+#### TV4 – @vuong557: MOD-06 Điểm danh, đơn xin phép (giữ nguyên)
+
+| Mô-đun / nhánh | Server → `modules/…` | Client → `modules/…` | Test → `tests/…` |
+|---|---|---|---|
+| MOD-06 · `tv4/m06-attendance` → `m06_attendance/` | `api/v1/endpoints/{sessions,leave_requests}.py`, `services/{session_service,attendance_service,leave_service,geo_service,evidence_cleanup}.py`, `repositories/{session,leave}_repository.py`, `schemas/{attendance,leaves}.py`; model `AttendanceSession`, `AttendanceRecord`, `LeaveRequest`; 2 vòng nền (tự đóng phiên, dọn ảnh bằng chứng) trong `jobs/scheduler.py` chỉ sửa import | `features/lecturer/{attendance_scan,sessions,session_records}_page.dart`, `features/student/self_checkin_page.dart`, `features/leave/leave_requests_page.dart`, `widgets/{attendance_views,evidence_image}.dart`; `SessionsApi`, `LeaveRequestsApi` (trong `api/attendance_api.dart`) | `test_session_lifecycle.py`, `test_open_session_rules.py`, `test_session_detail_and_records.py`, `test_confirm_frames.py`, `test_location_checkin.py`, `test_leave_and_warnings.py`, `test_evidence_cleanup.py` → `m06_attendance/` |
+
+**Việc thêm của TV4:**
+
+- **(a) Việc đầu tiên: chấp nhận lời mời vào repo** tại https://github.com/jfgafgfagfbja/FAMS-SYSTEM/invitations. Lời mời hết hạn khoảng ngày 02/12/2026.
+- **(b) README mô-đun.** Ghi luật mở / đóng phiên, đi muộn, bán kính GPS, đơn xin phép.
+- **(c) Kiểm thử trên cloud.**
+  - Mở phiên, quét camera, duyệt đơn.
+  - Sinh viên tự điểm danh bằng GPS (cần HTTPS; Render có sẵn).
+  - Ghi lại mức RAM khi nhận diện (phối hợp với TV3).
+- **(d) Ghi chú lưu trữ ảnh.** Ảnh bằng chứng nằm trên ổ đĩa tạm nên mất khi dịch vụ khởi động lại.
+
+#### TV5 – @dphu05: MOD-03 Đào tạo, MOD-08 Báo cáo
+
+| Mô-đun / nhánh | Server → `modules/…` | Client → `modules/…` | Test → `tests/…` |
+|---|---|---|---|
+| MOD-03 · `tv5/m03-training` → `m03_training/` | `api/v1/endpoints/{lecturers,classes,schedules}.py`, `services/{lecturer,class,schedule}_service.py`, `repositories/{lecturer,class,schedule}_repository.py`, `schemas/{lecturers,classes,schedules}.py`; model `Lecturer`, `Class`, `Enrollment`, `Schedule` | `features/admin/{lecturers,classes,class_detail,schedules}_page.dart`, `features/schedule/{week_schedule_page,schedule_pdf}.dart`; `api/training_api.dart` | `test_admin_crud.py`, `test_admin_management.py`, `test_week_schedule.py` → `m03_training/` |
+| MOD-08 · `tv5/m08-reports` → `m08_reports/` | `endpoints/reports.py`, `services/{report_service,attendance_stats}.py`, `repositories/report_repository.py`, `schemas/reports.py` | `features/lecturer/reports_page.dart`, `features/office/overview_page.dart`, `features/student/my_attendance_page.dart`, `features/parent/child_attendance_page.dart`; `ReportsApi` (trong `api/report_api.dart`) | `test_reports.py`, `test_reports_export_and_warnings.py`, `test_my_attendance_detail.py` → `m08_reports/` |
+
+**Việc thêm của TV5:**
+
+- **(a) Xử lý API trùng chức năng.** API `GET /reports/my-attendance` có ở cả server và client (`ReportsApi.myAttendance()`), nhưng trang sinh viên đang gọi `/students/me/attendance`. Chọn một trong hai: dùng API này, hoặc bỏ API thừa.
+- **(b) README mô-đun.** Ghi các quy tắc:
+  - chống trùng phòng;
+  - chỉ Quản trị viên / Phòng Đào tạo được ghi danh và xếp lịch;
+  - ngưỡng cảnh báo vắng 20 %.
+- **(c) Kiểm tra trên cloud:** xếp lịch trùng phòng bị chặn, xuất Excel, xuất PDF lịch tuần.
 
 Mỗi người **tự làm phần của mình bằng tài khoản của mình**. Thầy kiểm tra lịch sử commit, nên không ai commit hộ
 người khác.
@@ -110,20 +218,20 @@ người khác.
 4. **Thứ tự để không giẫm chân nhau:** TV1 làm khung + MOD-01 trước (vài ngày đầu). Sau đó TV2…TV5 làm song song:
    mỗi người chỉ sửa trong thư mục mô-đun của mình. Phần dùng chung (`db/models.py` gom model, `api/v1/router.py`
    đăng ký router) chỉ thêm 1–2 dòng, xung đột nếu có rất dễ gộp.
-5. **`.github/CODEOWNERS`** (điền tên tài khoản thật):
+5. **`.github/CODEOWNERS`** đã điền sẵn tài khoản theo bảng phân công 26/11. Dòng của TV2–TV5 đang có dấu `#`; mỗi
+   bạn tự bỏ dấu này trong PR đầu tiên của mình:
    ```
-   /server/app/core/                    @jfgafgfagfbja
-   /server/app/modules/m01_auth/        @jfgafgfagfbja
-   /server/app/modules/m02_catalog/     @nguyenthai9351-code
-   /server/app/modules/m03_training/    @nguyenthai9351-code
-   /server/app/modules/m04_learners/    @YNCoder205
-   /server/app/modules/m05_faces/       @YNCoder205
-   /server/app/modules/m06_attendance/  @vuong557
-   /server/app/modules/m07_notifications/ @dphu05
-   /server/app/modules/m08_reports/     @dphu05
-   /server/app/modules/m09_audit/       @dphu05
-   /client/lib/modules/m02_*/           @nguyenthai9351-code
-   # ... tương tự cho client
+   /server/app/core/                      @jfgafgfagfbja
+   /server/app/modules/m01_auth/          @jfgafgfagfbja
+   /server/app/modules/m02_catalog/       @nguyenthai9351-code
+   /server/app/modules/m07_notifications/ @nguyenthai9351-code
+   /server/app/modules/m09_audit/         @nguyenthai9351-code
+   /server/app/modules/m04_learners/      @YNCoder205
+   /server/app/modules/m05_faces/         @YNCoder205
+   /server/app/modules/m06_attendance/    @vuong557
+   /server/app/modules/m03_training/      @dphu05
+   /server/app/modules/m08_reports/       @dphu05
+   # ... và các dòng tương ứng cho client/lib/modules/
    ```
 6. **Quy ước commit:** `feat(m06): ...`, `fix(m04): ...`, `docs(m07): ...`, `test(m02): ...`.
 
@@ -161,7 +269,7 @@ thầy chỉ cần **1 đường link**.
 | Dịch vụ ngủ sau 15 phút, lần đầu mở chờ khoảng 1 phút | Ghi chú trong báo cáo; mở link trước giờ thầy chấm | TV1 |
 | Postgres miễn phí hết hạn sau 30 ngày | Tạo CSDL **trong vòng 30 ngày trước buổi chấm**, hoặc nâng gói; sao lưu bằng `pg_dump` | TV1 |
 | Gói miễn phí không có shell để nạp dữ liệu mẫu | Thêm biến `SEED_ON_START=1`: khởi động lần đầu tự chạy `seed.py` nếu CSDL trống | TV1 |
-| Ổ đĩa tạm: ảnh bằng chứng, ảnh chờ duyệt mất khi dịch vụ khởi động lại | Chấp nhận cho bản demo, ghi rõ trong báo cáo (bản thật dùng ổ đĩa / kho lưu ảnh trả phí) | TV4, TV5 |
+| Ổ đĩa tạm: ảnh bằng chứng, ảnh chờ duyệt mất khi dịch vụ khởi động lại | Chấp nhận cho bản demo, ghi rõ trong báo cáo (bản thật dùng ổ đĩa / kho lưu ảnh trả phí) | TV3 (ảnh chờ duyệt), TV4 (ảnh bằng chứng) |
 | Lần đầu nhận diện phải tải mô hình (vài chục đến vài trăm MB) | Tải sẵn mô hình trong bước build Docker | TV3 |
 
 **Phương án dự phòng:** Railway (Hobby $5/tháng, đủ RAM cho `buffalo_l`, CSDL không hết hạn), hoặc Azure for
@@ -181,11 +289,12 @@ Students nếu cả nhóm có email sinh viên.
 
 | Thời gian | Việc | Người |
 |---|---|---|
-| 25/11 – 28/11 | Lập Organization, mời thành viên, bảo vệ nhánh, CODEOWNERS; khung `modules/` + MOD-01 làm mẫu | TV1 (cả nhóm tạo tài khoản GitHub) |
-| 29/11 – 05/12 | Mỗi người chuyển mô-đun của mình + README + test, mở PR; TV1 review, gộp | TV2 – TV5 |
-| 03/12 – 08/12 | Chuẩn bị triển khai: `render.yaml`, Dockerfile, chọn mô hình nhẹ, seed tự động | TV1, TV3 |
-| 08/12 – 12/12 | Triển khai Render, mỗi người kiểm tra mô-đun của mình trên link thật, sửa lỗi | Cả nhóm |
-| Trước buổi chấm | CSDL còn hạn, mở link "đánh thức" dịch vụ, cập nhật link + tài khoản demo vào báo cáo | TV1 |
+| 25/11 ✅ | Mời thành viên, CODEOWNERS, mẫu PR; khung `modules/` + MOD-01 làm mẫu; `render.yaml`, Dockerfile, seed tự động, deploy Render | TV1 |
+| 26/11 – 28/11 | TV4 chấp nhận lời mời; mỗi người clone repo, cấu hình email Git, đọc mục 3.3 và `m01_auth/README.md` | TV2 – TV5 |
+| 29/11 – 05/12 | Mỗi người chuyển mô-đun của mình (1 PR / mô-đun) + README + test; TV1 review, gộp lần lượt | TV2 – TV5, TV1 |
+| 03/12 – 08/12 | Việc thêm ở mục 3.3: `FACE_MODEL` + tải sẵn mô hình (TV3), lọc phòng theo tòa nhà + SMTP (TV2), API trùng `my-attendance` (TV5) | TV2, TV3, TV5 |
+| 08/12 – 12/12 | Mỗi người kiểm tra mô-đun của mình trên link cloud, sửa lỗi; TV4 kiểm luồng điểm danh GPS + camera | Cả nhóm |
+| Trước buổi chấm | CSDL còn hạn (hết hạn khoảng 25/12/2026), mở link "đánh thức" dịch vụ, đổi mật khẩu mẫu, cập nhật link + tài khoản demo vào báo cáo | TV1 |
 
 (Nếu lịch nộp báo cáo cuối kỳ khác, dời các mốc cho phù hợp.)
 
@@ -204,8 +313,12 @@ Students nếu cả nhóm có email sinh viên.
 | 25/11/2026 | `render.yaml`, `deploy/render/Dockerfile`, `.dockerignore`, `SEED_ON_START` trong `entrypoint.sh` | TV1 | ✅ |
 | 25/11/2026 | Đăng ký Render (kết nối GitHub, Blueprint `fams-system`), deploy: **https://fams-system-ug8s.onrender.com** – tự deploy lại mỗi lần push `main` | TV1 | ✅ |
 | 25/11/2026 | Sửa lỗi build trên Render: `TAR_OPTIONS=--no-same-owner` (tar không đổi được chủ sở hữu tệp trong user namespace) | TV1 | ✅ |
-| 25/11/2026 | Mời collaborator quyền Write: TV2 @nguyenthai9351-code, TV3 @YNCoder205, TV4 @vuong557, TV5 @dphu05 | TV1 | ✅ (chờ 2 bạn chấp nhận) |
-| — | MOD-02 … MOD-09 | TV2 – TV5 | chưa |
+| 25/11/2026 | Mời collaborator quyền Write: TV2 @nguyenthai9351-code, TV3 @YNCoder205, TV4 @vuong557, TV5 @dphu05 | TV1 | ✅ 26/11: 4/5 đã vào repo; @vuong557 chưa chấp nhận |
+| 26/11/2026 | Chia lại theo khối lượng code đo thực tế: MOD-03 sang TV5; MOD-07, MOD-09 sang TV2 (mục 3); cập nhật `CODEOWNERS`, `client/lib/modules/README.md` | TV1 | ✅ |
+| — | MOD-02, MOD-07, MOD-09 | TV2 | chưa |
+| — | MOD-04, MOD-05 | TV3 | chưa |
+| — | MOD-06 | TV4 | chưa |
+| — | MOD-03, MOD-08 | TV5 | chưa |
 
 ## Nguồn tham khảo (tra ngày 25/11/2026)
 

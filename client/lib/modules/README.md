@@ -13,11 +13,12 @@ mXX_<ten>/
 |---|---|---|
 | `m01_auth/` – Xác thực và tài khoản | TV1 @jfgafgfagfbja | ✅ `controllers/auth_controller.dart`, `views/` (5 trang) |
 | `m10_shell/` – Khung giao diện chung | TV1 @jfgafgfagfbja | ✅ `views/home_page.dart` (khung: `lib/core/`, `lib/widgets/`, `router.dart`, `app.dart`) |
-| `m02_catalog/`, `m03_training/` | TV2 @nguyenthai9351-code | chưa – đang ở `lib/features/admin/`, `lib/features/schedule/` |
-| `m04_learners/`, `m05_faces/` | TV3 @YNCoder205 | chưa – `lib/features/admin/`, `lib/features/student/`, `lib/features/parent/` |
-| `m06_attendance/` | TV4 @vuong557 | chưa – `lib/features/lecturer/`, `lib/features/student/`, `lib/features/leave/` |
-| `m07_notifications/`, `m08_reports/`, `m09_audit/` | TV5 @dphu05 | chưa – `lib/features/parent/`, `lib/features/lecturer/`, `lib/features/office/`, `lib/features/admin/` |
+| `m02_catalog/`, `m07_notifications/`, `m09_audit/` | TV2 @nguyenthai9351-code | chưa – `lib/features/admin/` (units, staff, locations, rooms, audit_logs), `lib/features/parent/notifications_page`, `lib/widgets/notification_bell` |
+| `m04_learners/`, `m05_faces/` | TV3 @YNCoder205 | chưa – `lib/features/admin/`, `lib/features/student/`, `lib/features/parent/children_page`, `lib/widgets/` (consent_form, camera_capture) |
+| `m06_attendance/` | TV4 @vuong557 | chưa – `lib/features/lecturer/`, `lib/features/student/self_checkin_page`, `lib/features/leave/`, `lib/widgets/` (attendance_views, evidence_image) |
+| `m03_training/`, `m08_reports/` | TV5 @dphu05 | chưa – `lib/features/admin/` (lecturers, classes, class_detail, schedules), `lib/features/schedule/`, `lib/features/lecturer/reports_page`, `lib/features/office/`, `lib/features/student/my_attendance_page`, `lib/features/parent/child_attendance_page` |
 
-Danh sách trang của từng người: `docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md` mục 3. Lớp dữ liệu hiện vẫn nằm chung trong
+Phân công chia lại ngày 26/11/2026. Danh sách tệp cụ thể của từng người: `docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md`
+mục 3.3. Lớp dữ liệu hiện vẫn nằm chung trong
 `lib/models/models.dart`; mỗi người tách phần của mình sang `models/` của mô-đun và `export` lại trong `models.dart`.
 Chạy `flutter analyze` và `flutter test -j 1` (phải sạch) trước khi mở Pull Request.

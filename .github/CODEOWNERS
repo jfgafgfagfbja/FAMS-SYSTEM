@@ -11,11 +11,15 @@
 /render.yaml                             @jfgafgfagfbja
 /deploy/                                 @jfgafgfagfbja
 
-# MOD-02 Danh mục, MOD-03 Đào tạo – TV2 (@nguyenthai9351-code): bỏ dấu # trong PR đầu tiên
+# (Phân công chia lại ngày 26/11/2026 – docs/nhom/KE_HOACH_NHIEM_VU_MVC_CLOUD.md mục 3)
+
+# MOD-02 Danh mục, MOD-07 Thông báo, MOD-09 Nhật ký – TV2 (@nguyenthai9351-code): bỏ dấu # trong PR đầu tiên
 # /server/app/modules/m02_catalog/       @nguyenthai9351-code
-# /server/app/modules/m03_training/      @nguyenthai9351-code
+# /server/app/modules/m07_notifications/ @nguyenthai9351-code
+# /server/app/modules/m09_audit/         @nguyenthai9351-code
 # /client/lib/modules/m02_catalog/       @nguyenthai9351-code
-# /client/lib/modules/m03_training/      @nguyenthai9351-code
+# /client/lib/modules/m07_notifications/ @nguyenthai9351-code
+# /client/lib/modules/m09_audit/         @nguyenthai9351-code
 
 # MOD-04 Người học, MOD-05 Khuôn mặt – TV3 (@YNCoder205): bỏ dấu # trong PR đầu tiên
 # /server/app/modules/m04_learners/      @YNCoder205
@@ -27,10 +31,8 @@
 # /server/app/modules/m06_attendance/    @vuong557
 # /client/lib/modules/m06_attendance/    @vuong557
 
-# MOD-07 Thông báo, MOD-08 Báo cáo, MOD-09 Nhật ký – TV5 (@dphu05): bỏ dấu # trong PR đầu tiên
-# /server/app/modules/m07_notifications/ @dphu05
+# MOD-03 Đào tạo, MOD-08 Báo cáo – TV5 (@dphu05): bỏ dấu # trong PR đầu tiên
+# /server/app/modules/m03_training/      @dphu05
 # /server/app/modules/m08_reports/       @dphu05
-# /server/app/modules/m09_audit/         @dphu05
-# /client/lib/modules/m07_notifications/ @dphu05
+# /client/lib/modules/m03_training/      @dphu05
 # /client/lib/modules/m08_reports/       @dphu05
-# /client/lib/modules/m09_audit/         @dphu05
